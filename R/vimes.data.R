@@ -23,11 +23,20 @@ vimes.data <- function(...){
     ## MATCH ORDERING/FILL GAPS ##
     ## get list of all labels ##
     all.labels <- unique(unlist(lapply(data, attr, "Labels")))
+    N <- length(all.labels)
 
-    ## reorder dist objects ##
+    ## create model matrix ##
     out <- list()
+    empty.mat <- matrix(0, ncol=N, nrow=N)
+    rownames(empty.mat) <- colnames(empty.mat) <- all.labels
+
+    ## fit data into model matrix
     for(i in seq_along(data)){
-        out[[i]] <- as.dist(as.matrix(data[[i]])[all.labels, all.labels])
+        temp <- as.matrix(data[[i]])
+        temp.lab <- rownames(temp)
+        out[[i]] <- empty.matrix
+        out[[i]][temp.lab, temp.lab] <- temp
+        out[[i]] <- as.dist(out[[i]])
     }
 
     ## RETURN OUTPUT ##
