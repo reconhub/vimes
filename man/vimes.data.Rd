@@ -2,15 +2,18 @@
 % Please edit documentation in R/vimes.data.R
 \name{vimes.data}
 \alias{vimes.data}
-\title{Check input data}
+\title{Process input data for vimes}
 \usage{
 vimes.data(...)
 }
 \arguments{
 \item{...}{a set of matrices or dist objects serving as input}
 }
+\value{
+a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)
+}
 \description{
-Check input data
+This function takes a series of 'dist' objects (or objects which can be converted to 'dist', and ensures that entries match in all objects, adding NAs where necessary. The total number of cases and labels are returned as attributes.
 }
 \author{
 Thibaut Jombart \email{thibautjombart@gmail.com}

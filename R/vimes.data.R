@@ -1,4 +1,6 @@
-#' Check input data
+#' Process input data for vimes
+#'
+#' This function takes a series of 'dist' objects (or objects which can be converted to 'dist', and ensures that entries match in all objects, adding NAs where necessary. The total number of cases and labels are returned as attributes.
 #'
 #' @author Thibaut Jombart \email{thibautjombart@@gmail.com}
 #'
@@ -6,6 +8,8 @@
 #'
 #' @export
 #' @importFrom stats as.dist
+#'
+#' @return a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)
 #'
 vimes.data <- function(...){
     ## PROCESS INPUT ##
@@ -27,14 +31,14 @@ vimes.data <- function(...){
 
     ## create model matrix ##
     out <- list()
-    empty.mat <- matrix(0, ncol=N, nrow=N)
+    empty.mat <- matrix(NA_real_, ncol=N, nrow=N)
     rownames(empty.mat) <- colnames(empty.mat) <- all.labels
 
     ## fit data into model matrix
     for(i in seq_along(data)){
         temp <- as.matrix(data[[i]])
         temp.lab <- rownames(temp)
-        out[[i]] <- empty.matrix
+        out[[i]] <- empty.mat
         out[[i]][temp.lab, temp.lab] <- temp
         out[[i]] <- as.dist(out[[i]])
     }
