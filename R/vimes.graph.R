@@ -12,8 +12,7 @@
 #'
 #' @param x pairwise distances stored as a \code{dist} object.
 #' @param cutoff a cutoff distance beyond which individuals will not be connected in the graph.
-#' @param col.pal a color palette to be used for the identified clusters.
-#' @param
+#' @param graph.opt a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.
 #' @param ... further arguments to be passed to \code{hist}.
 #'
 #' @return a list containing:
@@ -73,7 +72,7 @@ vimes.graph <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     names(groups) <- c("membership", "size", "K")
 
     ## add cluster colors
-    groups$color <- col.pal(groups$K)
+    groups$color <- graph.opt$col.pal(groups$K)
     names(groups$color) <- 1:groups$K
 
     ## setup graphical options for graph ##

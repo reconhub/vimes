@@ -7,12 +7,20 @@
 #' \item{layout}{a layout function used for plotting the graph; see \code{?layout_nicely} for more information.}
 #' \item{seed}{a random seed to be used for plotting the graph}
 #' \item{vertex.size}{the size of the vertices; defaults to 10}
-#' \item{vertex.color}{the color of the labels; defaults to "#b3b3cc"}
 #' \item{label.family}{a font family for labels; defaults to "sans"}
 #' \item{label.color}{the color of the labels; defaults to "black"}
 #' \item{edge.label}{a logical indicating if weights should be used to annotate the edges; defaults to FALSE}
 #'
 #' }
+#'
+#'
+#' @author Thibaut Jombart \email{thibautjombart@@gmail.com}
+#'
+#' @export
+#'
+#' @examples
+#' vimes.graph.opt()
+#'
 vimes.graph.opt <- function(...){
     ## GET ARGUMENTS ##
     config <- list(...)
@@ -22,13 +30,14 @@ vimes.graph.opt <- function(...){
                      layout=layout_nicely,
                      seed=1,
                      vertex.size=10,
-                     vertex.color="#b3b3cc",
                      label.family="sans",
                      label.color="black",
                      edge.label=FALSE)
 
     ## MODIFY CONFIG WITH ARGUMENTS ##
     config <- modify.defaults(defaults, config)
+
+    return(config)
 } # end graph.setup
 
 
@@ -45,7 +54,7 @@ set.graph.opt <- function(g, opt){
 
     ## layout ##
     set.seed(opt$seed)
-    g$layout <- layout(g)
+    g$layout <- opt$layout(g)
 
     ## vertices ##
     ## color
