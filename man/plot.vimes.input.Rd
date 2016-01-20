@@ -5,7 +5,7 @@
 \title{Plot input data for vimes}
 \usage{
 \method{plot}{vimes.input}(x, y = NULL, col = vimes.pal1(length(x)),
-  n = length(x), ...)
+  n = length(x), which = 1:length(x), ...)
 }
 \arguments{
 \item{x}{a \code{vimes.input} object, as returned by \code{vimes.data}}
@@ -15,6 +15,8 @@
 \item{col}{colors to be used for the histograms}
 
 \item{n}{the number of histograms displayed per window}
+
+\item{which}{an integer vector indicating which distances to plot}
 
 \item{...}{further arguments passed on to \code{hist}}
 }

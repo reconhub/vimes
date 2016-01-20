@@ -13,6 +13,7 @@
 #' @param col colors to be used for the histograms
 #' @param ... further arguments passed on to \code{hist}
 #' @param n the number of histograms displayed per window
+#' @param which an integer vector indicating which distances to plot 
 #'
 #' @examples
 #' x1 <- rnorm(20)
@@ -25,8 +26,10 @@
 #' out
 #' plot(out)
 #'
-plot.vimes.input <- function(x, y=NULL, col=vimes.pal1(length(x)), n=length(x), ...){
+plot.vimes.input <- function(x, y=NULL, col=vimes.pal1(length(x)),
+                             n=length(x), which=1:length(x), ...){
     ## CHECK ARGUMENTS ##
+    x <- x[which]
     N <- length(x)
     if(N<1) stop("x is empty")
     if(n<1) stop("n is less than 1")
