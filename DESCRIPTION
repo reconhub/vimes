@@ -13,3 +13,5 @@ Description: Integration of various surveillance data for detecting disease outb
 License: GPL (>=2)
 LazyData: true
 RoxygenNote: 5.0.1
+VignetteBuilder: knitr
+Suggests: testthat, knitr
