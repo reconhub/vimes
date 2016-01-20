@@ -13,8 +13,7 @@
 #' @param x pairwise distances stored as a \code{dist} object.
 #' @param cutoff a cutoff distance beyond which individuals will not be connected in the graph.
 #' @param col.pal a color palette to be used for the identified clusters.
-#' @param layout a layout function used for plotting the graph; see \code{?layout_nicely} for more information.
-#' @param seed a random seed to be used for plotting the graph
+#' @param
 #' @param ... further arguments to be passed to \code{hist}.
 #'
 #' @return a list containing:
@@ -28,7 +27,7 @@
 #'
 #' @seealso the function \code{gengraph} in the package \code{adegenet}, which was an initial implementation of the same idea in a genetics  context.
 #'
-vimes.graph <- function(x, cutoff=NULL, col.pal=vimes.pal1, layout=layout_nicely, seed=1, ...){
+vimes.graph <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     ## INTERACTIVE MODE FOR CHOOSING CUTOFF ##
     if(is.null(cutoff)){
         chooseAgain <- TRUE
@@ -73,16 +72,13 @@ vimes.graph <- function(x, cutoff=NULL, col.pal=vimes.pal1, layout=layout_nicely
     groups <- clusters(g)
     names(groups) <- c("membership", "size", "K")
 
-    ## add attributes ##
-    ## colors
-    groups.col <- col.pal(groups$K)
-    V(g)$color <- groups.col[groups$membership]
-    clusters$color <- groups.col
-    names(clusters$color) <- 1:groups$K
+    ## add cluster colors
+    groups$color <- col.pal(groups$K)
+    names(groups$color) <- 1:groups$K
 
-    ## layout
-    set.seed(seed)
-    g$layout <- layout(g)
+    ## setup graphical options for graph ##
+    g <- set.graph.opt(g, graph.opt)
+
 
     ## RETURN OUTPU ##
     out <- list(graph=g, clusters=groups, cutoff=cutoff)
