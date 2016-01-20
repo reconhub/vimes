@@ -17,7 +17,7 @@
 #'
 #' @return a list containing:
 #' \describe{
-#' \item{graph}{a graph connecting individuals, weighted with the input distances, with \code{igraph} class (from the \code{igraph} package.}
+#' \item{graph}{a graph connecting individuals, weighted with the input distances, with \code{igraph} class (from the \code{igraph} package).}
 #' \item{clusters}{a list providing cluster information: group membership, cluster sizes, and the number of clusters (K)}
 #' }
 #'
@@ -44,7 +44,7 @@ vimes.graph <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
             abline(v=cutoff,col="red",lty=2, lwd=2)
 
             ## get corresponding output ##
-            out <- vimes.graph(x, cutoff=cutoff)
+            out <- vimes.graph(x, cutoff=cutoff, graph.opt=graph.opt)
 
             ## show output ##
             cat(paste("\nNumber of clusters found:  ", out$clusters$K, sep=""))

@@ -10,13 +10,15 @@
 #' \item{label.family}{a font family for labels; defaults to "sans"}
 #' \item{label.color}{the color of the labels; defaults to "black"}
 #' \item{edge.label}{a logical indicating if weights should be used to annotate the edges; defaults to FALSE}
+#'}
 #'
-#' }
-#'
+#' @param ... a list of named graphical options; see Description.
 #'
 #' @author Thibaut Jombart \email{thibautjombart@@gmail.com}
 #'
 #' @export
+#' @importFrom utils modifyList
+#' @importFrom igraph "E" "E<-"
 #'
 #' @examples
 #' vimes.graph.opt()

@@ -4,26 +4,21 @@
 \alias{vimes.graph}
 \title{Builds a graph from pairwise distances}
 \usage{
-vimes.graph(x, cutoff = NULL, col.pal = vimes.pal1,
-  layout = layout_nicely, seed = 1, ...)
+vimes.graph(x, cutoff = NULL, graph.opt = vimes.graph.opt(), ...)
 }
 \arguments{
 \item{x}{pairwise distances stored as a \code{dist} object.}
 
 \item{cutoff}{a cutoff distance beyond which individuals will not be connected in the graph.}
 
-\item{col.pal}{a color palette to be used for the identified clusters.}
-
-\item{layout}{a layout function used for plotting the graph; see \code{?layout_nicely} for more information.}
-
-\item{seed}{a random seed to be used for plotting the graph}
+\item{graph.opt}{a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.}
 
 \item{...}{further arguments to be passed to \code{hist}.}
 }
 \value{
 a list containing:
 \describe{
-\item{graph}{a graph connecting individuals, weighted with the input distances, with \code{igraph} class (from the \code{igraph} package.}
+\item{graph}{a graph connecting individuals, weighted with the input distances, with \code{igraph} class (from the \code{igraph} package).}
 \item{clusters}{a list providing cluster information: group membership, cluster sizes, and the number of clusters (K)}
 }
 }
