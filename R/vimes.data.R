@@ -15,6 +15,7 @@ vimes.data <- function(...){
     ## PROCESS INPUT ##
     ## extract data from list ##
     data <- list(...)
+    data.names <- names(data)
 
     ## convert data to matrices ##
     data <- lapply(data, as.dist)
@@ -44,6 +45,7 @@ vimes.data <- function(...){
     }
 
     ## RETURN OUTPUT ##
+    names(out) <- data.names
     attr(out, "labels") <- all.labels
     attr(out, "N") <- length(all.labels)
 
