@@ -30,5 +30,6 @@ test_that("test: data are processed fine", {
     ## round trip
     expect_equal(as.matrix(out[[1]])[labels(x1),labels(x1)], as.matrix(D1))
     expect_equal(as.matrix(out[[2]])[labels(x2),labels(x2)], as.matrix(D2))
+    expect_identical(vimes.data(out), out)
 })
 
