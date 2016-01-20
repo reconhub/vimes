@@ -1,0 +1,15 @@
+Package: vimes
+Version: 0.0-1
+Date: 2029-09-11
+Title: VIsualisation and Monitoring of EpidemicS 
+Author: Thibaut Jombart <thibautjombart@gmail.com>
+Maintainer: Thibaut Jombart <thibautjombart@gmail.com>
+Suggests:
+    testthat
+Depends:
+    R (>= 3.0.0)
+Imports:
+Description: Integration of various surveillance data for detecting disease outbreaks. 
+License: GPL (>=2)
+LazyData: true
+RoxygenNote: 5.0.1
