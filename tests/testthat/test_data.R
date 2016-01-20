@@ -18,6 +18,7 @@ test_that("test: data are processed fine", {
 
     ## check output shape
     expect_is(out, "list")
+    expect_is(out, "vimes.input")
     expect_is(out[[1]], "dist")
     expect_is(out[[2]], "dist")
 

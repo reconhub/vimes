@@ -11,6 +11,16 @@
 #'
 #' @return a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)
 #'
+#' @examples
+#' x1 <- c(0,1,3)
+#' x2 <- c(2,5)
+#' names(x1) <- letters[1:3]
+#' names(x2) <- c('a', 'r')
+#' D1 <- dist(x1)
+#' D2 <- dist(x2)
+#' out <- vimes.data(D1, D2)
+#' out
+#'
 vimes.data <- function(...){
     ## PROCESS INPUT ##
     ## extract data from list ##
@@ -49,5 +59,6 @@ vimes.data <- function(...){
     attr(out, "labels") <- all.labels
     attr(out, "N") <- length(all.labels)
 
+    class(out) <- c("list", "vimes.input")
     return(out)
 } # end vimes.data

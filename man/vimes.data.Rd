@@ -15,6 +15,17 @@ a list of dist objects with matching entries, with attributes: 'labels' (labels 
 \description{
 This function takes a series of 'dist' objects (or objects which can be converted to 'dist', and ensures that entries match in all objects, adding NAs where necessary. The total number of cases and labels are returned as attributes.
 }
+\examples{
+x1 <- c(0,1,3)
+x2 <- c(2,5)
+names(x1) <- letters[1:3]
+names(x2) <- c('a', 'r')
+D1 <- dist(x1)
+D2 <- dist(x2)
+out <- vimes.data(D1, D2)
+out
+
+}
 \author{
 Thibaut Jombart \email{thibautjombart@gmail.com}
 }
