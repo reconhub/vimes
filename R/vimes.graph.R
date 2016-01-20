@@ -7,9 +7,14 @@
 #'
 #' @export
 #'
+#' @importFrom igraph "graph.adjacency" "clusters" "V" "V<-" "layout_nicely" "plot.igraph"
+#' @importFrom graphics "abline" "plot"
+#'
 #' @param x pairwise distances stored as a \code{dist} object.
 #' @param cutoff a cutoff distance beyond which individuals will not be connected in the graph.
 #' @param col.pal a color palette to be used for the identified clusters.
+#' @param layout a layout function used for plotting the graph; see \code{?layout_nicely} for more information.
+#' @param seed a random seed to be used for plotting the graph
 #' @param ... further arguments to be passed to \code{hist}.
 #'
 #' @return a list containing:
@@ -23,31 +28,31 @@
 #'
 #' @seealso the function \code{gengraph} in the package \code{adegenet}, which was an initial implementation of the same idea in a genetics  context.
 #'
-vimes.graph <- function(x, cutoff=NULL, col.pal=vimes.pal1, ...){
+vimes.graph <- function(x, cutoff=NULL, col.pal=vimes.pal1, layout=layout_nicely, seed=1, ...){
     ## INTERACTIVE MODE FOR CHOOSING CUTOFF ##
     if(is.null(cutoff)){
         chooseAgain <- TRUE
         while (chooseAgain) {
-            ## plot histogram
+            ## plot histogram ##
             hist(x, xlab="Pairwise distances", ylab="Frequency", main="Choose a cutoff distance",
                  border="white", col="#8585ad", ...)
 
-            ## get input from user
+            ## get input from user ##
             cat("\nEnter a cutoff distance:  ")
             cutoff <- NA
             while(is.null(cutoff) || is.na(cutoff)) suppressWarnings(cutoff <- as.numeric(readLines(n = 1)))
 
-            ## add cutoff to the plot
+            ## add cutoff to the plot ##
             abline(v=cutoff,col="red",lty=2, lwd=2)
 
-            ## get corresponding output
+            ## get corresponding output ##
             out <- vimes.graph(x, cutoff=cutoff)
 
-            ## show output
+            ## show output ##
             cat(paste("\nNumber of clusters found:  ", out$clusters$K, sep=""))
             plot(out$graph)
 
-            ## ask if cutoff should be kept
+            ## ask if cutoff should be kept ##
             ans <- ""
             while(!ans %in% c("y","n")){
                 cat("\nAre you satisfied with this solution? (yes:y / no:n): ")
@@ -60,19 +65,24 @@ vimes.graph <- function(x, cutoff=NULL, col.pal=vimes.pal1, ...){
 
 
     ## GET GRAPH ##
-    ## build graph
+    ## build graph ##
     x[x>cutoff] <- 0
     g <- graph.adjacency(as.matrix(x), mode="undirected", weighted=TRUE, diag=FALSE)
 
-    ## find clusters
+    ## find clusters ##
     groups <- clusters(g)
     names(groups) <- c("membership", "size", "K")
 
-    ## add attributes
+    ## add attributes ##
+    ## colors
     groups.col <- col.pal(groups$K)
     V(g)$color <- groups.col[groups$membership]
-    col <- col.pal(groups$K)[1:groups$K]
-    names(col) <- 1:groups$K
+    clusters$color <- groups.col
+    names(clusters$color) <- 1:groups$K
+
+    ## layout
+    set.seed(seed)
+    g$layout <- layout(g)
 
     ## RETURN OUTPU ##
     out <- list(graph=g, clusters=groups, cutoff=cutoff)

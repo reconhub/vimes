@@ -7,6 +7,7 @@
 #' @param n a number of colors
 #'
 #' @export
+#' @importFrom grDevices colorRampPalette
 #'
 #' @examples
 #'
