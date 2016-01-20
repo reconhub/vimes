@@ -1,5 +1,7 @@
 [![Travis-CI Build Status](https://travis-ci.org/thibautjombart/vimes.png?branch=master)](https://travis-ci.org/thibautjombart/vimes)
 
+[![codecov.io](https://codecov.io/github/thibautjombart/vimes/coverage.svg?branch=master)](https://codecov.io/github/thibautjombart/vimes?branch=master)
+
 
 
 ```{r compileVignette, results="hide",echo=FALSE,message=FALSE}
