@@ -4,7 +4,7 @@ author: "Thibaut Jombart"
 date: "2016-01-20"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{rmarkdown::render}
   %\VignetteIndexEntry{vimes: VIsualisation and Monitoring of EpidemicS.}
   \usepackage[utf8]{inputenc}
 ---
