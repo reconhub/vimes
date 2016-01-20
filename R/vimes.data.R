@@ -26,6 +26,10 @@ vimes.data <- function(...){
     ## extract data from list ##
     data <- list(...)
     data.names <- names(data)
+    if(length(data)==0L) stop("no data to process")
+
+    ## escape if data has been processed already
+    if(inherits(data[[1]],"vimes.input")) return(data[[1]])
 
     ## convert data to matrices ##
     data <- lapply(data, as.dist)
