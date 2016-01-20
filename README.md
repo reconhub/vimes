@@ -1,5 +1,4 @@
 [![Travis-CI Build Status](https://travis-ci.org/thibautjombart/vimes.png?branch=master)](https://travis-ci.org/thibautjombart/vimes)
-[![DOI](https://zenodo.org/badge/11430/thibautjombart/vimes.svg)](http://dx.doi.org/10.5281/zenodo.16822)
 
 
 
@@ -31,9 +30,5 @@ Then, to load the package, use:
 
 ```r
 library("vimes")
-```
-
-```
-## Error in library("vimes"): there is no package called 'vimes'
 ```
 

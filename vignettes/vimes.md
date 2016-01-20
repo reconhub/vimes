@@ -38,7 +38,3 @@ Then, to load the package, use:
 library("vimes")
 ```
 
-```
-## Error in library("vimes"): there is no package called 'vimes'
-```
-
