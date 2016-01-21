@@ -21,6 +21,23 @@ The function \code{vimes} is used to identify clusters of related cases based on
 \details{
 !!! This package is still under development. Do not use it without contacting the author. !!!
 }
+\examples{
+
+ ## generate data
+ set.seed(2)
+ dat1 <- rnorm(30, c(0,1,6))
+ dat2 <- rnorm(30, c(0,0,1))
+ dat3 <- rnorm(30, c(8,1,2))
+ x <- lapply(list(dat1, dat2, dat3), dist)
+ x <- vimes.data(x)
+plot(x)
+
+ ## analyse data
+ res <- vimes(x, cutoff=c(2,4,2))
+ res
+plot(res$graph)
+
+}
 \author{
 Thibaut Jombart \email{thibautjombart@gmail.com}
 }
