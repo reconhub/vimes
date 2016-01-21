@@ -54,7 +54,7 @@ dat3 <- rnorm(30, c(8,1,2))
 x <- lapply(list(dat1, dat2, dat3), dist)
 ```
 
-The function *vimes.data* process the data and ensures matching of the individuals across different data sources:
+The function `vimes.data` processes the data and ensures matching of the individuals across different data sources:
 
 
 ```r
