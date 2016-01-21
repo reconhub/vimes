@@ -10,7 +10,7 @@
 #' @export
 #' @importFrom igraph intersection
 #'
-#' @param a list of the class 'vimes.input' as returned by \code{vimes.data}.
+#' @param x a list of the class 'vimes.input' as returned by \code{vimes.data}.
 #' @param cutoff a vector with the same length as 'x' indicating cutoff distances beyond which individuals will not be connected in the separate graphs; recycled if needed. If NULL, interactive mode will be triggered to ask the user for cutoff distances.
 #' @param graph.opt a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.
 #' @param ... further arguments to be passed to \code{hist}.
