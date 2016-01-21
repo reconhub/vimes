@@ -28,7 +28,7 @@ vimes.graph.opt <- function(...){
     config <- list(...)
 
     ## SET DEFAULTS ##
-    defaults <- list(col.pal=vimes.pal1,
+    defaults <- list(col.pal=vimes.pal2,
                      layout=layout_nicely,
                      seed=1,
                      vertex.size=10,

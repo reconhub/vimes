@@ -57,12 +57,29 @@ x <- vimes.data(x)
 plot(x)
 ```
 
-![plot of chunk vimesdata](vignettes/figs/vimesdata-1.png)
+```
+## Warning in plot.vimes.input(x): internal error -3 in R_decompress1
+```
+
+```
+## Error in plot.vimes.input(x): lazy-load database '/usr/local/lib/R/site-library/vimes/R/vimes.rdb' is corrupt
+```
 
 We can now run `vimes` on the data:
 
 ```r
 res <- vimes(x, cutoff=c(2,4,2))
+```
+
+```
+## Warning: internal error -3 in R_decompress1
+```
+
+```
+## Error: lazy-load database '/usr/local/lib/R/site-library/vimes/R/vimes.rdb' is corrupt
+```
+
+```r
 names(res)
 ```
 
