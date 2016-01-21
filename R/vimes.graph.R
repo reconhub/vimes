@@ -29,7 +29,38 @@
 vimes.graph <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     ## INTERACTIVE MODE FOR CHOOSING CUTOFF ##
     if(is.null(cutoff)){
-        chooseAgain <- TRUE
+        return(cutoff.choice(x=x, graph.opt=graph.opt))
+    }
+
+
+    ## GET GRAPH ##
+    ## build graph ##
+    x[x>cutoff] <- 0
+    g <- graph.adjacency(as.matrix(x), mode="undirected", weighted=TRUE, diag=FALSE)
+
+    ## find clusters ##
+    groups <- clusters(g)
+    names(groups) <- c("membership", "size", "K")
+
+    ## add cluster colors
+    groups$color <- graph.opt$col.pal(groups$K)
+    names(groups$color) <- 1:groups$K
+
+    ## setup graphical options for graph ##
+    g <- set.graph.opt(g, graph.opt)
+
+
+    ## RETURN OUTPU ##
+    out <- list(graph=g, clusters=groups, cutoff=cutoff)
+} # end vimes.graph
+
+
+
+
+
+## UNEXPORTED FUNCTION FOR INTERACTIVE CUTOFF ##
+cutoff.choice <- function(x, graph.opt){
+      chooseAgain <- TRUE
         while (chooseAgain) {
             ## plot histogram ##
             hist(x, xlab="Pairwise distances", ylab="Frequency", main="Choose a cutoff distance",
@@ -59,26 +90,4 @@ vimes.graph <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
             if(ans=="y") chooseAgain <- FALSE
         }
         return(out)
-    }
-
-
-    ## GET GRAPH ##
-    ## build graph ##
-    x[x>cutoff] <- 0
-    g <- graph.adjacency(as.matrix(x), mode="undirected", weighted=TRUE, diag=FALSE)
-
-    ## find clusters ##
-    groups <- clusters(g)
-    names(groups) <- c("membership", "size", "K")
-
-    ## add cluster colors
-    groups$color <- graph.opt$col.pal(groups$K)
-    names(groups$color) <- 1:groups$K
-
-    ## setup graphical options for graph ##
-    g <- set.graph.opt(g, graph.opt)
-
-
-    ## RETURN OUTPU ##
-    out <- list(graph=g, clusters=groups, cutoff=cutoff)
-} # end vimes.graph
+}

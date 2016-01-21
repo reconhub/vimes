@@ -16,8 +16,7 @@ test_that("test plot.vimes.input", {
     D1 <- dist(x1)
     D2 <- dist(x2)
     out <- vimes.data(D1, D2)
-    out
-    plot(out)
+
 
     ## check expected errors
     expect_error(plot(out, n=-1))
