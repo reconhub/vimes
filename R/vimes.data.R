@@ -4,7 +4,8 @@
 #'
 #' @author Thibaut Jombart \email{thibautjombart@@gmail.com}
 #'
-#' @param ... a set of matrices or dist objects serving as input
+#' @param ... a set of matrices or dist objects serving as input.
+#' @param na.rm a logical indicating if cases with missing data should be removed.
 #'
 #' @export
 #' @importFrom stats as.dist
@@ -21,7 +22,7 @@
 #' out <- vimes.data(D1, D2)
 #' out
 #'
-vimes.data <- function(...){
+vimes.data <- function(..., na.rm=FALSE){
     ## PROCESS INPUT ##
     ## extract data from list ##
     data <- list(...)
@@ -31,7 +32,16 @@ vimes.data <- function(...){
     ## escape if data has been processed already
     if(inherits(data[[1]],"vimes.input")) return(data[[1]])
 
-    ## convert data to matrices ##
+    ## handle NAs ##
+    if(na.rm){
+        for(i in seq_along(data)){
+            temp <- as.matrix(data[[i]])
+            to.keep <- !apply(is.na(temp), 1, all)
+            data[[i]] <- as.dist(temp[to.keep, to.keep])
+        }
+    }
+
+    ## convert data to dist ##
     data <- lapply(data, as.dist)
 
     ## add labels if needed ##
@@ -41,8 +51,16 @@ vimes.data <- function(...){
 
     ## MATCH ORDERING/FILL GAPS ##
     ## get list of all labels ##
-    all.labels <- unique(unlist(lapply(data, attr, "Labels")))
+    if(na.rm){
+        all.labels <- Reduce(intersect, lapply(data, attr, "Labels"))
+    } else {
+        all.labels <- unique(unlist(lapply(data, attr, "Labels")))
+    }
     N <- length(all.labels)
+    if(N<2){
+        warning("Data contain less than 2 cases - try 'na.rm=FALSE'?")
+        return(NULL)
+    }
 
     ## create model matrix ##
     out <- list()
@@ -52,6 +70,7 @@ vimes.data <- function(...){
     ## fit data into model matrix
     for(i in seq_along(data)){
         temp <- as.matrix(data[[i]])
+        temp <- temp[rownames(temp) %in% all.labels, colnames(temp) %in% all.labels, drop=FALSE]
         temp.lab <- rownames(temp)
         out[[i]] <- empty.mat
         out[[i]][temp.lab, temp.lab] <- temp

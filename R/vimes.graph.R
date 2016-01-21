@@ -27,6 +27,11 @@
 #' @seealso the function \code{gengraph} in the package \code{adegenet}, which was an initial implementation of the same idea in a genetics  context.
 #'
 vimes.graph <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
+    ## CHECKS ##
+    if(is.null(x)){
+        stop("input data is NULL")
+    }
+
     ## INTERACTIVE MODE FOR CHOOSING CUTOFF ##
     if(is.null(cutoff)){
         return(cutoff.choice(x=x, graph.opt=graph.opt))

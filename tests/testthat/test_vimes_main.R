@@ -9,13 +9,15 @@ test_that("test vimes.graph", {
 
     ## generate data
     x1 <- c(0,1,3)
-    x2 <- c(2,5)
+    x2 <- c(2,5,10)
     names(x1) <- letters[1:3]
-    names(x2) <- c('a', 'r')
+    names(x2) <- c('a', 'b', 'r')
     D1 <- dist(x1)
     D2 <- dist(x2)
-    data <- vimes.data(D1, D2)
+    data <- vimes.data(D1, D2, na.rm=FALSE)
+    data.no.na <- vimes.data(D1, D2, na.rm=TRUE)
     out <- vimes.graph(data[[1]], cutoff=0)
+    out.no.na <- vimes.graph(data.no.na[[1]], cutoff=10)
 
     ## check output shape
     expect_is(out, "list")
@@ -23,6 +25,12 @@ test_that("test vimes.graph", {
     expect_is(out$clusters, "list")
     expect_equal(out$cutoff, 0)
     expect_equal(length(out$clusters$membership), 4)
+
+    expect_is(out.no.na, "list")
+    expect_is(out.no.na$graph, "igraph")
+    expect_is(out.no.na$clusters, "list")
+    expect_equal(out.no.na$cutoff, 10)
+    expect_equal(length(out.no.na$clusters$membership), 2)
 
 })
 
