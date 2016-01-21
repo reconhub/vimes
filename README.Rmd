@@ -4,7 +4,7 @@
 
 
 
-```{r compileVignette, results="hide",echo=FALSE,message=FALSE}
+```{r compileVignette, results="hide",echo=FALSE,message=FALSE,fig.keep="none"}
 ## recompile vignette
 setwd("vignettes")
 knit("vimes.Rmd")
