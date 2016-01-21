@@ -7,13 +7,13 @@
 vimes(x, cutoff = NULL, graph.opt = vimes.graph.opt(), ...)
 }
 \arguments{
+\item{x}{a list of the class 'vimes.input' as returned by \code{vimes.data}.}
+
 \item{cutoff}{a vector with the same length as 'x' indicating cutoff distances beyond which individuals will not be connected in the separate graphs; recycled if needed. If NULL, interactive mode will be triggered to ask the user for cutoff distances.}
 
 \item{graph.opt}{a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.}
 
 \item{...}{further arguments to be passed to \code{hist}.}
-
-\item{a}{list of the class 'vimes.input' as returned by \code{vimes.data}.}
 }
 \description{
 The function \code{vimes} is used to identify clusters of related cases based on multiple data.

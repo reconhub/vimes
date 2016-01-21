@@ -4,7 +4,7 @@
 #'
 #' @author Thibaut Jombart \email{thibautjombart@@gmail.com}
 #'
-#' @param ... a set of matrices or dist objects serving as input.
+#' @param ... a series (alternatively, a list) of matrices or dist objects serving as input.
 #' @param na.rm a logical indicating if cases with missing data should be removed.
 #'
 #' @export
@@ -31,6 +31,9 @@ vimes.data <- function(..., na.rm=FALSE){
 
     ## escape if data has been processed already
     if(inherits(data[[1]],"vimes.input")) return(data[[1]])
+
+    ## if first item is a list, use it as input
+    if(is.list(data[[1]])) data <- data[[1]]
 
     ## handle NAs ##
     if(na.rm){
