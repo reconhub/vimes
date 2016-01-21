@@ -62,29 +62,12 @@ x <- vimes.data(x)
 plot(x)
 ```
 
-```
-## Warning in plot.vimes.input(x): internal error -3 in R_decompress1
-```
-
-```
-## Error in plot.vimes.input(x): lazy-load database '/usr/local/lib/R/site-library/vimes/R/vimes.rdb' is corrupt
-```
+![plot of chunk vimesdata](figs/vimesdata-1.png)
 
 We can now run `vimes` on the data:
 
 ```r
 res <- vimes(x, cutoff=c(2,4,2))
-```
-
-```
-## Warning: internal error -3 in R_decompress1
-```
-
-```
-## Error: lazy-load database '/usr/local/lib/R/site-library/vimes/R/vimes.rdb' is corrupt
-```
-
-```r
 names(res)
 ```
 
@@ -129,7 +112,7 @@ res$clusters
 ## 
 ## $color
 ##         1         2         3 
-## "#ff6666" "#666699" "#79d2a6"
+## "#ccddff" "#79d2a6" "#ffb3b3"
 ```
 
 The main graph is:
