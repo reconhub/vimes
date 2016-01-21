@@ -2,9 +2,9 @@
 
 S3method(plot,vimes.input)
 export(vimes.data)
-export(vimes.graph)
 export(vimes.graph.opt)
 export(vimes.pal1)
+export(vimes.prune)
 importFrom(grDevices,colorRampPalette)
 importFrom(graphics,"abline")
 importFrom(graphics,"plot")

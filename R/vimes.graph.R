@@ -26,7 +26,7 @@
 #'
 #' @seealso the function \code{gengraph} in the package \code{adegenet}, which was an initial implementation of the same idea in a genetics  context.
 #'
-vimes.graph <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
+vimes.prune <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     ## CHECKS ##
     if(is.null(x)){
         stop("input data is NULL")
@@ -57,7 +57,7 @@ vimes.graph <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
 
     ## RETURN OUTPU ##
     out <- list(graph=g, clusters=groups, cutoff=cutoff)
-} # end vimes.graph
+} # end vimes.prune
 
 
 
@@ -80,7 +80,7 @@ cutoff.choice <- function(x, graph.opt){
             abline(v=cutoff,col="red",lty=2, lwd=2)
 
             ## get corresponding output ##
-            out <- vimes.graph(x, cutoff=cutoff, graph.opt=graph.opt)
+            out <- vimes.prune(x, cutoff=cutoff, graph.opt=graph.opt)
 
             ## show output ##
             cat(paste("\nNumber of clusters found:  ", out$clusters$K, sep=""))
@@ -95,4 +95,4 @@ cutoff.choice <- function(x, graph.opt){
             if(ans=="y") chooseAgain <- FALSE
         }
         return(out)
-}
+} # end cutoff.choice
