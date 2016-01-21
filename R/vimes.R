@@ -44,6 +44,7 @@ vimes <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     if(!inherits(x, "vimes.input")) stop("x is not a vimes.input object")
     K <- length(x)
     if(!is.null(cutoff)) cutoff <- rep(cutoff, length=K)
+    x.labels <- names(x)
 
     ## MAKE SEPARATE GRAPHS ##
     all.graphs <- list()
@@ -77,6 +78,7 @@ vimes <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
         ## layout ##
         all.graphs[[i]]$graph$layout <- g$layout
     }
+    names(all.graphs) <- x.labels
 
     ## SHAPE/RETURN OUTPUT ##
     out <- list(graph=g, clusters=groups, cutoff=cutoff,

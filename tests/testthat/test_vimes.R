@@ -16,7 +16,6 @@ test_that("test vimes", {
 
     ## analyse data
     res <- vimes(x, cutoff=c(2,4,2))
-    plot(res$graph)
 
     ## tests
     expect_true(is.list(res))
