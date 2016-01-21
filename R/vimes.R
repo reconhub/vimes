@@ -38,7 +38,7 @@ vimes <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
 
     ## GET MAIN GRAPH ##
     ## intersect graphs ##
-    g <- do.call(intersection, all.graphs)
+    g <- do.call(intersection, lapply(all.graphs, function(e) e$graph))
 
     ## set graphical options ##
     g <- set.graph.opt(g, graph.opt)
@@ -54,10 +54,10 @@ vimes <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     ## ADJUST SEPARATE GRAPHS FEATURES ##
     for(i in seq_along(x)){
         ## vertex color ##
-        V(all.graphs[[i]])$color <- V(g)$color
+        V(all.graphs[[i]]$graph)$color <- V(g)$color
 
         ## layout ##
-        all.graphs[[i]]$layout <- g$layout
+        all.graphs[[i]]$graph$layout <- g$layout
     }
 
     ## SHAPE/RETURN OUTPUT ##

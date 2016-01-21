@@ -1,7 +1,7 @@
 context("Test main functions")
 
 
-## test data ##
+## test vimes.prune ##
 test_that("test vimes.prune", {
     ## skip on CRAN
     skip_on_cran()
