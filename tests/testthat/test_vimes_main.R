@@ -2,7 +2,7 @@ context("Test main functions")
 
 
 ## test data ##
-test_that("test vimes.graph", {
+test_that("test vimes.prune", {
     ## skip on CRAN
     skip_on_cran()
     rm(list=ls())
@@ -16,8 +16,8 @@ test_that("test vimes.graph", {
     D2 <- dist(x2)
     data <- vimes.data(D1, D2, na.rm=FALSE)
     data.no.na <- vimes.data(D1, D2, na.rm=TRUE)
-    out <- vimes.graph(data[[1]], cutoff=0)
-    out.no.na <- vimes.graph(data.no.na[[1]], cutoff=10)
+    out <- vimes.prune(data[[1]], cutoff=0)
+    out.no.na <- vimes.prune(data.no.na[[1]], cutoff=10)
 
     ## check output shape
     expect_is(out, "list")
