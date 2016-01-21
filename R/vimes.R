@@ -21,6 +21,22 @@
 #' \item{\code{\link{vimes.prune}}}{for getting individual pruned graphs.}
 #' }
 #'
+#' @examples
+#'
+#'  ## generate data
+#'  set.seed(2)
+#'  dat1 <- rnorm(30, c(0,1,6))
+#'  dat2 <- rnorm(30, c(0,0,1))
+#'  dat3 <- rnorm(30, c(8,1,2))
+#'  x <- lapply(list(dat1, dat2, dat3), dist)
+#'  x <- vimes.data(x)
+#' plot(x)
+#'
+#'  ## analyse data
+#'  res <- vimes(x, cutoff=c(2,4,2))
+#'  res
+#' plot(res$graph)
+#'
 vimes <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     ## CHECKS ##
     if(is.null(x)) stop("x is NULL")
@@ -41,6 +57,8 @@ vimes <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     g <- do.call(intersection, lapply(all.graphs, function(e) e$graph))
 
     ## set graphical options ##
+    ## disable weights
+    graph.opt$edge.label <- FALSE
     g <- set.graph.opt(g, graph.opt)
 
    ## find clusters ##
