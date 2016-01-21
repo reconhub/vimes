@@ -55,7 +55,7 @@ vimes.prune <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     g <- set.graph.opt(g, graph.opt)
 
 
-    ## RETURN OUTPU ##
+    ## RETURN OUTPUT ##
     out <- list(graph=g, clusters=groups, cutoff=cutoff)
 } # end vimes.prune
 
@@ -64,7 +64,7 @@ vimes.prune <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
 
 
 ## UNEXPORTED FUNCTION FOR INTERACTIVE CUTOFF ##
-cutoff.choice <- function(x, graph.opt){
+cutoff.choice <- function(x, graph.opt, ...){
       chooseAgain <- TRUE
         while (chooseAgain) {
             ## plot histogram ##
