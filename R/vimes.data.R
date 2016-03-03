@@ -40,7 +40,9 @@ vimes.data <- function(..., na.rm=FALSE){
         for(i in seq_along(data)){
             temp <- as.matrix(data[[i]])
             to.keep <- !apply(is.na(temp), 1, all)
+            new.names <- colnames(temp)[to.keep]
             data[[i]] <- as.dist(temp[to.keep, to.keep])
+            attr(data[[i]], "Labels") <- new.names
         }
     }
 
