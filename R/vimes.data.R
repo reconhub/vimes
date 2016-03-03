@@ -73,5 +73,5 @@ vimes.data <- function(...){
     attr(out, "N") <- N
 
     class(out) <- c("list", "vimes.input")
-    return(data)
+    return(out)
 } # end vimes.data
