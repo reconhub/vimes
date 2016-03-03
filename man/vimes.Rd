@@ -4,12 +4,17 @@
 \alias{vimes}
 \title{VIsualisation and Monitoring of EpidemicS}
 \usage{
-vimes(x, cutoff = NULL, graph.opt = vimes.graph.opt(), ...)
+vimes(x, prune.method = c("basic", "ML"), cutoff = NULL, log.dens = NULL,
+  graph.opt = vimes.graph.opt(), ...)
 }
 \arguments{
 \item{x}{a list of the class 'vimes.input' as returned by \code{vimes.data}.}
 
+\item{prune.method}{a character string indicating the pruning method to be used; see details.}
+
 \item{cutoff}{a vector with the same length as 'x' indicating cutoff distances beyond which individuals will not be connected in the separate graphs; recycled if needed. If NULL, interactive mode will be triggered to ask the user for cutoff distances.}
+
+\item{log.dens}{a list of log-density functions to be used for ML estimation; one function is needed for each type of data.}
 
 \item{graph.opt}{a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.}
 
@@ -20,6 +25,13 @@ The function \code{vimes} is used to identify clusters of related cases based on
 }
 \details{
 !!! This package is still under development. Do not use it without contacting the author. !!!
+
+
+Different methods can be used for graph pruning:
+\describe{
+ \item{basic}{pre-defined cutoffs are used if provided as \code{cutoff}; if missing, they are chosen interactively by the user by examining the distribution of distances}
+ \item{ML}{cutoff values are found by ML estimation, using known distributions of distances within clusters as reference; in this case, the argument \code{log.dens} needs to be provided, and to contain one function for each type of data; each function has to have a single argument \code{x}.}
+}
 }
 \examples{
 
