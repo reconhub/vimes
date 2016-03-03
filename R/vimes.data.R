@@ -5,7 +5,6 @@
 #' @author Thibaut Jombart \email{thibautjombart@@gmail.com}
 #'
 #' @param ... a series (alternatively, a list) of matrices or dist objects serving as input.
-#' @param na.rm a logical indicating if cases with missing data should be removed.
 #'
 #' @export
 #' @importFrom stats as.dist
@@ -22,8 +21,8 @@
 #' out <- vimes.data(D1, D2)
 #' out
 #'
-vimes.data <- function(..., na.rm=TRUE){
-    ## PROCESS INPUT ##
+vimes.data <- function(...){
+    ## PROCESS TYPES OF INPUT  ##
     ## extract data from list ##
     data <- list(...)
     data.names <- names(data)
@@ -35,58 +34,44 @@ vimes.data <- function(..., na.rm=TRUE){
     ## if first item is a list, use it as input
     if(is.list(data[[1]])) data <- data[[1]]
 
-    ## handle NAs ##
-    if(na.rm){
-        for(i in seq_along(data)){
-            temp <- as.matrix(data[[i]])
-            to.keep <- !apply(is.na(temp), 1, all)
-            new.names <- colnames(temp)[to.keep]
-            data[[i]] <- as.dist(temp[to.keep, to.keep])
-            attr(data[[i]], "Labels") <- new.names
+    
+    ## ENSURE MATRICES AND LABELLING ## 
+    ## convert all data to matrices
+    data <- lapply(data, as.matrix)
+    K <- length(data)
+
+    ## assign labels if missing
+    for(i in seq_along(data)){
+        if(is.null(rownames(data[[i]]))) {
+            rownames(data[[i]]) <- colnames(data[[i]]) <- 1:nrow(data[[i]])
         }
     }
 
-    ## convert data to dist ##
-    data <- lapply(data, as.dist)
-
-    ## add labels if needed ##
-    for(i in seq_along(data)){
-        if(is.null(labels(data[[i]]))) attr(data[[i]], "Labels") <- 1:attr(data[[i]], "Size")
-    }
-
-    ## MATCH ORDERING/FILL GAPS ##
-    ## get list of all labels ##
-    if(na.rm){
-        all.labels <- Reduce(intersect, lapply(data, attr, "Labels"))
-    } else {
-        all.labels <- unique(unlist(lapply(data, attr, "Labels")))
-    }
-    N <- length(all.labels)
+    
+    ## HANDLE NAS AND SORTING ##
+    ## get labels to keep
+    ## (i.e. present without NA everywhere)
+    lab.to.keep <- Reduce(intersect,
+                          lapply(data, function(e) rownames(e)[!apply(is.na(e),1,all)])
+                          )
+    N <- length(lab.to.keep)
     if(N<2){
-        warning("Data contain less than 2 cases - try 'na.rm=FALSE'?")
+        warning("Data contain less than 2 cases without missing data.")
         return(NULL)
     }
-
-    ## create model matrix ##
-    out <- list()
-    empty.mat <- matrix(NA_real_, ncol=N, nrow=N)
-    rownames(empty.mat) <- colnames(empty.mat) <- all.labels
-
-    ## fit data into model matrix
+    
+    ## remove NAs, order, store result
+    out <- vector(K, mode="list")
     for(i in seq_along(data)){
-        temp <- as.matrix(data[[i]])
-        temp <- temp[rownames(temp) %in% all.labels, colnames(temp) %in% all.labels, drop=FALSE]
-        temp.lab <- rownames(temp)
-        out[[i]] <- empty.mat
-        out[[i]][temp.lab, temp.lab] <- temp
-        out[[i]] <- as.dist(out[[i]])
+        out[[i]] <- as.dist(data[[i]][lab.to.keep, lab.to.keep])
     }
 
+    
     ## RETURN OUTPUT ##
     names(out) <- data.names
-    attr(out, "labels") <- all.labels
-    attr(out, "N") <- length(all.labels)
+    attr(out, "labels") <- lab.to.keep
+    attr(out, "N") <- N
 
     class(out) <- c("list", "vimes.input")
-    return(out)
+    return(data)
 } # end vimes.data
