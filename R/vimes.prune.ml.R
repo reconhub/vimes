@@ -8,6 +8,8 @@
 #'
 #' @export
 #'
+#' @importFrom stats "optimise"
+#' 
 #' @param x pairwise distances stored as a \code{dist} object.
 #' @param f a function giving the log-likelihood of a given distance between two epidemiologically conected cases.
 #' @param graph.opt a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.
@@ -57,7 +59,7 @@ cutoff.ml <- function(d,f){
     }
 
     ## use optimize
-    out <- optimise(LL, range(d), maximum=TRUE)$maximum
+    out <- stats::optimise(LL, range(d), maximum=TRUE)$maximum
 
     ## return output
     return(out)
