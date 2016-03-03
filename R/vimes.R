@@ -13,6 +13,8 @@
 #' @param x a list of the class 'vimes.input' as returned by \code{vimes.data}.
 #' @param cutoff a vector with the same length as 'x' indicating cutoff distances beyond which individuals will not be connected in the separate graphs; recycled if needed. If NULL, interactive mode will be triggered to ask the user for cutoff distances.
 #' @param graph.opt a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.
+#' @param prune.method a character string indicating the pruning method to be used; see details.
+#' @param log.dens a list of log-density functions to be used for ML estimation; one function is needed for each type of data. 
 #' @param ... further arguments to be passed to \code{hist}.
 #'
 #' @seealso
@@ -21,6 +23,13 @@
 #' \item{\code{\link{vimes.prune}}}{for getting individual pruned graphs.}
 #' }
 #'
+#' @details
+#' Different methods can be used for graph pruning:
+#' \describe{
+#'  \item{basic}{pre-defined cutoffs are used if provided as \code{cutoff}; if missing, they are chosen interactively by the user by examining the distribution of distances}
+#'  \item{ML}{cutoff values are found by ML estimation, using known distributions of distances within clusters as reference; in this case, the argument \code{log.dens} needs to be provided, and to contain one function for each type of data; each function has to have a single argument \code{x}.}
+#' }
+#' 
 #' @examples
 #'
 #'  ## generate data
@@ -37,8 +46,12 @@
 #'  res
 #'  plot(res$graph)
 #'
-vimes <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
+vimes <- function(x, prune.method=c("basic","ML"),
+                  cutoff=NULL,
+                  log.dens=NULL,
+                  graph.opt=vimes.graph.opt(), ...){
     ## CHECKS ##
+    ## basic checks
     if(is.null(x)) stop("x is NULL")
     if(!is.list(x)) stop("x is not a list")
     if(!inherits(x, "vimes.input")) stop("x is not a vimes.input object")
@@ -46,10 +59,23 @@ vimes <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     if(!is.null(cutoff)) cutoff <- rep(cutoff, length=K)
     x.labels <- names(x)
 
+    ## checks for ML method
+    prune.method <- match.arg(prune.method)
+    if(prune.method=="ML"){
+        if(is.null(log.dens)) stop("ML method needs log.dens to be provided")
+        if(length(log.dens)!=K) stop("log.dens should have one function for each type of data in 'x'")
+    }
+    
+
     ## MAKE SEPARATE GRAPHS ##
     all.graphs <- list()
     for(i in seq_along(x)){
-        all.graphs[[i]] <- vimes.prune(x[[i]], cutoff=cutoff[i], graph.opt=graph.opt, ...)
+        ## call the prune method
+        if(prune.method=="basic"){
+            all.graphs[[i]] <- vimes.prune(x[[i]], cutoff=cutoff[i], graph.opt=graph.opt, ...)
+        } else if(prune.method=="ML"){
+            all.graphs[[i]] <- vimes.prune.ml(x[[i]], f=log.dens[[i]], graph.opt=graph.opt)
+        }
     }
 
 
