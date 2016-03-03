@@ -14,8 +14,8 @@ test_that("test vimes.prune", {
     names(x2) <- c('a', 'b', 'r')
     D1 <- dist(x1)
     D2 <- dist(x2)
-    data <- vimes.data(D1, D2, na.rm=FALSE)
-    data.no.na <- vimes.data(D1, D2, na.rm=TRUE)
+    data <- vimes.data(D1, D2)
+    data.no.na <- vimes.data(D1, D2)
     out <- vimes.prune(data[[1]], cutoff=0)
     out.no.na <- vimes.prune(data.no.na[[1]], cutoff=10)
 
@@ -24,7 +24,7 @@ test_that("test vimes.prune", {
     expect_is(out$graph, "igraph")
     expect_is(out$clusters, "list")
     expect_equal(out$cutoff, 0)
-    expect_equal(length(out$clusters$membership), 4)
+    expect_equal(length(out$clusters$membership), 2)
 
     expect_is(out.no.na, "list")
     expect_is(out.no.na$graph, "igraph")

@@ -29,8 +29,8 @@ test_that("test: data are processed fine", {
 
     ## round trip
     lab.common <- attr(out,"labels")
-    expect_equal(as.matrix(out[[1]]), as.matrix(D1[lab.common,lab.common]))
-    expect_equal(as.matrix(out[[2]]), as.matrix(D2[lab.common,lab.common]))
+    expect_equal(as.matrix(out[[1]]), as.matrix(D1)[lab.common,lab.common])
+    expect_equal(as.matrix(out[[2]]), as.matrix(D2)[lab.common,lab.common])
     expect_identical(vimes.data(out), out)
 })
 
