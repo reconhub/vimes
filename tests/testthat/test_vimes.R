@@ -14,16 +14,32 @@ test_that("test vimes", {
     x <- lapply(list(dat1, dat2, dat3), dist)
     x <- vimes.data(x)
 
-    ## analyse data
-    res <- vimes(x, cutoff=c(2,4,2))
+    log.dens <- list(f1=function(x) dgamma(x,2,1, log=TRUE),
+                     f2=function(x) dgamma(x,2,1/2, log=TRUE),
+                     f3=function(x) dgamma(x,2,1, log=TRUE))
 
-    ## tests
-    expect_true(is.list(res))
-    expect_is(res$graph, "igraph")
-    expect_equal(res$clusters$K, 3)
-    expect_true(is.list(res$separate.graphs))
-    expect_equal(length(res$separate.graphs), length(x))
-    for(e in res$separate.graphs){
+    ## analyse data
+    res.bas <- vimes(x, cutoff=c(2,4,2))
+    res.ml <- vimes(x, method="ML", log.dens=log.dens)
+    
+    ## tests basic results
+    expect_true(is.list(res.bas))
+    expect_is(res.bas$graph, "igraph")
+    expect_equal(res.bas$clusters$K, 3)
+    expect_true(is.list(res.bas$separate.graphs))
+    expect_equal(length(res.bas$separate.graphs), length(x))
+    for(e in res.bas$separate.graphs){
         expect_is(e$graph, "igraph")
     }
+
+    ## tests ML results
+    expect_true(is.list(res.ml))
+    expect_is(res.ml$graph, "igraph")
+    expect_equal(res.ml$clusters$K, 4)
+    expect_true(is.list(res.ml$separate.graphs))
+    expect_equal(length(res.ml$separate.graphs), length(x))
+    for(e in res.ml$separate.graphs){
+        expect_is(e$graph, "igraph")
+    }
+
 })

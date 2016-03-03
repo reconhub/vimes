@@ -13,7 +13,7 @@
 #' @param x a list of the class 'vimes.input' as returned by \code{vimes.data}.
 #' @param cutoff a vector with the same length as 'x' indicating cutoff distances beyond which individuals will not be connected in the separate graphs; recycled if needed. If NULL, interactive mode will be triggered to ask the user for cutoff distances.
 #' @param graph.opt a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.
-#' @param prune.method a character string indicating the pruning method to be used; see details.
+#' @param method a character string indicating the pruning method to be used; see details.
 #' @param log.dens a list of log-density functions to be used for ML estimation; one function is needed for each type of data. 
 #' @param ... further arguments to be passed to \code{hist}.
 #'
@@ -46,7 +46,7 @@
 #'  res
 #'  plot(res$graph)
 #'
-vimes <- function(x, prune.method=c("basic","ML"),
+vimes <- function(x, method=c("basic","ML"),
                   cutoff=NULL,
                   log.dens=NULL,
                   graph.opt=vimes.graph.opt(), ...){
@@ -60,8 +60,8 @@ vimes <- function(x, prune.method=c("basic","ML"),
     x.labels <- names(x)
 
     ## checks for ML method
-    prune.method <- match.arg(prune.method)
-    if(prune.method=="ML"){
+    method <- match.arg(method)
+    if(method=="ML"){
         if(is.null(log.dens)) stop("ML method needs log.dens to be provided")
         if(length(log.dens)!=K) stop("log.dens should have one function for each type of data in 'x'")
     }
@@ -71,9 +71,9 @@ vimes <- function(x, prune.method=c("basic","ML"),
     all.graphs <- list()
     for(i in seq_along(x)){
         ## call the prune method
-        if(prune.method=="basic"){
+        if(method=="basic"){
             all.graphs[[i]] <- vimes.prune(x[[i]], cutoff=cutoff[i], graph.opt=graph.opt, ...)
-        } else if(prune.method=="ML"){
+        } else if(method=="ML"){
             all.graphs[[i]] <- vimes.prune.ml(x[[i]], f=log.dens[[i]], graph.opt=graph.opt)
         }
     }
