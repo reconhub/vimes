@@ -59,8 +59,8 @@ set.graph.opt <- function(g, opt){
     g$layout <- opt$layout(g)
 
     ## vertices ##
-    ## color
-    groups$color <- opt$col.pal(groups$no)
+    groups$color <- rep("lightgrey", groups$no) # groups of size 1 are grey
+    groups$color[groups$csize>1] <- opt$col.pal(sum(groups$csize>1))
     V(g)$color <- groups$color[groups$membership]
 
     ## size

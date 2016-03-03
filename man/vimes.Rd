@@ -4,13 +4,13 @@
 \alias{vimes}
 \title{VIsualisation and Monitoring of EpidemicS}
 \usage{
-vimes(x, prune.method = c("basic", "ML"), cutoff = NULL, log.dens = NULL,
+vimes(x, method = c("basic", "ML"), cutoff = NULL, log.dens = NULL,
   graph.opt = vimes.graph.opt(), ...)
 }
 \arguments{
 \item{x}{a list of the class 'vimes.input' as returned by \code{vimes.data}.}
 
-\item{prune.method}{a character string indicating the pruning method to be used; see details.}
+\item{method}{a character string indicating the pruning method to be used; see details.}
 
 \item{cutoff}{a vector with the same length as 'x' indicating cutoff distances beyond which individuals will not be connected in the separate graphs; recycled if needed. If NULL, interactive mode will be triggered to ask the user for cutoff distances.}
 
