@@ -4,12 +4,10 @@
 \alias{vimes.data}
 \title{Process input data for vimes}
 \usage{
-vimes.data(..., na.rm = FALSE)
+vimes.data(...)
 }
 \arguments{
 \item{...}{a series (alternatively, a list) of matrices or dist objects serving as input.}
-
-\item{na.rm}{a logical indicating if cases with missing data should be removed.}
 }
 \value{
 a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)

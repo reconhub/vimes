@@ -1,7 +1,7 @@
 ---
 title: "Detecting disease outbreaks using vimes"
 author: "Thibaut Jombart"
-date: "2016-01-21"
+date: "2016-03-03"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{rmarkdown::render}
