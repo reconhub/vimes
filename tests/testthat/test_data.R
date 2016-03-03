@@ -14,7 +14,7 @@ test_that("test: data are processed fine", {
     names(x2) <- c('a', 'r')
     D1 <- dist(x1)
     D2 <- dist(x2)
-    out <- vimes.data(D1, D2)
+    out <- vimes.data(D1, D2, na.rm=FALSE)
 
     ## check output shape
     expect_is(out, "list")
