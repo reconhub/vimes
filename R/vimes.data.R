@@ -22,7 +22,7 @@
 #' out <- vimes.data(D1, D2)
 #' out
 #'
-vimes.data <- function(..., na.rm=FALSE){
+vimes.data <- function(..., na.rm=TRUE){
     ## PROCESS INPUT ##
     ## extract data from list ##
     data <- list(...)
