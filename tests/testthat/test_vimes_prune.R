@@ -34,3 +34,33 @@ test_that("test vimes.prune", {
 
 })
 
+
+
+
+
+
+## test vimes.prune ##
+test_that("test vimes.prune.ml", {
+    ## skip on CRAN
+    skip_on_cran()
+    rm(list=ls())
+
+    ## generate data
+    set.seed(1)
+    dat1 <- rnorm(30, c(0,1,6))
+    d1 <- dist(dat1)
+    f <- function(x) dgamma(x,2,2, log=TRUE)
+
+    ## get output
+    out <- vimes.prune.ml(d1, f)
+
+    ## check output shape
+    expect_is(out, "list")
+    expect_is(out$graph, "igraph")
+    expect_is(out$clusters, "list")
+    expect_equal(out$cutoff, 1.004375033)
+    expect_equal(length(out$clusters$membership), 30)
+
+
+})
+

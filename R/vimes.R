@@ -30,12 +30,12 @@
 #'  dat3 <- rnorm(30, c(8,1,2))
 #'  x <- lapply(list(dat1, dat2, dat3), dist)
 #'  x <- vimes.data(x)
-#' plot(x)
+#'  plot(x)
 #'
 #'  ## analyse data
 #'  res <- vimes(x, cutoff=c(2,4,2))
 #'  res
-#' plot(res$graph)
+#'  plot(res$graph)
 #'
 vimes <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     ## CHECKS ##

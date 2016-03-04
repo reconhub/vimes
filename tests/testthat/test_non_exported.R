@@ -16,6 +16,6 @@ test_that("test cutoff.ml", {
     ## test output
     out <- cutoff.ml(d1, f)
     expect_equal(length(out), 1L)
-    expect_equal(out, 0.3671218185)
+    expect_equal(out, 0.04463290702)
 
 })

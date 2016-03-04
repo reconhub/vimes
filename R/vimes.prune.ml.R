@@ -9,7 +9,8 @@
 #' @export
 #'
 #' @param x pairwise distances stored as a \code{dist} object.
-#' @param cutoff.ini a set of initial values for cutoff distances beyond which individuals will not be connected in the graph.
+#' @param f a function giving the log-likelihood of a given distance between two epidemiologically conected cases.
+#' @param graph.opt a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.
 #'
 #' @return a list containing:
 #' \describe{
@@ -22,38 +23,19 @@
 #'
 #' @seealso the function \code{gengraph} in the package \code{adegenet}, which was an initial implementation of the same idea in a genetics  context.
 #'
-vimes.prune.ml <- function(x, cutoff.ini=NULL){
+vimes.prune.ml <- function(x, f, graph.opt=vimes.graph.opt()){
     ## CHECKS ##
     if(is.null(x)){
         stop("input data is NULL")
     }
 
-    ## INTERACTIVE MODE FOR CHOOSING CUTOFF ##
-    if(is.null(cutoff)){
-        return(cutoff.choice(x=x, graph.opt=graph.opt))
-    }
-
+    ## FIND THRESHOLD
+    cutoff <- cutoff.ml(x, f)
 
     ## GET GRAPH ##
-    ## build graph ##
-    x[x>cutoff] <- 0
-    g <- graph.adjacency(as.matrix(x), mode="undirected", weighted=TRUE, diag=FALSE)
-
-    ## find clusters ##
-    groups <- clusters(g)
-    names(groups) <- c("membership", "size", "K")
-
-    ## add cluster colors
-    groups$color <- graph.opt$col.pal(groups$K)
-    names(groups$color) <- 1:groups$K
-
-    ## setup graphical options for graph ##
-    g <- set.graph.opt(g, graph.opt)
-
-
-    ## RETURN OUTPUT ##
-    out <- list(graph=g, clusters=groups, cutoff=cutoff)
-} # end vimes.prune
+    out <- vimes.prune(x, cutoff=cutoff, graph.opt=graph.opt)
+    return(out)
+} # end vimes.prune.ml
 
 
 
@@ -68,10 +50,10 @@ vimes.prune.ml <- function(x, cutoff.ini=NULL){
 ## cutoff.ini: initial cutoff value
 ## Output: ML cutoff estimate
 ##
-cutoff.ml <- function(d,f, cutoff.ini){
+cutoff.ml <- function(d,f){
     ## define log-like function
     LL <- function(cutoff){
-        sum(f(d[d<=cutoff]))
+        mean(f(d[d<=cutoff]))
     }
 
     ## use optimize
