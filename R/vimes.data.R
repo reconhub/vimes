@@ -22,6 +22,12 @@
 #' out
 #'
 vimes.data <- function(...){
+    ## Data passed through ... are meant to be pairwise distances
+    ## between labelled cases; we process these inputs by i) turning
+    ## them into matrices ii) ensuring matching of labels iii)
+    ## converting data into 'dist' objects. Final labels are stored as
+    ## attributes of the returned list of 'dist' objects.
+    
     ## PROCESS TYPES OF INPUT  ##
     ## extract data from list ##
     data <- list(...)
@@ -49,6 +55,11 @@ vimes.data <- function(...){
 
     
     ## HANDLE NAS AND SORTING ##
+
+    ## The policy will be to remove cases with NAs, as cases with NA
+    ## distances tend to link all other cases. This may change in
+    ## later version of the method.
+    
     ## get labels to keep
     ## (i.e. present without NA everywhere)
     lab.to.keep <- Reduce(intersect,
@@ -68,10 +79,14 @@ vimes.data <- function(...){
 
     
     ## RETURN OUTPUT ##
+
+    ## Output will be a list of 'dist' objects; labels and the number
+    ## of cases will be stored as attributes; the output will be a
+    ## list with the additional class vimes.input
     names(out) <- data.names
     attr(out, "labels") <- lab.to.keep
     attr(out, "N") <- N
 
     class(out) <- c("list", "vimes.input")
     return(out)
-} # end vimes.data
+}
