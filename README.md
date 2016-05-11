@@ -5,6 +5,9 @@
 
 
 
+```
+## Error in eval(expr, envir, enclos): could not find function "knit"
+```
 
 
 *vimes*: VIsualisation and Monitoring of EpidemicS 
