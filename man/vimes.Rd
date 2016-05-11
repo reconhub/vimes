@@ -4,7 +4,7 @@
 \alias{vimes}
 \title{VIsualisation and Monitoring of EpidemicS}
 \usage{
-vimes(x, method = c("basic", "ML"), cutoff = NULL, log.dens = NULL,
+vimes(x, method = c("basic"), cutoff = NULL, log.dens = NULL,
   graph.opt = vimes.graph.opt(), ...)
 }
 \arguments{
@@ -30,7 +30,6 @@ The function \code{vimes} is used to identify clusters of related cases based on
 Different methods can be used for graph pruning:
 \describe{
  \item{basic}{pre-defined cutoffs are used if provided as \code{cutoff}; if missing, they are chosen interactively by the user by examining the distribution of distances}
- \item{ML}{cutoff values are found by ML estimation, using known distributions of distances within clusters as reference; in this case, the argument \code{log.dens} needs to be provided, and to contain one function for each type of data; each function has to have a single argument \code{x}.}
 }
 }
 \examples{
