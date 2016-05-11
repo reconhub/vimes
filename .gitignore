@@ -2,7 +2,7 @@
 inst/doc
 .RData
 .Rhistory
-apex.Rcheck/
-vignettes/apex.md
+vimes.Rcheck/
+vignettes/vimes.md
 .Rproj.user
-.apex.Rproj
+vimes.Rproj
