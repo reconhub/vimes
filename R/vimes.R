@@ -119,10 +119,14 @@ vimes <- function(x, method=c("basic"),
         all.graphs[[i]]$graph$layout <- g$layout
     }
     names(all.graphs) <- x.labels
+    
 
-    ## SHAPE/RETURN OUTPUT ##
+    ## The output will contain the main graph, cluster definitions,
+    ## the cutoff values used, and then similar information for each
+    ## individual graph (one per original distance matrix).
+    
     out <- list(graph=g, clusters=groups, cutoff=cutoff,
                 separate.graphs=all.graphs)
 
     return(out)
-} # end vimes
+}
