@@ -18,20 +18,31 @@ vimes.prune(x, cutoff = NULL, graph.opt = vimes.graph.opt(), ...)
 \value{
 a list containing:
 \describe{
-\item{graph}{a graph connecting individuals, weighted with the input distances, with \code{igraph} class (from the \code{igraph} package).}
-\item{clusters}{a list providing cluster information: group membership, cluster sizes, and the number of clusters (K)}
+
+\item{graph}{a graph connecting individuals, weighted with the
+input distances, with \code{igraph} class (from the \code{igraph}
+package).}
+
+\item{clusters}{a list providing cluster information: group
+membership, cluster sizes, and the number of clusters (K)}
+
 }
 }
 \description{
 This function builds a graph using a \code{dist} object and a cut-off distance beyond which individuals are no longer connected. It also identifies clusters of connected individuals from the graph. If no cut-off is provided, a histogram is displayed for interactive selection.
 }
 \details{
-The cutoff is inclusive: only cases strictly further away than the cutoff distance will be disconnected on the graph. Note that this differs from the original \code{gengraph} implementation in the package \code{adegenet}.
+The cutoff is inclusive: only cases strictly further away
+than the cutoff distance will be disconnected on the graph. Note
+that this differs from the original \code{gengraph} implementation
+in the package \code{adegenet}.
 }
 \author{
 Thibaut Jombart \email{thibautjombart@gmail.com}
 }
 \seealso{
-the function \code{gengraph} in the package \code{adegenet}, which was an initial implementation of the same idea in a genetics  context.
+the function \code{gengraph} in the package \code{adegenet}, which
+was an initial implementation of the same idea in a genetics
+context.
 }
 

@@ -82,7 +82,7 @@ vimes <- function(x, method=c("basic"),
     g <- set.igraph.opt(g, graph.opt)
 
    ## find clusters ##
-    groups <- clusters(g)
+    groups <- igraph::clusters(g)
     names(groups) <- c("membership", "size", "K")
 
     ## add cluster colors ##
@@ -92,7 +92,7 @@ vimes <- function(x, method=c("basic"),
     ## ADJUST SEPARATE GRAPHS FEATURES ##
     for(i in seq_along(x)){
         ## vertex color ##
-        V(all.graphs[[i]]$graph)$color <- V(g)$color
+        igraph::V(all.graphs[[i]]$graph)$color <- igraph::V(g)$color
 
         ## layout ##
         all.graphs[[i]]$graph$layout <- g$layout

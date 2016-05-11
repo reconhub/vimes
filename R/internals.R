@@ -12,7 +12,7 @@ set.igraph.opt <- function(g, opt){
     if(!inherits(g, "igraph")) stop("g is not a igraph object")
 
     ## find clusters ##
-    groups <- clusters(g)
+    groups <- igraph::clusters(g)
 
     ## layout ##
     set.seed(opt$seed)
@@ -21,25 +21,25 @@ set.igraph.opt <- function(g, opt){
     ## vertices ##
     groups$color <- rep("lightgrey", groups$no) # groups of size 1 are grey
     groups$color[groups$csize>1] <- opt$col.pal(sum(groups$csize>1))
-    V(g)$color <- groups$color[groups$membership]
+    igraph::V(g)$color <- groups$color[groups$membership]
 
     ## size
-    V(g)$size <- opt$vertex.size
+    igraph::V(g)$size <- opt$vertex.size
 
     ## font
-    V(g)$label.family <- opt$label.family
+    igraph::V(g)$label.family <- opt$label.family
 
     ## font color
-    V(g)$label.color <- opt$label.color
+    igraph::V(g)$label.color <- opt$label.color
 
     ##  edges ##
     ## labels
-    if(length(E(g))>0 && opt$edge.label) {
-        E(g)$label <- E(g)$weight
+    if(length(igraph::E(g))>0 && opt$edge.label) {
+        igraph::E(g)$label <- igraph::E(g)$weight
     }
 
     ## color
-    E(g)$label.color <-  opt$label.color
+    igraph::E(g)$label.color <-  opt$label.color
 
     ## font
     ##    E(g)$label.family <- "sans" # bugs for some reason

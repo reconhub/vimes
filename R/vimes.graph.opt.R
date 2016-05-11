@@ -37,7 +37,7 @@ vimes.graph.opt <- function(...){
 
     ## SET DEFAULTS ##
     defaults <- list(col.pal=vimes.pal2,
-                     layout=layout_nicely,
+                     layout=igraph::layout_nicely,
                      seed=1,
                      vertex.size=10,
                      label.family="sans",

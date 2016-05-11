@@ -7,25 +7,41 @@
 #'
 #' @export
 #'
-#' @importFrom igraph "graph.adjacency" "clusters" "V" "V<-" "layout_nicely" "plot.igraph"
-#' @importFrom graphics "abline" "plot"
-#'
+#' @inheritParams vimes
 #' @param x pairwise distances stored as a \code{dist} object.
 #' @param cutoff a cutoff distance beyond which individuals will not be connected in the graph.
-#' @param graph.opt a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.
 #' @param ... further arguments to be passed to \code{hist}.
 #'
 #' @return a list containing:
 #' \describe{
-#' \item{graph}{a graph connecting individuals, weighted with the input distances, with \code{igraph} class (from the \code{igraph} package).}
-#' \item{clusters}{a list providing cluster information: group membership, cluster sizes, and the number of clusters (K)}
+#' 
+#' \item{graph}{a graph connecting individuals, weighted with the
+#' input distances, with \code{igraph} class (from the \code{igraph}
+#' package).}
+#' 
+#' \item{clusters}{a list providing cluster information: group
+#' membership, cluster sizes, and the number of clusters (K)}
+#' 
 #' }
 #'
 #' @details
-#' The cutoff is inclusive: only cases strictly further away than the cutoff distance will be disconnected on the graph. Note that this differs from the original \code{gengraph} implementation in the package \code{adegenet}.
 #'
-#' @seealso the function \code{gengraph} in the package \code{adegenet}, which was an initial implementation of the same idea in a genetics  context.
+#' The cutoff is inclusive: only cases strictly further away
+#' than the cutoff distance will be disconnected on the graph. Note
+#' that this differs from the original \code{gengraph} implementation
+#' in the package \code{adegenet}.
 #'
+#' @seealso
+#'
+#' the function \code{gengraph} in the package \code{adegenet}, which
+#' was an initial implementation of the same idea in a genetics
+#' context.
+#'
+
+## The purpose of this function is to prune a fully connected graph
+## using a given cutoff distance value. If 'cutoff' is not provided,
+## we used by default interactive cutoff selection.
+
 vimes.prune <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     ## CHECKS ##
     if(is.null(x)){
@@ -38,28 +54,31 @@ vimes.prune <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     }
 
 
-    ## GET GRAPH ##
-    ## build graph ##
+    ## BUILD GRAPH ##
+
+    ## In the following we create a pruned graph, derive corresponding
+    ## clusters, create new graphical attributes for the graph (mostly
+    ## coloring clusters).
+    
     x[x>cutoff] <- 0
-    g <- graph.adjacency(as.matrix(x), mode="undirected", weighted=TRUE, diag=FALSE)
+    g <- igraph::graph.adjacency(as.matrix(x), mode="undirected",
+                                 weighted=TRUE, diag=FALSE)
 
     ## find clusters ##
-    groups <- clusters(g)
+    groups <- igraph::clusters(g)
     names(groups) <- c("membership", "size", "K")
 
     ## add cluster colors
     groups$color <- graph.opt$col.pal(groups$K)
     names(groups$color) <- 1:groups$K
 
-    ## setup graphical options for graph ##
+    ## Here we add new graphical properties to the graph that will
+    ## ultimately be returned.
+    
     g <- set.igraph.opt(g, graph.opt)
 
-
-    ## RETURN OUTPUT ##
+    ## The returned output should be a self-sufficient list containing
+    ## the pruned graph, cluster definition, and cutoff values used.
+    
     out <- list(graph=g, clusters=groups, cutoff=cutoff)
-} # end vimes.prune
-
-
-
-
-
+} 
