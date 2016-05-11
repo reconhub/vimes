@@ -7,7 +7,6 @@
 #' @param ... a series (alternatively, a list) of matrices or dist objects serving as input.
 #'
 #' @export
-#' @importFrom stats as.dist
 #'
 #' @return a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)
 #'
@@ -74,7 +73,7 @@ vimes.data <- function(...){
     ## remove NAs, order, store result
     out <- vector(K, mode="list")
     for(i in seq_along(data)){
-        out[[i]] <- as.dist(data[[i]][lab.to.keep, lab.to.keep])
+        out[[i]] <- stats::as.dist(data[[i]][lab.to.keep, lab.to.keep])
     }
 
     
