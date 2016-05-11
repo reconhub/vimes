@@ -4,7 +4,7 @@
 #'
 #' @author Anne Cori \email{a.cori@@imperial.ac.uk}
 #'
-#' @param x vector of quantiles
+#' @param x numerical quantile, at the moment not dealing with vectors
 #' @param type type of distribution to be used, one of "t","g" or "s", see details
 #' @param reporting.prob a reporting probability, between 0 and 1
 #' @param shape.t Shape of the Gamma distribution used for the serial interval
