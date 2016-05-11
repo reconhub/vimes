@@ -17,6 +17,13 @@
 #' plot(1:4, cex=8, pch=20, col=vimes.pal1(4), main="vimes.pal1")
 #' plot(1:20, col=vimes.pal1(20), pch=20, cex=6, main="vimes.pal1")
 #' plot(1:10, col=vimes.pal2(10), pch=20, cex=6, main="vimes.pal2")
+
+## These color palettes have non-standard behaviour. They are based on
+## 'xxx' colors. If the number of colors requested is less than 'xxx'
+## then colors used to define the palette are used. If 'xxx' exceeds
+## the number of colors of the palette, then we use color
+## interpolation.
+
 vimes.pal1 <- function(n){
     colors <- c("#ff6666", "#666699")
     if(n<length(colors)) {

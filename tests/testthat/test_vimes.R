@@ -20,7 +20,6 @@ test_that("test vimes", {
 
     ## analyse data
     res.bas <- vimes(x, cutoff=c(2,4,2))
-    res.ml <- vimes(x, method="ML", log.dens=log.dens)
     
     ## tests basic results
     expect_true(is.list(res.bas))
@@ -32,14 +31,5 @@ test_that("test vimes", {
         expect_is(e$graph, "igraph")
     }
 
-    ## tests ML results
-    expect_true(is.list(res.ml))
-    expect_is(res.ml$graph, "igraph")
-    expect_equal(res.ml$clusters$K, 4)
-    expect_true(is.list(res.ml$separate.graphs))
-    expect_equal(length(res.ml$separate.graphs), length(x))
-    for(e in res.ml$separate.graphs){
-        expect_is(e$graph, "igraph")
-    }
 
 })

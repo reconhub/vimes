@@ -27,7 +27,6 @@
 #' Different methods can be used for graph pruning:
 #' \describe{
 #'  \item{basic}{pre-defined cutoffs are used if provided as \code{cutoff}; if missing, they are chosen interactively by the user by examining the distribution of distances}
-#'  \item{ML}{cutoff values are found by ML estimation, using known distributions of distances within clusters as reference; in this case, the argument \code{log.dens} needs to be provided, and to contain one function for each type of data; each function has to have a single argument \code{x}.}
 #' }
 #' 
 #' @examples
@@ -46,7 +45,7 @@
 #'  res
 #'  plot(res$graph)
 #'
-vimes <- function(x, method=c("basic","ML"),
+vimes <- function(x, method=c("basic"),
                   cutoff=NULL,
                   log.dens=NULL,
                   graph.opt=vimes.graph.opt(), ...){
@@ -59,12 +58,8 @@ vimes <- function(x, method=c("basic","ML"),
     if(!is.null(cutoff)) cutoff <- rep(cutoff, length=K)
     x.labels <- names(x)
 
-    ## checks for ML method
+    ## check method used
     method <- match.arg(method)
-    if(method=="ML"){
-        if(is.null(log.dens)) stop("ML method needs log.dens to be provided")
-        if(length(log.dens)!=K) stop("log.dens should have one function for each type of data in 'x'")
-    }
     
 
     ## MAKE SEPARATE GRAPHS ##
@@ -73,8 +68,6 @@ vimes <- function(x, method=c("basic","ML"),
         ## call the prune method
         if(method=="basic"){
             all.graphs[[i]] <- vimes.prune(x[[i]], cutoff=cutoff[i], graph.opt=graph.opt, ...)
-        } else if(method=="ML"){
-            all.graphs[[i]] <- vimes.prune.ml(x[[i]], f=log.dens[[i]], graph.opt=graph.opt)
         }
     }
 
