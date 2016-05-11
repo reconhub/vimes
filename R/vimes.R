@@ -65,6 +65,8 @@
 ##
 ## 3) Build a consensus graph by intersection of all the pruned graphs
 ##
+## Note that output graphs normally contain their own grapĥical options and customisations.
+## 
 
 vimes <- function(x, method=c("basic"),
                   cutoff=NULL,
