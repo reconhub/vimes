@@ -86,7 +86,7 @@ vimes <- function(x, method=c("basic","ML"),
     ## set graphical options ##
     ## disable weights
     graph.opt$edge.label <- FALSE
-    g <- set.graph.opt(g, graph.opt)
+    g <- set.igraph.opt(g, graph.opt)
 
    ## find clusters ##
     groups <- clusters(g)

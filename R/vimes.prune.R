@@ -52,7 +52,7 @@ vimes.prune <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     names(groups$color) <- 1:groups$K
 
     ## setup graphical options for graph ##
-    g <- set.graph.opt(g, graph.opt)
+    g <- set.igraph.opt(g, graph.opt)
 
 
     ## RETURN OUTPUT ##
