@@ -8,15 +8,21 @@ vimes(x, method = c("basic"), cutoff = NULL, log.dens = NULL,
   graph.opt = vimes.graph.opt(), ...)
 }
 \arguments{
-\item{x}{a list of the class 'vimes.input' as returned by \code{vimes.data}.}
+\item{x}{a list of the class 'vimes.input' as returned by
+\code{vimes.data}.}
 
 \item{method}{a character string indicating the pruning method to be used; see details.}
 
-\item{cutoff}{a vector with the same length as 'x' indicating cutoff distances beyond which individuals will not be connected in the separate graphs; recycled if needed. If NULL, interactive mode will be triggered to ask the user for cutoff distances.}
+\item{cutoff}{a vector with the same length as 'x' indicating
+cutoff distances beyond which individuals will not be connected in
+the separate graphs; recycled if needed. If NULL, interactive mode
+will be triggered to ask the user for cutoff distances.}
 
-\item{log.dens}{a list of log-density functions to be used for ML estimation; one function is needed for each type of data.}
+\item{log.dens}{a list of log-density functions to be used for ML
+estimation; one function is needed for each type of data.}
 
-\item{graph.opt}{a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.}
+\item{graph.opt}{a list of graphical options for the graphs, as
+returned by \code{\link{vimes.graph.opt}}.}
 
 \item{...}{further arguments to be passed to \code{hist}.}
 }
