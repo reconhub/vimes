@@ -24,7 +24,15 @@
 #' vimes.graph.opt()
 #'
 vimes.graph.opt <- function(...){
-    ## GET ARGUMENTS ##
+    
+    ## The purpose of this function is to handle all graphical options
+    ## for plotting in vimes. If there is a need for storing different
+    ## options for different types of plots, and a risk for ambiguous
+    ## names, options should be named as [type of
+    ## plot].[option]. Default values should be provided for all
+    ## options. Note that unknown options should issue an error (they
+    ## will through modify.defaults).
+
     config <- list(...)
 
     ## SET DEFAULTS ##
@@ -40,62 +48,8 @@ vimes.graph.opt <- function(...){
     config <- modify.defaults(defaults, config)
 
     return(config)
-} # end graph.setup
+}
 
 
 
 
-
-## non-export function to set graph options ##
-set.graph.opt <- function(g, opt){
-    ## check class
-    if(!inherits(g, "igraph")) stop("g is not a igraph object")
-
-    ## find clusters ##
-    groups <- clusters(g)
-
-    ## layout ##
-    set.seed(opt$seed)
-    g$layout <- opt$layout(g)
-
-    ## vertices ##
-    groups$color <- rep("lightgrey", groups$no) # groups of size 1 are grey
-    groups$color[groups$csize>1] <- opt$col.pal(sum(groups$csize>1))
-    V(g)$color <- groups$color[groups$membership]
-
-    ## size
-    V(g)$size <- opt$vertex.size
-
-    ## font
-    V(g)$label.family <- opt$label.family
-
-    ## font color
-    V(g)$label.color <- opt$label.color
-
-    ##  edges ##
-    ## labels
-    if(length(E(g))>0 && opt$edge.label) {
-        E(g)$label <- E(g)$weight
-    }
-
-    ## color
-    E(g)$label.color <-  opt$label.color
-
-    ## font
-    ##    E(g)$label.family <- "sans" # bugs for some reason
-
-    ## RETURN GRAPH ##
-    return(g)
-} # set.graph.opt
-
-
-
-
-## non-exported function by Rich Fitzjohn ##
-modify.defaults <- function(defaults, x){
-    extra <- setdiff(names(x), names(defaults))
-    if (length(extra) > 0L){
-        stop("Additional invalid options: ", paste(extra, collapse=", "))
-    }
-    modifyList(defaults, x)
-} # end modify.defaults
