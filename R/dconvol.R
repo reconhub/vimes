@@ -22,7 +22,7 @@
 #'
 #' @export
 #'
-#' @return a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)
+#' @return the density of the convolution distribution
 #'
 #' @examples
 #'
