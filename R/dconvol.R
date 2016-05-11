@@ -39,20 +39,20 @@ dconvol <- function(x,
   ### need to add some checks here :-) ###
   
   ### Computing threshold for cutting the sum, based on the tolerance argument ###
-  threshold <- qgeom(1-tol, prob=reporting.prob) 
+  threshold <- stats::qgeom(1-tol, prob=reporting.prob) 
   k <- 0:threshold # number of intermediate cases unobserved over which to integrate
-  p2 <- dgeom(k, prob=reporting.prob)
+  p2 <- stats::dgeom(k, prob=reporting.prob)
   if(type %in% "t")
   {
-    p1 <- dgamma(x,shape=shape.t*(k+1),scale=scale.t)
+    p1 <- stats::dgamma(x,shape=shape.t*(k+1),scale=scale.t)
   }else if(type %in% "g")
   {
     prob <- 1-scale.t*mu/(scale.t*mu+1) # using prob = 1-p intead of p so that our definition correponds to that of rnbinom
-    p1 <- dnbinom(x,size=shape.t*(k+1),prob=prob)
+    p1 <- stats::dnbinom(x,size=shape.t*(k+1),prob=prob)
     # check that p1 is the same as: choose(shape.t*(k+1)+x-1, x)*prob^(shape.t*(k+1))*(1-prob)^x
   }else if(type %in% "s")
   {
-    p1 <- drayleigh(x,scale=sigma.s*sqrt(k+1))
+    p1 <- VGAM::drayleigh(x,scale=sigma.s*sqrt(k+1))
   }
   
   return(sum(p1*p2))
