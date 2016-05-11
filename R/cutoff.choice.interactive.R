@@ -11,7 +11,7 @@ cutoff.choice.interactive <- function(x, graph.opt=vimes.graph.opt(), ...){
       chooseAgain <- TRUE
         while (chooseAgain) {
             ## plot histogram ##
-            hist(x, xlab="Pairwise distances", ylab="Frequency", main="Choose a cutoff distance",
+            graphics::hist(x, xlab="Pairwise distances", ylab="Frequency", main="Choose a cutoff distance",
                  border="white", col="#8585ad", ...)
 
             ## get input from user ##
@@ -20,14 +20,14 @@ cutoff.choice.interactive <- function(x, graph.opt=vimes.graph.opt(), ...){
             while(is.null(cutoff) || is.na(cutoff)) suppressWarnings(cutoff <- as.numeric(readLines(n = 1)))
 
             ## add cutoff to the plot ##
-            abline(v=cutoff,col="red",lty=2, lwd=2)
+            graphics::abline(v=cutoff,col="red",lty=2, lwd=2)
 
             ## get corresponding output ##
             out <- vimes.prune(x, cutoff=cutoff, graph.opt=graph.opt)
 
             ## show output ##
             cat(paste("\nNumber of clusters found:  ", out$clusters$K, sep=""))
-            plot(out$graph)
+            graphics::plot(out$graph)
 
             ## ask if cutoff should be kept ##
             ans <- ""
