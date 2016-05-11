@@ -11,7 +11,8 @@ vimes.prune(x, cutoff = NULL, graph.opt = vimes.graph.opt(), ...)
 
 \item{cutoff}{a cutoff distance beyond which individuals will not be connected in the graph.}
 
-\item{graph.opt}{a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.}
+\item{graph.opt}{a list of graphical options for the graphs, as
+returned by \code{\link{vimes.graph.opt}}.}
 
 \item{...}{further arguments to be passed to \code{hist}.}
 }
