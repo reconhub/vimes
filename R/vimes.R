@@ -8,13 +8,23 @@
 #' @author Thibaut Jombart \email{thibautjombart@@gmail.com}
 #'
 #' @export
-#' @importFrom igraph intersection
-#'
-#' @param x a list of the class 'vimes.input' as returned by \code{vimes.data}.
-#' @param cutoff a vector with the same length as 'x' indicating cutoff distances beyond which individuals will not be connected in the separate graphs; recycled if needed. If NULL, interactive mode will be triggered to ask the user for cutoff distances.
-#' @param graph.opt a list of graphical options for the graphs, as returned by \code{\link{vimes.graph.opt}}.
+#' 
+#' @param x a list of the class 'vimes.input' as returned by
+#' \code{vimes.data}.
+#' 
+#' @param cutoff a vector with the same length as 'x' indicating
+#' cutoff distances beyond which individuals will not be connected in
+#' the separate graphs; recycled if needed. If NULL, interactive mode
+#' will be triggered to ask the user for cutoff distances.
+#' 
+#' @param graph.opt a list of graphical options for the graphs, as
+#' returned by \code{\link{vimes.graph.opt}}.
+#' 
 #' @param method a character string indicating the pruning method to be used; see details.
-#' @param log.dens a list of log-density functions to be used for ML estimation; one function is needed for each type of data. 
+#' 
+#' @param log.dens a list of log-density functions to be used for ML
+#' estimation; one function is needed for each type of data.
+#' 
 #' @param ... further arguments to be passed to \code{hist}.
 #'
 #' @seealso
@@ -45,6 +55,17 @@
 #'  res
 #'  plot(res$graph)
 #'
+
+## This is the main function of the package. It implements the
+## following workflow:
+##
+## 1) For each distance matrice provided, find cutoff values past which cases are disconnected.
+##
+## 2) For each distance matrice provided, create pruned graphs
+##
+## 3) Build a consensus graph by intersection of all the pruned graphs
+##
+
 vimes <- function(x, method=c("basic"),
                   cutoff=NULL,
                   log.dens=NULL,
@@ -74,7 +95,7 @@ vimes <- function(x, method=c("basic"),
 
     ## GET MAIN GRAPH ##
     ## intersect graphs ##
-    g <- do.call(intersection, lapply(all.graphs, function(e) e$graph))
+    g <- do.call(igraph::intersection, lapply(all.graphs, function(e) e$graph))
 
     ## set graphical options ##
     ## disable weights
