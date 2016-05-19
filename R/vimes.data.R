@@ -118,10 +118,25 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
 
     ## extract data from list ##
     other <- list(...)
-    other.names <- names(other)
 
     ## if first item is a list, use it as input
     if(is.list(other[[1]])) other <- other[[1]]
+
+    ## add new distances to output
+    other.names <- names(other)
+    for (i in seq_along(other)) {
+        if (!inherits(other[[i]]), what="dist") {
+            out[[length(out)+1]] <- dist(other[[i]])
+        } else {
+            out[[length(out)+1]] <- other[[i]]
+        }
+           names(out)[length(out)] <- other.names[i]
+    }
+
+
+    ##
+
+
 
     return(out)
 }
