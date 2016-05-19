@@ -125,7 +125,7 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
     ## add new distances to output
     other.names <- names(other)
     for (i in seq_along(other)) {
-        if (!inherits(other[[i]]), what="dist") {
+        if (!inherits(other[[i]], what="dist")) {
             out[[length(out)+1]] <- dist(other[[i]])
         } else {
             out[[length(out)+1]] <- other[[i]]
@@ -134,9 +134,8 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
     }
 
 
-    ##
-
-
+    ## PROCESS PAIRWISE DISTANCES AND MATCH ENTRIES ##
+    out <- vimes.dist(out)
 
     return(out)
 }
