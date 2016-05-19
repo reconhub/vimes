@@ -59,15 +59,10 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
     ## dates are assumed to have the following classes: numeric, Date, POSIXct; we use
     ## 'dist' for numeric types, and difftime for the last two.
     if (!is.null(dates)) {
-        if (is.numeric(dates)) {
-            out$temporal <- dist(dates)
-        } else if (inherits(dates, what="Date") ||
-                   inherits(dates, what="POSIXct")) {
-            out$temporal <- difftime(dates)
-        } else {
-            warning("provided dates are not 'numeric', 'Date', or 'POSIXct'; using 'dist' to compute distances")
-            out$temporal <- dist(dates)
+        if (!inherits(dates, what=c("numeric","Date","POSIXct"))) {
+            warning("provided dates are not 'numeric', 'Date', or 'POSIXct'; using 'dist' to compute distances and hoping for the best")
         }
+        out$temporal <- dist(dates)
     }
 
 
