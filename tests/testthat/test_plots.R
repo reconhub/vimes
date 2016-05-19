@@ -15,7 +15,7 @@ test_that("test plot.vimes.input", {
     names(x2) <- sample(letters, 20)
     D1 <- dist(x1)
     D2 <- dist(x2)
-    out <- vimes.data(D1, D2)
+    out <- vimes.dist(D1, D2)
 
 
     ## check expected errors

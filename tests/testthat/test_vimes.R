@@ -12,7 +12,7 @@ test_that("test vimes", {
     dat2 <- rnorm(30, c(0,0,1))
     dat3 <- rnorm(30, c(8,1,2))
     x <- lapply(list(dat1, dat2, dat3), dist)
-    x <- vimes.data(x)
+    x <- vimes.dist(x)
 
     log.dens <- list(f1=function(x) dgamma(x,2,1, log=TRUE),
                      f2=function(x) dgamma(x,2,1/2, log=TRUE),

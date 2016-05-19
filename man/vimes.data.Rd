@@ -13,7 +13,17 @@ vimes.data(...)
 a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)
 }
 \description{
-This function takes a series of 'dist' objects (or objects which can be converted to 'dist', and ensures that entries match in all objects, adding NAs where necessary. The total number of cases and labels are returned as attributes.
+This function processes input data for vimes, computing for each data a matrix of pairwise distances.
+Data can have the following pre-defined types:
+\itemize{
+\item{dates}{dates associated to cases, typically dates of onset of symptoms}
+\item{spatial}{matrix or data.frame with two columns for geographic coordinates}
+\item{DNA sequences}{aligned DNA sequences of the pathogen}
+}
+}
+\details{
+Data without a pre-defined type will be fed directly to the function \code{dist}.
+Objects which are already pairwise distances with the class \code{dist} are left as is.
 }
 \examples{
 x1 <- c(0,1,3)
@@ -28,5 +38,9 @@ out
 }
 \author{
 Thibaut Jombart \email{thibautjombart@gmail.com}
+}
+\seealso{
+\code{\link{vimes.dist}} for further processing of the resulting pairwise distance
+matrices; internally called by \code{vimes.data}
 }
 

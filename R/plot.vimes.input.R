@@ -8,7 +8,7 @@
 #' @export
 #' @importFrom graphics hist par
 #'
-#' @param x a \code{vimes.input} object, as returned by \code{vimes.data}
+#' @param x a \code{vimes.input} object, as returned by \code{vimes.dist}
 #' @param y left for compatibility with the generic 'plot'
 #' @param col colors to be used for the histograms
 #' @param ... further arguments passed on to \code{hist}
@@ -22,7 +22,7 @@
 #' names(x2) <- sample(letters, 20)
 #' D1 <- dist(x1)
 #' D2 <- dist(x2)
-#' out <- vimes.data(AnkhDist=D1, MorpokDist=D2)
+#' out <- vimes.dist(AnkhDist=D1, MorpokDist=D2)
 #' out
 #' plot(out)
 #'

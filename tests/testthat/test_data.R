@@ -14,7 +14,7 @@ test_that("test: data are processed fine", {
     names(x2) <- c('a', 'r', 'c')
     D1 <- dist(x1)
     D2 <- dist(x2)
-    out <- vimes.data(D1, D2)
+    out <- vimes.dist(D1, D2)
 
     ## check output shape
     expect_is(out, "list")
@@ -31,6 +31,6 @@ test_that("test: data are processed fine", {
     lab.common <- attr(out,"labels")
     expect_equal(as.matrix(out[[1]]), as.matrix(D1)[lab.common,lab.common])
     expect_equal(as.matrix(out[[2]]), as.matrix(D2)[lab.common,lab.common])
-    expect_identical(vimes.data(out), out)
+    expect_identical(vimes.dist(out), out)
 })
 

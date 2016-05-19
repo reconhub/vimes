@@ -14,8 +14,8 @@ test_that("test vimes.prune", {
     names(x2) <- c('a', 'b', 'r')
     D1 <- dist(x1)
     D2 <- dist(x2)
-    data <- vimes.data(D1, D2)
-    data.no.na <- vimes.data(D1, D2)
+    data <- vimes.dist(D1, D2)
+    data.no.na <- vimes.dist(D1, D2)
     out <- vimes.prune(data[[1]], cutoff=0)
     out.no.na <- vimes.prune(data.no.na[[1]], cutoff=10)
 

@@ -9,7 +9,7 @@ vimes(x, method = c("basic"), cutoff = NULL, log.dens = NULL,
 }
 \arguments{
 \item{x}{a list of the class 'vimes.input' as returned by
-\code{vimes.data}.}
+\code{vimes.dist}.}
 
 \item{method}{a character string indicating the pruning method to be used; see details.}
 
@@ -46,7 +46,7 @@ Different methods can be used for graph pruning:
  dat2 <- rnorm(30, c(0,0,1))
  dat3 <- rnorm(30, c(8,1,2))
  x <- lapply(list(dat1, dat2, dat3), dist)
- x <- vimes.data(x)
+ x <- vimes.dist(x)
  plot(x)
 
  ## analyse data
@@ -60,7 +60,7 @@ Thibaut Jombart \email{thibautjombart@gmail.com}
 }
 \seealso{
 \describe{
-\item{\code{\link{vimes.data}}}{to prepare the input data.}
+\item{\code{\link{vimes.dist}}}{to prepare the input data.}
 \item{\code{\link{vimes.prune}}}{for getting individual pruned graphs.}
 }
 }
