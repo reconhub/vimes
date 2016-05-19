@@ -4,10 +4,22 @@
 \alias{vimes.data}
 \title{Process input data for vimes}
 \usage{
-vimes.data(...)
+vimes.data(dates = NULL, xy = NULL, dna = NULL, lonlat = FALSE, ...)
 }
 \arguments{
-\item{...}{a series (alternatively, a list) of matrices or dist objects serving as input.}
+\item{dates}{a vector of dates for each cases; typically dates of onset are used; the vector
+should be named if elements do not match perfectly the other data types}
+
+\item{xy}{a 2-columns matrix or data.frame containing locations of the cases; if \code{lonlat} is
+\code{TRUE}, coordinates are taken as longitudes and latitudes and the great circle distance will
+be used; rows should be named if elements do not match perfectly the other data types}
+
+\item{dna}{a matrix with class \code{DNAbin} (from the package 'ape'); rows should be named if
+elements do not match perfectly the other data types}
+
+\item{...}{other data to be used foir computing pairwise distances using \code{dist}; entries
+should be named if elements do not match perfectly the other data types; \code{dist} objects are
+left as is.}
 }
 \value{
 a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)

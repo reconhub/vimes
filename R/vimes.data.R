@@ -55,6 +55,7 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
 
     out <- list()
 
+
     ## PROCESS DATES ##
 
     ## dates are assumed to have the following classes: numeric, Date, POSIXct; we use
@@ -70,6 +71,26 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
             out$dates <- dist(dates)
         }
     }
+
+
+    ## PROCESS GEOGRAPHIC COORDINATES ##
+    if (!is.null(xy)) {
+        if (!is.numeric(xy)) {
+            warning("provided xy coordinates is not 'numeric'; using 'dist' to compute distances")
+            out$xy <- dist(xy)
+        } else {
+            ## we use the great circle distances for lon / lat data
+            if (lonlat) {
+                out$xy <- fields::rdist.earth(xy)
+            } else {
+                out$xy <- dist(xy)
+            }
+        }
+    }
+
+    ## xy coordinates are 2-columns matrices or data.frames; they are assumed to be either simple
+    ## numeric values, or longitudes (col 1) and latitudes(col 2)
+
 
 
     ## extract data from list ##
