@@ -34,7 +34,10 @@
 #'
 #' @export
 #'
-#' @return a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)
+#' @return a list of named dist objects with matching entries, with attributes: 'labels' (labels of
+#' the cases) and 'N' (number of cases); distances based on dates, xy coordinates, and genetic data
+#' will be named 'temporal', 'spatial' and 'genetic', respectively
+#'
 #'
 #' @examples
 #' x1 <- c(0,1,3)
@@ -62,13 +65,13 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
     ## 'dist' for numeric types, and difftime for the last two.
     if (!is.null(dates)) {
         if (is.numeric(dates)) {
-            out$dates <- dist(dates)
+            out$temporal <- dist(dates)
         } else if (inherits(dates, what="Date") ||
                    inherits(dates, what="POSIXct")) {
-            out$dates <- difftime(dates)
+            out$temporal <- difftime(dates)
         } else {
             warning("provided dates are not 'numeric', 'Date', or 'POSIXct'; using 'dist' to compute distances")
-            out$dates <- dist(dates)
+            out$temporal <- dist(dates)
         }
     }
 
@@ -81,13 +84,13 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
     if (!is.null(xy)) {
         if (!is.numeric(xy)) {
             warning("provided xy coordinates is not 'numeric'; using 'dist' to compute distances")
-            out$xy <- dist(xy)
+            out$spatial <- dist(xy)
         } else {
             ## we use the great circle distances for lon / lat data
             if (lonlat) {
-                out$xy <- fields::rdist.earth(xy)
+                out$spatial <- fields::rdist.earth(xy)
             } else {
-                out$xy <- dist(xy)
+                out$spatial <- dist(xy)
             }
         }
     }
@@ -106,7 +109,7 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
         if (!inherits(dna, what="DNAbin")) {
             stop("dna must be a DNAbin object (or remain NULL)")
         } else {
-            out$dna <- ape::dist.dna(dna, model="N", pairwise.deletion=TRUE)
+            out$genetic <- ape::dist.dna(dna, model="N", pairwise.deletion=TRUE)
         }
     }
 
@@ -120,19 +123,20 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
     other <- list(...)
 
     ## if first item is a list, use it as input
-    if(is.list(other[[1]])) other <- other[[1]]
+    if (length(other) > 0L) {
+        if(is.list(other[[1]])) other <- other[[1]]
 
-    ## add new distances to output
-    other.names <- names(other)
-    for (i in seq_along(other)) {
-        if (!inherits(other[[i]], what="dist")) {
-            out[[length(out)+1]] <- dist(other[[i]])
-        } else {
-            out[[length(out)+1]] <- other[[i]]
+        ## add new distances to output
+        other.names <- names(other)
+        for (i in seq_along(other)) {
+            if (!inherits(other[[i]], what="dist")) {
+                out[[length(out)+1]] <- dist(other[[i]])
+            } else {
+                out[[length(out)+1]] <- other[[i]]
+            }
+            names(out)[length(out)] <- other.names[i]
         }
-           names(out)[length(out)] <- other.names[i]
     }
-
 
     ## PROCESS PAIRWISE DISTANCES AND MATCH ENTRIES ##
     out <- vimes.dist(out)
