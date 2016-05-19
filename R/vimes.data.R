@@ -113,6 +113,9 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
 
     ## PROCESS OTHER DATA IN ... ##
 
+    ## Whatever other data is passed to '...' is stored in a list 'othe' and each item of the list
+    ## is fed to 'dist', unless it is already a 'dist' object.
+
     ## extract data from list ##
     other <- list(...)
     other.names <- names(other)
@@ -120,53 +123,5 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
     ## if first item is a list, use it as input
     if(is.list(other[[1]])) other <- other[[1]]
 
-
-    ## ENSURE MATRICES AND LABELLING ##
-    ## convert all data to matrices
-    data <- lapply(data, as.matrix)
-    K <- length(data)
-
-    ## assign labels if missing
-    for(i in seq_along(data)){
-        if(is.null(rownames(data[[i]]))) {
-            rownames(data[[i]]) <- colnames(data[[i]]) <- 1:nrow(data[[i]])
-        }
-    }
-
-
-    ## HANDLE NAS AND SORTING ##
-
-    ## The policy will be to remove cases with NAs, as cases with NA
-    ## distances tend to link all other cases. This may change in
-    ## later version of the method.
-
-    ## get labels to keep
-    ## (i.e. present without NA everywhere)
-    lab.to.keep <- Reduce(intersect,
-                          lapply(data, function(e) rownames(e)[!apply(is.na(e),1,all)])
-                          )
-    N <- length(lab.to.keep)
-    if(N<2){
-        warning("Data contain less than 2 cases without missing data.")
-        return(NULL)
-    }
-
-    ## remove NAs, order, store result
-    out <- vector(K, mode="list")
-    for(i in seq_along(data)){
-        out[[i]] <- stats::as.dist(data[[i]][lab.to.keep, lab.to.keep])
-    }
-
-
-    ## RETURN OUTPUT ##
-
-    ## Output will be a list of 'dist' objects; labels and the number
-    ## of cases will be stored as attributes; the output will be a
-    ## list with the additional class vimes.input
-    names(out) <- data.names
-    attr(out, "labels") <- lab.to.keep
-    attr(out, "N") <- N
-
-    class(out) <- c("list", "vimes.input")
     return(out)
 }
