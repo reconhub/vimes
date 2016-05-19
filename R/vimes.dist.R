@@ -32,7 +32,6 @@ vimes.dist <- function(...){
     ## PROCESS TYPES OF INPUT  ##
     ## extract data from list ##
     data <- list(...)
-    data.names <- names(data)
     if(length(data)==0L) stop("no data to process")
 
     ## escape if data has been processed already
@@ -41,6 +40,8 @@ vimes.dist <- function(...){
     ## if first item is a list, use it as input
     if(is.list(data[[1]])) data <- data[[1]]
 
+    ## store names
+    data.names <- names(data)
 
     ## ENSURE MATRICES AND LABELLING ##
     ## convert all data to matrices
