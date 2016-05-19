@@ -40,14 +40,9 @@
 #'
 #'
 #' @examples
-#' x1 <- c(0,1,3)
-#' x2 <- c(2,5)
-#' names(x1) <- letters[1:3]
-#' names(x2) <- c('a', 'r')
-#' D1 <- dist(x1)
-#' D2 <- dist(x2)
-#' out <- vimes.data(D1, D2)
-#' out
+#' x <- vimes.data(dates=sim1$dates, xy=sim1$xy, dna=sim1$dna)
+#' x
+#' plot(x)
 #'
 vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
     ## We process each type of data at a time, computing the appropriate distances whenever the type

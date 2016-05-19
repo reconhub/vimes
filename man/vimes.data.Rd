@@ -22,7 +22,9 @@ should be named if elements do not match perfectly the other data types; \code{d
 left as is.}
 }
 \value{
-a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)
+a list of named dist objects with matching entries, with attributes: 'labels' (labels of
+the cases) and 'N' (number of cases); distances based on dates, xy coordinates, and genetic data
+will be named 'temporal', 'spatial' and 'genetic', respectively
 }
 \description{
 This function processes input data for vimes, computing for each data a matrix of pairwise distances.
