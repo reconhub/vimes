@@ -78,7 +78,7 @@ vimes <- function(x, method=c("basic"),
     if(!is.list(x)) stop("x is not a list")
     if(!inherits(x, "vimes.input")) stop("x is not a vimes.input object")
     K <- length(x)
-    if(!is.null(cutoff)) cutoff <- rep(cutoff, length=K)
+    if(!is.null(cutoff)) cutoff <- rep(cutoff, length.out=K)
     x.labels <- names(x)
 
     ## check method used
