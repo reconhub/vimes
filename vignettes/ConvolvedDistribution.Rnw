@@ -1,3 +1,9 @@
+%\VignetteIndexEntry{distconvol}
+%\VignetteDepends{vimes}
+%\VignetteKeywords{convolution}
+%\VignettePackage{vimes}
+%\VignetteEngine{knitr::knit2pdf}
+
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
@@ -19,7 +25,7 @@
 \newcommand{\code}[1]{{{\tt #1}}}
 
 \title{Derivation of the distance between two parent/infant cases accounting for underreporting}
-\author{Thibaut Jombart, Pierre Nouvellet, Anne Cori, ...}
+\author{Anne Cori}
 \date{\today}
 
 \sloppy
@@ -70,7 +76,7 @@ options(width=80)
 
 \subsection{Notations}
 
-In all the following, subscripts $t$, $s$ and $g$ are used to refer to time, geographical space, and genetic space respectively. Pdf stands for probability density function and pmf for probability mass function. For both,  we use the same general notation $f$. 
+In all the following, subscripts $t$, $s$ and $g$ are used to refer to time, geographical space, and genetic space respectively. Pdf stands for probability density function and pmf for probability mass function. For both,  we use the same general notation $f$.
 
 \textbf{Data}
 
@@ -79,7 +85,7 @@ We call $\kappa_{i,j}$ the unoberved number of missing intermediates between $i$
 
 \noindent \textbf{Parameters}
 
-We denote $\pi$ the reporting probability, and $\phi$ the probability density function of the distance (in time, geographical space or genetic space) between an infector and an infected individual. This can be the serial interval, the spatial kernel, or the genetic signature. 
+We denote $\pi$ the reporting probability, and $\phi$ the probability density function of the distance (in time, geographical space or genetic space) between an infector and an infected individual. This can be the serial interval, the spatial kernel, or the genetic signature.
 
 \subsection{Distribution of the distance between two cases accounting for underreporting}
 
@@ -89,7 +95,7 @@ We are interested in computing the probability density function $f\left(d\left(i
 f\left(d\left(i,j\right)|\pi,\phi\right) = \sum_{k=0}^{+\infty} f\left(d\left(i,j\right)|\kappa_{i,j}=k,\phi\right) f\left(\kappa_{i,j}=k|\pi\right)
 \end{equation*}
 
-The first factor in the sum is $f\left(d\left(i,j\right)|\kappa_{i,j}=k,\phi\right) = \phi^{(k+1)}\left(d\left(i,j\right)\right)$, where $\phi^{(k+1)}$ denotes the convolution of $\phi$ with itself, $k+1$ times ($\phi^{(1)} = \phi$). Note this is assuming that the distance $d$ is additive, so that if $i$ infected $l$ who infected $j$, then $d\left(i,j\right) = d_{i,l} + d_{l,j}$. This is the case for time, and we assume it is the same for genetic distance. For spatial distance we perform a slightly more complicated reasoning (see below). 
+The first factor in the sum is $f\left(d\left(i,j\right)|\kappa_{i,j}=k,\phi\right) = \phi^{(k+1)}\left(d\left(i,j\right)\right)$, where $\phi^{(k+1)}$ denotes the convolution of $\phi$ with itself, $k+1$ times ($\phi^{(1)} = \phi$). Note this is assuming that the distance $d$ is additive, so that if $i$ infected $l$ who infected $j$, then $d\left(i,j\right) = d_{i,l} + d_{l,j}$. This is the case for time, and we assume it is the same for genetic distance. For spatial distance we perform a slightly more complicated reasoning (see below).
 
 The second factor in the sum is the probability of $k$ intermediate cases having been unobserved, and the $k+1$ case (going back in time, that is $i$) having been observed. This is given by the geometric distribution $f\left(\kappa_{i,j}=k|\pi\right) = \pi\left(1-\pi\right)^k$.
 
@@ -101,7 +107,7 @@ f\left(d\left(i,j\right)|\pi,\phi\right) = \sum_{k=0}^{+\infty} \phi^{(k+1)}\lef
 
 \subsection{Special case: $\phi$ is the pdf of a Gamma distribution (typical for serial interval distribution)}
 
-In this section we consider the special case where $\phi$ is the pdf of a Gamma distribution with shape $\alpha$ and scale $\beta$: $\phi\left(x\right) = f_{\gamma}\left(x|\alpha,\beta\right) = \frac{1}{\Gamma(\alpha)\beta^\alpha}x^{\alpha-1}e^{-x/\beta}$. 
+In this section we consider the special case where $\phi$ is the pdf of a Gamma distribution with shape $\alpha$ and scale $\beta$: $\phi\left(x\right) = f_{\gamma}\left(x|\alpha,\beta\right) = \frac{1}{\Gamma(\alpha)\beta^\alpha}x^{\alpha-1}e^{-x/\beta}$.
 The sum of $k+1$ independent variables with same Gamma distribution with parameters $\left(\alpha,\beta\right)$ also has a Gamma distribution, with parameters $\left(\left(k+1\right)\alpha,\beta\right)$. Therefore:
 
 \begin{equation*}
@@ -135,22 +141,22 @@ We assume that the geographical location of an individual $i$ is given by coordi
 f\left(x_j-x_i|\kappa_{i,j}=0, \sigma\right) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x_j-x_i)^2}{2\sigma^2}}
 \end{equation*}
 
-Now if $i$ infected an unobserved case $l$ who infected $j$, then $x_j-x_i = x_j-x_l + x_l-x_i$ so the distribution of $x_j-x_i$ is that of the sum of two independent identical normal variables. This is true as well for $y_j-y_i$, and easily extends to more than $1$ unobserved intermediate case. Now, the sum of $k+1$ independent univariate Normally distributed variables with same mean $\nu$ and same variance $\sigma^2$ is a univariate Normally distributed variable with mean $\left(k+1\right)\nu$ and variance $\left(k+1\right)\sigma^2$ (see here http://www.tina-vision.net/docs/memos/2003-003.pdf for a proof for $k+1=2$). Therefore, 
+Now if $i$ infected an unobserved case $l$ who infected $j$, then $x_j-x_i = x_j-x_l + x_l-x_i$ so the distribution of $x_j-x_i$ is that of the sum of two independent identical normal variables. This is true as well for $y_j-y_i$, and easily extends to more than $1$ unobserved intermediate case. Now, the sum of $k+1$ independent univariate Normally distributed variables with same mean $\nu$ and same variance $\sigma^2$ is a univariate Normally distributed variable with mean $\left(k+1\right)\nu$ and variance $\left(k+1\right)\sigma^2$ (see here http://www.tina-vision.net/docs/memos/2003-003.pdf for a proof for $k+1=2$). Therefore,
 
 \begin{equation*}
 f\left(x_j-x_i|\kappa_{i,j}=k, \sigma\right) = \frac{1}{\sqrt{2\pi\left(k+1\right)\sigma^2}}e^{-\frac{(x_j-x_i)^2}{2\left(k+1\right)\sigma^2}}
 \end{equation*}
 
-Using the change of variable technique, one can show that the pdf of $\left(x_j-x_i\right)^2$, conditionnal on $\kappa_{i,j}=k$ and $\sigma$ is $\frac{1}{\sqrt{2\pi\left(k+1\right)\sigma^2}}e^{-\frac{s}{2\left(k+1\right)\sigma^2}} \frac{1}{2\sqrt{s}}$. Therefore, conditionnal on $\kappa_{i,j}=k$ and $\sigma$, $\left(x_j-x_i\right)^2$ follows a Gamma distribution with shape $\frac{1}{2}$ and scale $2\left(k+1\right)\sigma^2$. 
+Using the change of variable technique, one can show that the pdf of $\left(x_j-x_i\right)^2$, conditionnal on $\kappa_{i,j}=k$ and $\sigma$ is $\frac{1}{\sqrt{2\pi\left(k+1\right)\sigma^2}}e^{-\frac{s}{2\left(k+1\right)\sigma^2}} \frac{1}{2\sqrt{s}}$. Therefore, conditionnal on $\kappa_{i,j}=k$ and $\sigma$, $\left(x_j-x_i\right)^2$ follows a Gamma distribution with shape $\frac{1}{2}$ and scale $2\left(k+1\right)\sigma^2$.
 
 The same reasoning holds for $\left(y_j-y_i\right)^2$.
 
-The square of the Euclidian distance between individuals $i$ and $j$ can be computed as 
-$d_s\left(i,j\right)^2 = \left(x_j - x_i\right)^2 + \left(y_j - y_i\right)^2$. Conditionnal on $\kappa_{i,j}=k$ and $\sigma$, this is the sum of the squares of 2 independent Gamma distributed variables with same shape $\frac{1}{2}$ and scale $2\left(k+1\right)\sigma^2$. Therefore, conditionnal on $\kappa_{i,j}=k$ and $\sigma$, $d_s\left(i,j\right)^2$ is also Gamma distributed with shape $2\times\frac{1}{2}=1$ and scale $2\left(k+1\right)\sigma^2$, that is it is Exponentially distributed with rate $\frac{1}{2\left(k+1\right)\sigma^2}$. 
+The square of the Euclidian distance between individuals $i$ and $j$ can be computed as
+$d_s\left(i,j\right)^2 = \left(x_j - x_i\right)^2 + \left(y_j - y_i\right)^2$. Conditionnal on $\kappa_{i,j}=k$ and $\sigma$, this is the sum of the squares of 2 independent Gamma distributed variables with same shape $\frac{1}{2}$ and scale $2\left(k+1\right)\sigma^2$. Therefore, conditionnal on $\kappa_{i,j}=k$ and $\sigma$, $d_s\left(i,j\right)^2$ is also Gamma distributed with shape $2\times\frac{1}{2}=1$ and scale $2\left(k+1\right)\sigma^2$, that is it is Exponentially distributed with rate $\frac{1}{2\left(k+1\right)\sigma^2}$.
 
 This means the Euclidian distance between individuals $i$ and $j$, $d_s\left(i,j\right)$ follows a Rayleigh distribution with scale $\sigma\sqrt{k+1}$ (see general proof here http://www.math.wm.edu/~leemis/chart/UDR/PDFs/ExponentialRayleigh.pdf).
 
-Finally, 
+Finally,
 
 \begin{eqnarray*}
 f\left(d_s\left(i,j\right)|\pi,\sigma\right) &=& \sum_{k=0}^{+\infty} \phi_s^{(k+1)}\left(d_s\left(i,j\right)\right) \pi\left(1-\pi\right)^k \\
@@ -186,35 +192,35 @@ plot(times,f.gentime.convol(times,k=2), main="Distribution of three generation t
      xlab="Time between cases (days)", ylab="",type="l")
 @
 
-Now assume the reporting probability is not $100\%$. We can readily compute the distribution of time between a case and its closest ancestry in the database, accounting for underreporting. The red bars in the figures below show the $95\%$ quantiles of the distributions. 
+Now assume the reporting probability is not $100\%$. We can readily compute the distribution of time between a case and its closest ancestry in the database, accounting for underreporting. The red bars in the figures below show the $95\%$ quantiles of the distributions.
 <<SIdistrWithUnderreporting, fig.height=10, out.width=".8\\textwidth">>=
-f.gentime.with.under.reporting <- function(x,pi) sapply(x, function(e) 
+f.gentime.with.under.reporting <- function(x,pi) sapply(x, function(e)
   dconvol(e,type="t",reporting_prob=pi, shape_t=shape_t, scale_t=scale_t) )
 ### TO DO: change code so dconvol deals with vectors as well as unique numeric objects?
 
 par(mfrow=c(3,1))
 
-# 100% reporting: 
+# 100% reporting:
 y <- f.gentime(times)
-plot(times,y, 
+plot(times,y,
      main="Distribution of the time between a case and its ancestry (100% reporting)",
      xlab="Time between cases (days)", ylab="",type="l")
 Q95 <- times[min(which(cumsum(y)*dt>0.95))]
 abline(v=Q95,col="red")
 # checking the simple serial interval is the same as that with 100% reporting:
-# lines(times,f.gentime.with.under.reporting(times,pi=1),col="red") 
+# lines(times,f.gentime.with.under.reporting(times,pi=1),col="red")
 
-# 50% reporting: 
+# 50% reporting:
 y <- f.gentime.with.under.reporting(times,pi=0.50)
-plot(times,f.gentime.with.under.reporting(times,pi=0.5), 
+plot(times,f.gentime.with.under.reporting(times,pi=0.5),
      main="Distribution of the time between a case and its ancestry (50% reporting)",
      xlab="Time between cases (days)", ylab="",type="l")
 Q95 <- times[min(which(cumsum(y)*dt>0.95))]
 abline(v=Q95,col="red")
 
-# 25% reporting: 
+# 25% reporting:
 y <- f.gentime.with.under.reporting(times,pi=0.25)
-plot(times,y, 
+plot(times,y,
      main="Distribution of the time between a case and its ancestry (25% reporting)",
      xlab="Time between cases (days)", ylab="",type="l")
 Q95 <- times[min(which(cumsum(y)*dt>0.95))]
@@ -227,12 +233,12 @@ We assume the same generation time as above, and a mutation rate of 5.9x10$^{-4}
 
 <<GSdistr, fig.height=10, out.width=".8\\textwidth">>=
 ## rate per day and sequence
-mu.day.whole <- (5.9e-4 * 5063 / 365) # 5063 is the sequence length 
+mu.day.whole <- (5.9e-4 * 5063 / 365) # 5063 is the sequence length
                                       # (ncol(dna) in main vignette)
 
-f.genetic <- function(x) dnbinom(x, size=shape_t, 
+f.genetic <- function(x) dnbinom(x, size=shape_t,
                         prob=1-scale_t*mu.day.whole/(scale_t*mu.day.whole+1))
-f.genetic.convol <- function(x,k) dnbinom(x, size=shape_t*(k+1), 
+f.genetic.convol <- function(x,k) dnbinom(x, size=shape_t*(k+1),
                         prob=1-scale_t*mu.day.whole/(scale_t*mu.day.whole+1))
 mutations <- 0:5
 par(mfrow=c(3,1))
@@ -247,38 +253,38 @@ plot(mutations,f.genetic.convol(mutations,k=2), main="Distribution of three gene
 @
 
 
-Now assume the reporting probability is not $100\%$. We can readily compute the distribution of the number of mutations between a case and its closest ancestry in the database, accounting for underreporting. The red bars in the figures below show the $95\%$ quantiles of the distributions. 
+Now assume the reporting probability is not $100\%$. We can readily compute the distribution of the number of mutations between a case and its closest ancestry in the database, accounting for underreporting. The red bars in the figures below show the $95\%$ quantiles of the distributions.
 <<GSdistrWithUnderreporting, fig.height=10, out.width=".8\\textwidth">>=
-f.genetic.with.under.reporting <- function(x,pi) sapply(x, function(e) 
+f.genetic.with.under.reporting <- function(x,pi) sapply(x, function(e)
   dconvol(e,type="g",reporting_prob=pi, shape_t=shape_t, scale_t=scale_t, mu=mu.day.whole) )
 ### TO DO: change code so dconvol deals with vectors as well as unique numeric objects?
 
 par(mfrow=c(3,1))
 
-# 100% reporting: 
+# 100% reporting:
 y <- f.genetic(mutations)
-plot(mutations,y, 
-     main="Distribution of the number of mutations between a case and its ancestry 
+plot(mutations,y,
+     main="Distribution of the number of mutations between a case and its ancestry
      (100% reporting)",
      xlab="Number of mutations between cases", ylab="",ylim=c(0,1))
 Q95 <- mutations[min(which(cumsum(y)>0.95))]
 abline(v=Q95,col="red")
 # checking the simple serial interval is the same as that with 100% reporting:
-# points(mutations,f.genetic.with.under.reporting(mutations,pi=1),col="red") 
+# points(mutations,f.genetic.with.under.reporting(mutations,pi=1),col="red")
 
-# 50% reporting: 
+# 50% reporting:
 y <- f.genetic.with.under.reporting(mutations,pi=0.50)
-plot(mutations,y, 
-     main="Distribution of the number of mutations between a case and its ancestry 
+plot(mutations,y,
+     main="Distribution of the number of mutations between a case and its ancestry
      (50% reporting)",
      xlab="Number of mutations between cases", ylab="",ylim=c(0,1))
 Q95 <- mutations[min(which(cumsum(y)>0.95))]
 abline(v=Q95,col="red")
 
-# 25% reporting: 
+# 25% reporting:
 y <- f.genetic.with.under.reporting(mutations,pi=0.25)
-plot(mutations,y, 
-     main="Distribution of the number of mutations between a case and its ancestry 
+plot(mutations,y,
+     main="Distribution of the number of mutations between a case and its ancestry
      (25% reporting)",
      xlab="Number of mutations between cases", ylab="",ylim=c(0,1))
 Q95 <- mutations[min(which(cumsum(y)>0.95))]
@@ -287,10 +293,10 @@ abline(v=Q95,col="red")
 
 \subsection{Spatial kernel Rayleigh distributed}
 
-We assume a standard deviation for the spatial diffusion in both directions of 1km. 
+We assume a standard deviation for the spatial diffusion in both directions of 1km.
 
 <<SKdistr, fig.height=10, out.width=".8\\textwidth">>=
-## standard deviation for the spatial diffusion in both directions  
+## standard deviation for the spatial diffusion in both directions
 sigma_s <- 1
 
 f.spatial <- function(x) drayleigh(x,scale=sigma_s)
@@ -309,35 +315,35 @@ plot(distances,f.spatial.convol(distances,k=2), main="Distribution of three spat
      xlab="Distance between cases (km)", ylab="",type="l")
 @
 
-Now assume the reporting probability is not $100\%$. We can readily compute the distribution of the distance between a case and its closest ancestry in the database, accounting for underreporting. The red bars in the figures below show the $95\%$ quantiles of the distributions. 
+Now assume the reporting probability is not $100\%$. We can readily compute the distribution of the distance between a case and its closest ancestry in the database, accounting for underreporting. The red bars in the figures below show the $95\%$ quantiles of the distributions.
 <<SKdistrWithUnderreporting, fig.height=10, out.width=".8\\textwidth">>=
-f.spatial.with.under.reporting <- function(x,pi) sapply(x, function(e) 
+f.spatial.with.under.reporting <- function(x,pi) sapply(x, function(e)
   dconvol(e,type="s",reporting_prob=pi, sigma_s=sigma_s) )
 ### TO DO: change code so dconvol deals with vectors as well as unique numeric objects?
 
 par(mfrow=c(3,1))
 
-# 100% reporting: 
+# 100% reporting:
 y <- f.spatial(distances)
-plot(distances,y, 
+plot(distances,y,
      main="Distribution of the distance between a case and its ancestry (100% reporting)",
      xlab="Distance between cases (km)", ylab="",type="l")
 Q95 <- distances[min(which(cumsum(y)*dt>0.95))]
 abline(v=Q95,col="red")
 # checking the simple serial interval is the same as that with 100% reporting:
-# lines(distances,f.gentime.with.under.reporting(times,pi=1),col="red") 
+# lines(distances,f.gentime.with.under.reporting(times,pi=1),col="red")
 
-# 50% reporting: 
+# 50% reporting:
 y <- f.spatial.with.under.reporting(distances,pi=0.50)
-plot(distances,y, 
+plot(distances,y,
      main="Distribution of the distance between a case and its ancestry (50% reporting)",
      xlab="Distance between cases (km)", ylab="",type="l")
 Q95 <- distances[min(which(cumsum(y)*dt>0.95))]
 abline(v=Q95,col="red")
 
-# 25% reporting: 
+# 25% reporting:
 y <- f.spatial.with.under.reporting(distances,pi=0.25)
-plot(distances,y, 
+plot(distances,y,
      main="Distribution of the distance between a case and its ancestry (25% reporting)",
      xlab="Distance between cases (km)", ylab="",type="l")
 Q95 <- distances[min(which(cumsum(y)*dt>0.95))]
