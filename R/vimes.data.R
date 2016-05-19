@@ -74,6 +74,10 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
 
 
     ## PROCESS GEOGRAPHIC COORDINATES ##
+
+    ## xy coordinates are 2-columns matrices or data.frames; they are assumed to be either simple
+    ## numeric values, or longitudes (col 1) and latitudes(col 2)
+
     if (!is.null(xy)) {
         if (!is.numeric(xy)) {
             warning("provided xy coordinates is not 'numeric'; using 'dist' to compute distances")
@@ -88,21 +92,33 @@ vimes.data <- function(dates=NULL, xy=NULL, dna=NULL, lonlat=FALSE, ...){
         }
     }
 
-    ## xy coordinates are 2-columns matrices or data.frames; they are assumed to be either simple
-    ## numeric values, or longitudes (col 1) and latitudes(col 2)
+
+    ## PROCESS DNA SEQUENCES ##
+
+    ## dna sequences are stored is DNAbin matrices; see the ape package documentation for more info
+    ## about this class; the distances between sequences will be the basic number of mutations
+    ## between sequences; we always use pairwise deletions. This distance is a rough measure of
+    ## genetic differentiation but permits to derive the distribution of 'genetic signatures'
+    ## (expected nb of mutations between 2 linked cases) fairly easily; more work would be needed
+    ## for fancier distances.
+
+    if (!is.null(dna)) {
+        if (!inherits(dna, what="DNAbin")) {
+            stop("dna must be a DNAbin object (or remain NULL)")
+        } else {
+            out$dna <- ape::dist.dna(dna, model="N", pairwise.deletion=TRUE)
+        }
+    }
 
 
+    ## PROCESS OTHER DATA IN ... ##
 
     ## extract data from list ##
-    data <- list(...)
-    data.names <- names(data)
-    if(length(data)==0L) stop("no data to process")
-
-    ## escape if data has been processed already
-    if(inherits(data[[1]],"vimes.input")) return(data[[1]])
+    other <- list(...)
+    other.names <- names(other)
 
     ## if first item is a list, use it as input
-    if(is.list(data[[1]])) data <- data[[1]]
+    if(is.list(other[[1]])) other <- other[[1]]
 
 
     ## ENSURE MATRICES AND LABELLING ##
