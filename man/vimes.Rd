@@ -9,7 +9,7 @@ vimes(x, method = c("basic"), cutoff = NULL, log.dens = NULL,
 }
 \arguments{
 \item{x}{a list of the class 'vimes.input' as returned by
-\code{vimes.dist}.}
+\code{\link{vimes.data}}.}
 
 \item{method}{a character string indicating the pruning method to be used; see details.}
 

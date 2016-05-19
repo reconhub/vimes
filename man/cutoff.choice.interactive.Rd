@@ -8,7 +8,7 @@ cutoff.choice.interactive(x, graph.opt = vimes.graph.opt(), ...)
 }
 \arguments{
 \item{x}{a list of the class 'vimes.input' as returned by
-\code{vimes.dist}.}
+\code{\link{vimes.data}}.}
 
 \item{graph.opt}{a list of graphical options for the graphs, as
 returned by \code{\link{vimes.graph.opt}}.}

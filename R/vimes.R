@@ -10,21 +10,21 @@
 #' @export
 #'
 #' @param x a list of the class 'vimes.input' as returned by
-#' \code{vimes.dist}.
-#' 
+#' \code{\link{vimes.data}}.
+#'
 #' @param cutoff a vector with the same length as 'x' indicating
 #' cutoff distances beyond which individuals will not be connected in
 #' the separate graphs; recycled if needed. If NULL, interactive mode
 #' will be triggered to ask the user for cutoff distances.
-#' 
+#'
 #' @param graph.opt a list of graphical options for the graphs, as
 #' returned by \code{\link{vimes.graph.opt}}.
-#' 
+#'
 #' @param method a character string indicating the pruning method to be used; see details.
-#' 
+#'
 #' @param log.dens a list of log-density functions to be used for ML
 #' estimation; one function is needed for each type of data.
-#' 
+#'
 #' @param ... further arguments to be passed to \code{hist}.
 #'
 #' @seealso
@@ -38,7 +38,7 @@
 #' \describe{
 #'  \item{basic}{pre-defined cutoffs are used if provided as \code{cutoff}; if missing, they are chosen interactively by the user by examining the distribution of distances}
 #' }
-#' 
+#'
 #' @examples
 #'
 #'  ## generate data
@@ -66,7 +66,7 @@
 ## 3) Build a consensus graph by intersection of all the pruned graphs
 ##
 ## Note that output graphs normally contain their own grapĥical options and customisations.
-## 
+##
 
 vimes <- function(x, method=c("basic"),
                   cutoff=NULL,
@@ -83,7 +83,7 @@ vimes <- function(x, method=c("basic"),
 
     ## check method used
     method <- match.arg(method)
-    
+
 
     ## MAKE SEPARATE GRAPHS ##
     all.graphs <- list()
@@ -121,12 +121,12 @@ vimes <- function(x, method=c("basic"),
         all.graphs[[i]]$graph$layout <- g$layout
     }
     names(all.graphs) <- x.labels
-    
+
 
     ## The output will contain the main graph, cluster definitions,
     ## the cutoff values used, and then similar information for each
     ## individual graph (one per original distance matrix).
-    
+
     out <- list(graph=g, clusters=groups, cutoff=cutoff,
                 separate.graphs=all.graphs)
 
