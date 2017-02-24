@@ -101,7 +101,7 @@ get_weights <- function(pi, max_kappa = 20) {
 
 ## Note that kappa here is a single value.
 
-convolve_gamma <- function(shape, rate, kappa) {
+convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa) {
     kappa <- check_kappa(kappa, only_one = TRUE)
 
     ## ...
@@ -112,7 +112,7 @@ convolve_gamma <- function(shape, rate, kappa) {
 
 
 
-convolve_gamma_poisson <- function(gamma_shape, gamma_rate, poisson_rate, kappa) {
+convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, kappa) {
     kappa <- check_kappa(kappa, only_one = TRUE)
 
     ## ...
