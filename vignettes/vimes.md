@@ -1,10 +1,10 @@
 ---
 title: "Detecting disease outbreaks using vimes"
 author: "Thibaut Jombart"
-date: "2016-05-11"
+date: "2017-02-24"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{vimes: VIsualisation and Monitoring of EpidemicS.}
   \usepackage[utf8]{inputenc}
 ---

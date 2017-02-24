@@ -1,7 +1,7 @@
-[![Travis-CI Build Status](https://travis-ci.org/thibautjombart/vimes.png?branch=master)](https://travis-ci.org/thibautjombart/vimes)
-
-[![codecov.io](https://codecov.io/github/thibautjombart/vimes/coverage.svg?branch=master)](https://codecov.io/github/thibautjombart/vimes?branch=master)
-
+[![Travis-CI Build Status](https://travis-ci.org/reconhub/vimes.png?branch=master)](https://travis-ci.org/reconhub/vimes)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/yd31pduk28k595k0/branch/master?svg=true)](https://ci.appveyor.com/project/thibautjombart/vimes/branch/master)
+[![codecov.io](https://codecov.io/github/reconhub/vimes/coverage.svg?branch=master)](https://codecov.io/github/reconhub/vimes?branch=master)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vimes)](https://cran.r-project.org/package=vimes)
 
 
 ```{r compileVignette, results="hide",echo=FALSE,message=FALSE,fig.keep="none"}
