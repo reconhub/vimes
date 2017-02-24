@@ -107,7 +107,7 @@ convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa) {
   ## at the moment not vectorized in x, need to work on that
     kappa <- check_kappa(kappa, only_one = FALSE)
 
-    f <- function(x) dgamma(x, kappa*shape, rate)
+    f <- function(x) stats::dgamma(x, kappa*shape, rate)
     return(f) 
 }
 ## the convolution weighted by the geometric weights should eventually look like something like that:
