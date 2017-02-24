@@ -19,9 +19,9 @@ These functions are color palettes used in vimes.
 }
 \examples{
 
-plot(1:4, cex=8, pch=20, col=vimes.pal1(4), main="vimes.pal1")
-plot(1:20, col=vimes.pal1(20), pch=20, cex=6, main="vimes.pal1")
-plot(1:10, col=vimes.pal2(10), pch=20, cex=6, main="vimes.pal2")
+plot(1:4, cex=8, pch=20, col=vimes_pal1(4), main="vimes_pal1")
+plot(1:20, col=vimes_pal1(20), pch=20, cex=6, main="vimes_pal1")
+plot(1:10, col=vimes_pal2(10), pch=20, cex=6, main="vimes_pal2")
 }
 \author{
 Thibaut Jombart \email{thibautjombart@gmail.com}

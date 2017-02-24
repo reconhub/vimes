@@ -4,7 +4,7 @@
 
 
 ## This function will get a set of graphical settings defined in a
-## named list (typically returned by vimes.graph_opt) and use them to
+## named list (typically returned by vimes_graph_opt) and use them to
 ## store new graphical options in a igraph object.
 
 set_igraph_opt <- function(g, opt){

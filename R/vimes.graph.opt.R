@@ -2,25 +2,26 @@
 #'
 #' This function sets up graphical options for \code{igraph} objects.
 #' Existing options include:
-#' \describe{
 #' 
-#' \item{col_pal}{a color palette used for the groups; defaults to vimes.pal1}
+#' \itemize{
 #' 
-#' \item{layout}{a layout function used for plotting the graph; see
-#' \code{?layout_nicely} for more information.}
+#' \item col_pal a color palette used for the groups; defaults to vimes_pal1
 #' 
-#' \item{seed}{a random seed to be used for plotting the graph}
+#' \item layout a layout function used for plotting the graph; see
+#' \code{?layout_nicely} for more information.
 #' 
-#' \item{vertex_size}{the size of the vertices; defaults to 10}
+#' \item seed a random seed to be used for plotting the graph
 #' 
-#' \item{label_family}{a font family for labels; defaults to "sans"}
+#' \item vertex_size the size of the vertices; defaults to 10
 #' 
-#' \item{label_color}{the color of the labels; defaults to "black"}
+#' \item label_family a font family for labels; defaults to "sans"
 #' 
-#' \item{edge_label}{a logical indicating if weights should be used to annotate
-#' the edges; defaults to FALSE}
+#' \item label_color the color of the labels; defaults to "black"
 #' 
-#'}
+#' \item edge_label a logical indicating if weights should be used to annotate
+#' the edges; defaults to FALSE
+#' 
+#' }
 #'
 #' @param ... a list of named graphical options; see Description.
 #'

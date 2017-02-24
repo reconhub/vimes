@@ -51,7 +51,7 @@ vimes_prune <- function(x, cutoff = NULL,
 
     ## INTERACTIVE MODE FOR CHOOSING CUTOFF ##
     if (is.null(cutoff)) {
-        return(cutoff.choice.interactive(x = x,
+        return(cutoff_choice_interactive(x = x,
                                          graph_opt = graph_opt))
     }
 

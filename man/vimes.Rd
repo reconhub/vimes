@@ -9,7 +9,7 @@ vimes(x, method = c("basic"), cutoff = NULL, log_dens = NULL,
 }
 \arguments{
 \item{x}{a list of the class 'vimes_data' as returned by
-\code{vimes.data}.}
+\code{vimes_data}.}
 
 \item{method}{a character string indicating the pruning method to be used;
 see details.}
@@ -23,7 +23,7 @@ ask the user for cutoff distances.}
 estimation; one function is needed for each type of data.}
 
 \item{graph_opt}{a list of graphical options for the graphs, as
-returned by \code{\link{vimes.graph_opt}}.}
+returned by \code{\link{vimes_graph_opt}}.}
 
 \item{...}{further arguments to be passed to \code{hist}.}
 }
@@ -53,7 +53,7 @@ distribution of distances}
  dat2 <- rnorm(30, c(0,0,1))
  dat3 <- rnorm(30, c(8,1,2))
  x <- lapply(list(dat1, dat2, dat3), dist)
- x <- vimes.data(x)
+ x <- vimes_data(x)
  plot(x)
 
  ## analyse data
@@ -65,9 +65,9 @@ distribution of distances}
 \seealso{
 \describe{
 
-\item{\code{\link{vimes.data}}}{to prepare the input data.}
+\item{\code{\link{vimes_data}}}{to prepare the input data.}
 
-\item{\code{\link{vimes.prune}}}{for getting individual pruned graphs.}
+\item{\code{\link{vimes_prune}}}{for getting individual pruned graphs.}
 
 }
 }
