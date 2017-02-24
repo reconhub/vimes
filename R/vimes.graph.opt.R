@@ -3,13 +3,23 @@
 #' This function sets up graphical options for \code{igraph} objects.
 #' Existing options include:
 #' \describe{
-#' \item{col.pal}{a color palette used for the groups; defaults to vimes.pal1}
-#' \item{layout}{a layout function used for plotting the graph; see \code{?layout_nicely} for more information.}
+#' 
+#' \item{col_pal}{a color palette used for the groups; defaults to vimes.pal1}
+#' 
+#' \item{layout}{a layout function used for plotting the graph; see
+#' \code{?layout_nicely} for more information.}
+#' 
 #' \item{seed}{a random seed to be used for plotting the graph}
-#' \item{vertex.size}{the size of the vertices; defaults to 10}
-#' \item{label.family}{a font family for labels; defaults to "sans"}
-#' \item{label.color}{the color of the labels; defaults to "black"}
-#' \item{edge.label}{a logical indicating if weights should be used to annotate the edges; defaults to FALSE}
+#' 
+#' \item{vertex_size}{the size of the vertices; defaults to 10}
+#' 
+#' \item{label_family}{a font family for labels; defaults to "sans"}
+#' 
+#' \item{label_color}{the color of the labels; defaults to "black"}
+#' 
+#' \item{edge_label}{a logical indicating if weights should be used to annotate
+#' the edges; defaults to FALSE}
+#' 
 #'}
 #'
 #' @param ... a list of named graphical options; see Description.
@@ -21,9 +31,9 @@
 #' @importFrom igraph "E" "E<-"
 #'
 #' @examples
-#' vimes.graph.opt()
+#' vimes_graph_opt()
 #'
-vimes.graph.opt <- function(...){
+vimes_graph_opt <- function(...){
     
     ## The purpose of this function is to handle all graphical options
     ## for plotting in vimes. If there is a need for storing different
@@ -36,16 +46,16 @@ vimes.graph.opt <- function(...){
     config <- list(...)
 
     ## SET DEFAULTS ##
-    defaults <- list(col.pal=vimes.pal2,
-                     layout=igraph::layout_nicely,
-                     seed=1,
-                     vertex.size=10,
-                     label.family="sans",
-                     label.color="black",
-                     edge.label=FALSE)
+    defaults <- list(col_pal = vimes_pal2,
+                     layout = igraph::layout_nicely,
+                     seed = 1,
+                     vertex_size = 10,
+                     label_family = "sans",
+                     label_color = "black",
+                     edge_label = FALSE)
 
     ## MODIFY CONFIG WITH ARGUMENTS ##
-    config <- modify.defaults(defaults, config)
+    config <- modify_defaults(defaults, config)
 
     return(config)
 }

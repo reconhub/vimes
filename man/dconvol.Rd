@@ -8,7 +8,7 @@ dconvol(x, type = c("t", "g", "s"), reporting.prob = 1, shape.t, scale.t,
   mu = NULL, sigma.s = NULL, tol = 0.001)
 }
 \arguments{
-\item{x}{vector of quantiles}
+\item{x}{numerical quantile, at the moment not dealing with vectors}
 
 \item{type}{type of distribution to be used, one of "t","g" or "s", see details}
 
@@ -26,7 +26,7 @@ NULL by default as not needed for the default analysis of distance in time using
 \item{tol}{tolerance; see vignette, the convolution accounting for underreporting uses geometric which will be cut at k.0 so that P(X>=k.0) < tol.}
 }
 \value{
-a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)
+the density of the convolution distribution
 }
 \description{
 This function computes the probability density function of convoolution of various distance distributions, representing distance between cases in time, space or genetic.
@@ -44,4 +44,3 @@ For \code{type} "s", spatial Euclidian distance is performed assuming Rayleigh d
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}
 }
-

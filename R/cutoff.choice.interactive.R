@@ -7,23 +7,27 @@
 #' @inheritParams vimes 
 #' @param ... further arguments passed to 'hist'
 #' 
-cutoff.choice.interactive <- function(x, graph.opt=vimes.graph.opt(), ...){
+cutoff_choice_interactive <- function(x, graph_opt = vimes_graph_opt(), ...){
       chooseAgain <- TRUE
         while (chooseAgain) {
             ## plot histogram ##
-            graphics::hist(x, xlab="Pairwise distances", ylab="Frequency", main="Choose a cutoff distance",
-                 border="white", col="#8585ad", ...)
+            
+            graphics::hist(x, xlab="Pairwise distances", ylab="Frequency",
+                           main="Choose a cutoff distance",
+                           border="white", col="#8585ad", ...)
 
             ## get input from user ##
             cat("\nEnter a cutoff distance:  ")
             cutoff <- NA
-            while(is.null(cutoff) || is.na(cutoff)) suppressWarnings(cutoff <- as.numeric(readLines(n = 1)))
+            while(is.null(cutoff) || is.na(cutoff)) {
+                suppressWarnings(cutoff <- as.numeric(readLines(n = 1)))
+            }
 
             ## add cutoff to the plot ##
-            graphics::abline(v=cutoff,col="red",lty=2, lwd=2)
+            graphics::abline(v = cutoff, col = "red", lty = 2, lwd = 2)
 
             ## get corresponding output ##
-            out <- vimes.prune(x, cutoff=cutoff, graph.opt=graph.opt)
+            out <- vimes_prune(x, cutoff = cutoff, graph_opt = graph_opt)
 
             ## show output ##
             cat(paste("\nNumber of clusters found:  ", out$clusters$K, sep=""))

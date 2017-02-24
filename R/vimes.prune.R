@@ -42,15 +42,17 @@
 ## using a given cutoff distance value. If 'cutoff' is not provided,
 ## we used by default interactive cutoff selection.
 
-vimes.prune <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
+vimes_prune <- function(x, cutoff = NULL,
+                        graph_opt = vimes_graph_opt(), ...){
     ## CHECKS ##
-    if(is.null(x)){
+    if (is.null(x)) {
         stop("input data is NULL")
     }
 
     ## INTERACTIVE MODE FOR CHOOSING CUTOFF ##
-    if(is.null(cutoff)){
-        return(cutoff.choice.interactive(x=x, graph.opt=graph.opt))
+    if (is.null(cutoff)) {
+        return(cutoff.choice.interactive(x = x,
+                                         graph_opt = graph_opt))
     }
 
 
@@ -61,24 +63,24 @@ vimes.prune <- function(x, cutoff=NULL, graph.opt=vimes.graph.opt(), ...){
     ## coloring clusters).
     
     x[x>cutoff] <- 0
-    g <- igraph::graph.adjacency(as.matrix(x), mode="undirected",
-                                 weighted=TRUE, diag=FALSE)
+    g <- igraph::graph.adjacency(as.matrix(x), mode = "undirected",
+                                 weighted = TRUE, diag = FALSE)
 
     ## find clusters ##
     groups <- igraph::clusters(g)
     names(groups) <- c("membership", "size", "K")
 
     ## add cluster colors
-    groups$color <- graph.opt$col.pal(groups$K)
+    groups$color <- graph_opt$col_pal(groups$K)
     names(groups$color) <- 1:groups$K
 
     ## Here we add new graphical properties to the graph that will
     ## ultimately be returned.
     
-    g <- set.igraph.opt(g, graph.opt)
+    g <- set_igraph_opt(g, graph_opt)
 
     ## The returned output should be a self-sufficient list containing
     ## the pruned graph, cluster definition, and cutoff values used.
     
-    out <- list(graph=g, clusters=groups, cutoff=cutoff)
+    out <- list(graph = g, clusters = groups, cutoff = cutoff)
 } 

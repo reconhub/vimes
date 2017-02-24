@@ -4,38 +4,45 @@
 \alias{vimes}
 \title{VIsualisation and Monitoring of EpidemicS}
 \usage{
-vimes(x, method = c("basic"), cutoff = NULL, log.dens = NULL,
-  graph.opt = vimes.graph.opt(), ...)
+vimes(x, method = c("basic"), cutoff = NULL, log_dens = NULL,
+  graph_opt = vimes_graph_opt(), ...)
 }
 \arguments{
-\item{x}{a list of the class 'vimes.input' as returned by
+\item{x}{a list of the class 'vimes_data' as returned by
 \code{vimes.data}.}
 
-\item{method}{a character string indicating the pruning method to be used; see details.}
+\item{method}{a character string indicating the pruning method to be used;
+see details.}
 
-\item{cutoff}{a vector with the same length as 'x' indicating
-cutoff distances beyond which individuals will not be connected in
-the separate graphs; recycled if needed. If NULL, interactive mode
-will be triggered to ask the user for cutoff distances.}
+\item{cutoff}{a vector with the same length as 'x' indicating cutoff
+distances beyond which individuals will not be connected in the separate
+graphs; recycled if needed. If NULL, interactive mode will be triggered to
+ask the user for cutoff distances.}
 
-\item{log.dens}{a list of log-density functions to be used for ML
+\item{log_dens}{a list of log-density functions to be used for ML
 estimation; one function is needed for each type of data.}
 
-\item{graph.opt}{a list of graphical options for the graphs, as
-returned by \code{\link{vimes.graph.opt}}.}
+\item{graph_opt}{a list of graphical options for the graphs, as
+returned by \code{\link{vimes.graph_opt}}.}
 
 \item{...}{further arguments to be passed to \code{hist}.}
 }
 \description{
-The function \code{vimes} is used to identify clusters of related cases based on multiple data.
+The function \code{vimes} is used to identify clusters of related cases based
+on multiple data.
 }
 \details{
-!!! This package is still under development. Do not use it without contacting the author. !!!
+!!! This package is still under development. Do not use it without contacting
+the author. !!!
 
 
 Different methods can be used for graph pruning:
 \describe{
- \item{basic}{pre-defined cutoffs are used if provided as \code{cutoff}; if missing, they are chosen interactively by the user by examining the distribution of distances}
+
+ \item{basic}{pre-defined cutoffs are used if provided as \code{cutoff}; if
+missing, they are chosen interactively by the user by examining the
+distribution of distances}
+
 }
 }
 \examples{
@@ -55,13 +62,15 @@ Different methods can be used for graph pruning:
  plot(res$graph)
 
 }
+\seealso{
+\describe{
+
+\item{\code{\link{vimes.data}}}{to prepare the input data.}
+
+\item{\code{\link{vimes.prune}}}{for getting individual pruned graphs.}
+
+}
+}
 \author{
 Thibaut Jombart \email{thibautjombart@gmail.com}
 }
-\seealso{
-\describe{
-\item{\code{\link{vimes.data}}}{to prepare the input data.}
-\item{\code{\link{vimes.prune}}}{for getting individual pruned graphs.}
-}
-}
-

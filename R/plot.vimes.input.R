@@ -8,7 +8,7 @@
 #' @export
 #' @importFrom graphics hist par
 #'
-#' @param x a \code{vimes.input} object, as returned by \code{vimes.data}
+#' @param x a \code{vimes_data} object, as returned by \code{vimes.data}
 #' @param y left for compatibility with the generic 'plot'
 #' @param col colors to be used for the histograms
 #' @param ... further arguments passed on to \code{hist}
@@ -26,7 +26,7 @@
 #' out
 #' plot(out)
 #'
-plot.vimes.input <- function(x, y=NULL, col=vimes.pal1(length(x)),
+plot.vimes_data <- function(x, y=NULL, col=vimes.pal1(length(x)),
                              n=length(x), which=1:length(x), ...){
     
     ## Some basic processing of the arguments: selecting data to plot,

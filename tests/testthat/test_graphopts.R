@@ -8,11 +8,11 @@ test_that("test graph options", {
     rm(list=ls())
 
     ## generate data
-    out <- vimes.graph.opt(vertex.size=3)
+    out <- vimes_graph_opt(vertex_size = 3)
 
     ## check expected length
     expect_is(out, "list")
-    expect_equal(out$vertex.size, 3)
-    expect_error(vimes.graph.opt(foo="bar"))
+    expect_equal(out$vertex_size, 3)
+    expect_error(vimes_graph_opt(foo = "bar"))
 })
 

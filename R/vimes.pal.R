@@ -7,7 +7,7 @@
 #' @param n a number of colors
 #'
 #' @rdname palettes
-#' @aliases palettes vimes.pal1 vimes.pal2
+#' @aliases palettes vimes_pal1 vimes_pal2
 #'
 #' @export
 #' @importFrom grDevices colorRampPalette
@@ -24,9 +24,9 @@
 ## the number of colors of the palette, then we use color
 ## interpolation.
 
-vimes.pal1 <- function(n){
+vimes_pal1 <- function(n){
     colors <- c("#ff6666", "#666699")
-    if(n<length(colors)) {
+    if (n<length(colors)) {
         return(colors[seq_len(n)])
     } else {
         return(colorRampPalette(colors)(n))
@@ -36,12 +36,12 @@ vimes.pal1 <- function(n){
 
 #' @rdname palettes
 #' @export
-vimes.pal2 <- function(n){
+vimes_pal2 <- function(n){
     colors <- c("#ccddff", "#79d2a6", "#ffb3b3",
                 "#a4a4c1","#ffcc00", "#ff9f80",
                 "#ccff99", "#df9fbf","#ffcc99",
                 "#cdcdcd")
-    if(n<length(colors)) {
+    if (n<length(colors)) {
         return(colors[seq_len(n)])
     } else {
         return(colorRampPalette(colors)(n))

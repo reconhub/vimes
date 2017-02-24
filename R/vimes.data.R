@@ -20,7 +20,7 @@
 #' out <- vimes.data(D1, D2)
 #' out
 #'
-vimes.data <- function(...){
+vimes_data <- function(...){
     ## Data passed through ... are meant to be pairwise distances
     ## between labelled cases; we process these inputs by i) turning
     ## them into matrices ii) ensuring matching of labels iii)
@@ -30,14 +30,20 @@ vimes.data <- function(...){
     ## PROCESS TYPES OF INPUT  ##
     ## extract data from list ##
     data <- list(...)
-    data.names <- names(data)
-    if(length(data)==0L) stop("no data to process")
+    data_names <- names(data)
+    if (length(data) == 0L) {
+        stop("no data to process")
+    }
 
     ## escape if data has been processed already
-    if(inherits(data[[1]],"vimes.input")) return(data[[1]])
+    if (inherits(data[[1]], "vimes_data")) {
+        return(data[[1]])
+    }
 
     ## if first item is a list, use it as input
-    if(is.list(data[[1]])) data <- data[[1]]
+    if (is.list(data[[1]])) {
+        data <- data[[1]]
+    }
 
     
     ## ENSURE MATRICES AND LABELLING ## 
@@ -46,8 +52,8 @@ vimes.data <- function(...){
     K <- length(data)
 
     ## assign labels if missing
-    for(i in seq_along(data)){
-        if(is.null(rownames(data[[i]]))) {
+    for (i in seq_along(data)) {
+        if (is.null(rownames(data[[i]]))) {
             rownames(data[[i]]) <- colnames(data[[i]]) <- 1:nrow(data[[i]])
         }
     }
@@ -61,10 +67,11 @@ vimes.data <- function(...){
     
     ## get labels to keep
     ## (i.e. present without NA everywhere)
-    lab.to.keep <- Reduce(intersect,
-                          lapply(data, function(e) rownames(e)[!apply(is.na(e),1,all)])
+    lab_to_keep <- Reduce(intersect,
+                          lapply(data,
+                                 function(e) rownames(e)[!apply(is.na(e),1,all)])
                           )
-    N <- length(lab.to.keep)
+    N <- length(lab_to_keep)
     if(N<2){
         warning("Data contain less than 2 cases without missing data.")
         return(NULL)
@@ -73,7 +80,7 @@ vimes.data <- function(...){
     ## remove NAs, order, store result
     out <- vector(K, mode="list")
     for(i in seq_along(data)){
-        out[[i]] <- stats::as.dist(data[[i]][lab.to.keep, lab.to.keep])
+        out[[i]] <- stats::as.dist(data[[i]][lab_to_keep, lab_to_keep])
     }
 
     
@@ -81,11 +88,11 @@ vimes.data <- function(...){
 
     ## Output will be a list of 'dist' objects; labels and the number
     ## of cases will be stored as attributes; the output will be a
-    ## list with the additional class vimes.input
-    names(out) <- data.names
-    attr(out, "labels") <- lab.to.keep
+    ## list with the additional class vimes_data
+    names(out) <- data_names
+    attr(out, "labels") <- lab_to_keep
     attr(out, "N") <- N
 
-    class(out) <- c("list", "vimes.input")
+    class(out) <- c("list", "vimes_data")
     return(out)
 }
