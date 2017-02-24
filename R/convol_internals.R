@@ -86,7 +86,7 @@ get_weights <- function(pi, max_kappa = 20) {
 
     x_val <- seq_len(max_kappa)
 
-    out <- stats::dgeom(x_val, pi)
+    out <- stats::dgeom(x_val-1, pi)
     out <- out / sum(out)
     return(out)
 }
