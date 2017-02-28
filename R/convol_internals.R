@@ -20,32 +20,6 @@
 
 
 
-## Functions which check provided arguments
-
-check_pi <- function(pi) {
-  if (!is.numeric(pi)) {
-    stop("pi must be numeric")
-  }
-
-  if (length(pi) != 1L) {
-    stop("pi must have a length of 1")
-  }
-
-  if (!is.finite(pi)) {
-    stop("non-finite values in pi")
-  }
-
-  if(pi < 0 || pi > 1) {
-    stop("pi must be between 0 and 1")
-  }
-
-  return(pi)
-}
-
-
-
-
-
 
 check_kappa <- function(kappa, only_one = FALSE) {
   if (!is.numeric(kappa)) {
@@ -69,33 +43,6 @@ check_kappa <- function(kappa, only_one = FALSE) {
   }
 
   return(kappa)
-}
-
-
-
-
-
-
-## 'pmf' stands for probability mass function; basically we check that all
-## values are positive, finite numbers and we standardise it so that it sums to
-## one.
-
-check_pmf <- function(x) {
-  if (!is.numeric(x)) {
-    stop("x must be numeric.")
-  }
-
-  if (any(!is.finite(x))) {
-    stop("Non-finite values in x.")
-  }
-
-  if(any(x < 0)) {
-    stop("x must be positive.")
-  }
-
-  x <- x / sum(x)
-
-  return(x)
 }
 
 
@@ -127,23 +74,6 @@ get_weights <- function(pi, max_kappa) {
 
   out <- stats::dgeom(x_val - 1, pi)
   out <- out / sum(out)
-  return(out)
-}
-
-
-
-
-
-
-## This simple function takes a vector 'x' and hads a tail of elements 'filling'
-## so that it reaches a length 'L'.
-
-fill_with <- function(x, filling, L = length(x)) {
-  if (L <= length(x)) {
-    return(x)
-  }
-  out <- rep(filling, L)
-  out[seq_along(x)] <- x
   return(out)
 }
 

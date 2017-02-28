@@ -50,6 +50,8 @@ set_igraph_opt <- function(g, opt){
 
 
 
+
+
 ## This has been written by Rich Fitzjohn. This function will modify a
 ## list with default values using a list of new values. Trying to add
 ## items not defined as default will trigger an error.
@@ -60,4 +62,75 @@ modify_defaults <- function(defaults, x){
         stop("Additional invalid options: ", paste(extra, collapse=", "))
     }
     modifyList(defaults, x)
+}
+
+
+
+
+
+
+## This simple function takes a vector 'x' and hads a tail of elements 'filling'
+## so that it reaches a length 'L'.
+
+fill_with <- function(x, filling, L = length(x)) {
+  if (L <= length(x)) {
+    return(x)
+  }
+  out <- rep(filling, L)
+  out[seq_along(x)] <- x
+  return(out)
+}
+
+
+
+
+
+
+## 'pmf' stands for probability mass function; basically we check that all
+## values are positive, finite numbers and we standardise it so that it sums to
+## one.
+
+check_pmf <- function(x) {
+  if (!is.numeric(x)) {
+    stop("x must be numeric.")
+  }
+
+  if (any(!is.finite(x))) {
+    stop("Non-finite values in x.")
+  }
+
+  if(any(x < 0)) {
+    stop("x must be positive.")
+  }
+
+  x <- x / sum(x)
+
+  return(x)
+}
+
+
+
+
+
+
+## This function checks that its argument is a single probability / proportion.
+
+check_one_proba <- function(x) {
+  if (!is.numeric(x)) {
+    stop("x must be numeric")
+  }
+
+  if (length(x) != 1L) {
+    stop("x must have a length of 1")
+  }
+
+  if (!is.finite(x)) {
+    stop("non-finite values in x")
+  }
+
+  if(x < 0 || x > 1) {
+    stop("x must be between 0 and 1")
+  }
+
+  return(x)
 }
