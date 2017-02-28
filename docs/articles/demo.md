@@ -69,7 +69,7 @@ x <- vimes_data(x)
 plot(x)
 ```
 
-![plot of chunk vimesdata](figs/vimesdata-1.png)
+<img src="figs/vimesdata-1.png" width="672" />
 
 We can now run `vimes` on the data:
 
@@ -128,7 +128,7 @@ The main graph is:
 plot(res$graph, main="Main graph")
 ```
 
-![plot of chunk res](figs/res-1.png)
+<img src="figs/res-1.png" width="672" />
 
 ```r
 for(i in 1:3) {
@@ -136,4 +136,4 @@ plot(res$separate_graphs[[i]]$graph, main = paste("Graph from data", i))
 }
 ```
 
-![plot of chunk res](figs/res-2.png)![plot of chunk res](figs/res-3.png)![plot of chunk res](figs/res-4.png)
+<img src="figs/res-2.png" width="672" /><img src="figs/res-3.png" width="672" /><img src="figs/res-4.png" width="672" />
