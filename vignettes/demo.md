@@ -1,9 +1,13 @@
-[![Travis-CI Build Status](https://travis-ci.org/reconhub/vimes.png?branch=master)](https://travis-ci.org/reconhub/vimes)
-[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/yd31pduk28k595k0/branch/master?svg=true)](https://ci.appveyor.com/project/thibautjombart/vimes/branch/master)
-[![codecov.io](https://codecov.io/github/reconhub/vimes/coverage.svg?branch=master)](https://codecov.io/github/reconhub/vimes?branch=master)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vimes)](https://cran.r-project.org/package=vimes)
-
-
+---
+title: "Detecting disease outbreaks using vimes"
+author: "Thibaut Jombart"
+date: "2017-02-28"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{vimes: a quick demo.}
+  \usepackage[utf8]{inputenc}
+---
 
 
 
@@ -51,6 +55,7 @@ compute Euclidean distances between the observations for each mixture.  In
 practice, each mixture would be a different data type (e.g. location, time of
 onset of symptoms, genetic sequences of the pathogen):
 
+
 ```r
 set.seed(2)
 dat1 <- rnorm(30, c(0,1,6))
@@ -61,6 +66,7 @@ x <- lapply(list(dat1, dat2, dat3), dist)
 
 The function `vimes_data` processes the data and ensures matching of the
 individuals across different data sources:
+
 
 ```r
 x <- vimes_data(x)
@@ -131,4 +137,3 @@ plot(res$separate_graphs[[i]]$graph, main = paste("Graph from data", i))
 ```
 ## Error in plot(res$separate_graphs[[i]]$graph, main = paste("Graph from data", : object 'res' not found
 ```
-
