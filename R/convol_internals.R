@@ -103,13 +103,27 @@ check_pmf <- function(x) {
 
 
 
+## This function identifies the maximum value of kappa to be considered for a
+## given value of 'pi' and threshold probability 'a'. It is defined as the (1-a)
+## quantile of the corresponding geometric distribution.
+
+get_max_kappa <- function(pi, a = 0.001) {
+  out <- stats::qgeom(1 - a, pi) + 1L
+  return(out)
+}
+
+
+
+
+
+
 ## This function computes weights for various values of kappa. Weights are given
 ## by the mass function geometric distribution. As it is truncated, we
 ## re-standardise values to have actual weights summing to 1.
 
-get_weights <- function(pi, max_kappa = 20) {
+get_weights <- function(pi, a) {
   pi <- check_pi(pi)
-  max_kappa <- check_kappa(max_kappa)
+  max_kappa <- get_max_kappa(pi, a)
 
   x_val <- seq_len(max_kappa)
 
@@ -182,4 +196,3 @@ convolve_empirical <- function(x, kappa) {
 
   return(out)
 }
-
