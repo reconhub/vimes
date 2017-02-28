@@ -104,11 +104,11 @@ check_pmf <- function(x) {
 
 
 ## This function identifies the maximum value of kappa to be considered for a
-## given value of 'pi' and threshold probability 'a'. It is defined as the (1-a)
+## given value of 'pi' and threshold probability 'alpha'. It is defined as the (1 - alpha)
 ## quantile of the corresponding geometric distribution.
 
-get_max_kappa <- function(pi, a = 0.001) {
-  out <- stats::qgeom(1 - a, pi) + 1L
+get_max_kappa <- function(pi, alpha = 0.001) {
+  out <- stats::qgeom(1 - alpha, pi) + 1L
   return(out)
 }
 
@@ -119,15 +119,16 @@ get_max_kappa <- function(pi, a = 0.001) {
 
 ## This function computes weights for various values of kappa. Weights are given
 ## by the mass function geometric distribution. As it is truncated, we
-## re-standardise values to have actual weights summing to 1.
+## re-standardise values to have actual weights summing to 1. 'alpha' is the
+## threshold probability used to determine the maximum value of 'kappa'.
 
-get_weights <- function(pi, a) {
+get_weights <- function(pi, alpha) {
   pi <- check_pi(pi)
-  max_kappa <- get_max_kappa(pi, a)
+  max_kappa <- get_max_kappa(pi, alpha)
 
   x_val <- seq_len(max_kappa)
 
-  out <- stats::dgeom(x_val-1, pi)
+  out <- stats::dgeom(x_val - 1, pi)
   out <- out / sum(out)
   return(out)
 }
@@ -175,24 +176,39 @@ convolve_spatial <- function(sd, kappa) {
 
 
 ## This convolution supposes that the user has specified a probability mass
-## function. Checks and standardisation are achieved by check_pmf.
+## function. Checks and standardisation are achieved by check_pmf. The argument
+## 'keep_all' triggers different behaviours and outputs:
 
-convolve_empirical <- function(x, kappa) {
+## - keep_all = FALSE: returns the 'kappa' convolution of the pmf
+
+## - keep_all = FALSE: returns all convolutions of the pmf from 1 to kappa
+
+convolve_empirical <- function(x, kappa, keep_all = TRUE) {
   x <- check_pmf(x)
   kappa <- check_kappa(kappa, only_one = TRUE)
+
+  if (kappa == 1) {
+    return(x)
+  }
 
 
   ## Computations should be checked by Anne
 
-  out <- x
-  if (kappa > 1) {
+  if (keep_all) {
+    out <- list()
+    out[[1]] <- x
+    for (k in 2:kappa) {
+      out[[k]] <- stats::convolve(out[[k-1]],
+                                  rev(x),
+                                  type="open")
+    }
+  } else {
+    out <- x
     for (k in 2:kappa) {
       out <- stats::convolve(out,
                              rev(x),
                              type="open")
-
     }
   }
-
   return(out)
 }
