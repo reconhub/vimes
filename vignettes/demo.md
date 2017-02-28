@@ -41,10 +41,6 @@ Then, to load the package, use:
 library("vimes")
 ```
 
-```
-## Error in library("vimes"): there is no package called 'vimes'
-```
-
 
 A short demo
 ------------------
@@ -70,36 +66,20 @@ individuals across different data sources:
 
 ```r
 x <- vimes_data(x)
-```
-
-```
-## Error in eval(expr, envir, enclos): could not find function "vimes_data"
-```
-
-```r
 plot(x)
 ```
 
-```
-## Error in xy.coords(x, y, xlabel, ylabel, log): 'x' is a list, but does not have components 'x' and 'y'
-```
+![plot of chunk vimesdata](figs/vimesdata-1.png)
 
 We can now run `vimes` on the data:
 
 ```r
 res <- vimes(x, cutoff = c(2,4,2))
-```
-
-```
-## Error in eval(expr, envir, enclos): could not find function "vimes"
-```
-
-```r
 names(res)
 ```
 
 ```
-## Error in eval(expr, envir, enclos): object 'res' not found
+## [1] "graph"           "clusters"        "cutoff"          "separate_graphs"
 ```
 
 ```r
@@ -107,7 +87,17 @@ res$graph
 ```
 
 ```
-## Error in eval(expr, envir, enclos): object 'res' not found
+## IGRAPH UN-- 30 104 -- 
+## + attr: layout_1 (g/n), layout_2 (g/n), layout_3 (g/n), layout
+## | (g/n), color_1 (v/c), color_2 (v/c), color_3 (v/c), size_1
+## | (v/n), size_2 (v/n), size_3 (v/n), label.family_1 (v/c),
+## | label.family_2 (v/c), label.family_3 (v/c), label.color_1 (v/c),
+## | label.color_2 (v/c), label.color_3 (v/c), name (v/c), color
+## | (v/c), size (v/n), label.family (v/c), label.color (v/c),
+## | weight_1 (e/n), weight_2 (e/n), weight_3 (e/n), label.color_1
+## | (e/c), label.color_2 (e/c), label.color_3 (e/c), label.color
+## | (e/c)
+## + edges (vertex names):
 ```
 
 ```r
@@ -115,7 +105,21 @@ res$clusters
 ```
 
 ```
-## Error in eval(expr, envir, enclos): object 'res' not found
+## $membership
+##  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 
+##  1  2  3  1  2  3  1  2  3  1  2  3  1  2  3  1  2  3  1  2  3  1  2  3  1 
+## 26 27 28 29 30 
+##  2  3  1  2  3 
+## 
+## $size
+## [1] 10 10 10
+## 
+## $K
+## [1] 3
+## 
+## $color
+##         1         2         3 
+## "#ccddff" "#79d2a6" "#ffb3b3"
 ```
 
 The main graph is:
@@ -124,9 +128,7 @@ The main graph is:
 plot(res$graph, main="Main graph")
 ```
 
-```
-## Error in plot(res$graph, main = "Main graph"): object 'res' not found
-```
+![plot of chunk res](figs/res-1.png)
 
 ```r
 for(i in 1:3) {
@@ -134,6 +136,4 @@ plot(res$separate_graphs[[i]]$graph, main = paste("Graph from data", i))
 }
 ```
 
-```
-## Error in plot(res$separate_graphs[[i]]$graph, main = paste("Graph from data", : object 'res' not found
-```
+![plot of chunk res](figs/res-2.png)![plot of chunk res](figs/res-3.png)![plot of chunk res](figs/res-4.png)
