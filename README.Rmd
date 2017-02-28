@@ -7,13 +7,13 @@
 ```{r compileVignette, results="hide",echo=FALSE,message=FALSE,fig.keep="none"}
 ## recompile vignette
 setwd("vignettes")
-knitr::knit("vimes.Rmd")
+knitr::knit("demo.Rmd")
 setwd("../")
 ```
 
 ```{r include, results="asis", echo=FALSE, warning=FALSE}
 ## read md of the vignette
-mdInput <- readLines("vignettes/vimes.md")
+mdInput <- readLines("vignettes/demo.md")
 
 ## remove vignette-specific headers
 toRemove <- 1:10

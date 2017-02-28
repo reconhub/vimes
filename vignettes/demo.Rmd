@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{vimes: VIsualisation and Monitoring of EpidemicS.}
+  %\VignetteIndexEntry{vimes: a quick demo.}
   \usepackage[utf8]{inputenc}
 ---
 
