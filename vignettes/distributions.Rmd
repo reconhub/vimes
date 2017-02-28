@@ -10,10 +10,16 @@ vignette: >
 ---
 
 
-```{r setup, echo=FALSE}
-# set global chunk options: images will be 7x7 inches
-knitr::opts_chunk$set(fig.width=7, fig.height=7, fig.path="figs/dist_")
-options(digits = 4)
+```{r, echo = FALSE}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>", 
+  fig.width = 6, 
+  fig.height = 5, 
+  fig.path = "figs-dist/"
+)
+
 ```
 
 

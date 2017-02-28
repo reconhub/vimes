@@ -3,7 +3,6 @@
 [![codecov.io](https://codecov.io/github/reconhub/vimes/coverage.svg?branch=master)](https://codecov.io/github/reconhub/vimes?branch=master)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vimes)](https://cran.r-project.org/package=vimes)
 
-```
 
 
 *vimes*: VIsualisation and Monitoring of EpidemicS 
