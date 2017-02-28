@@ -138,6 +138,22 @@ get_weights <- function(pi, alpha) {
 
 
 
+## This simple function takes a vector 'x' and hads a tail of elements 'filling'
+## so that it reaches a length 'L'.
+
+fill_with <- function(x, filling, L = length(x)) {
+  if (L <= length(x)) {
+    return(x)
+  }
+  out <- rep(filling, L)
+  out[seq_along(x)] <- x
+  return(out)
+}
+
+
+
+
+
 
 ## Convolution of Gammas; we use the following analytic result: ... TBC by Anne
 
@@ -181,9 +197,10 @@ convolve_spatial <- function(sd, kappa) {
 
 ## - keep_all = FALSE: returns the 'kappa' convolution of the pmf
 
-## - keep_all = FALSE: returns all convolutions of the pmf from 1 to kappa
+## - keep_all = TRUE: returns all convolutions of the pmf from 1 to kappa; if
+## - so, it makes sure that all vectors have the same length.
 
-convolve_empirical <- function(x, kappa, keep_all = TRUE) {
+convolve_empirical <- function(x, kappa, keep_all = FALSE) {
   x <- check_pmf(x)
   kappa <- check_kappa(kappa, only_one = TRUE)
 
