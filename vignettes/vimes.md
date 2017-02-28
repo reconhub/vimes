@@ -1,7 +1,7 @@
 ---
 title: "Detecting disease outbreaks using vimes"
 author: "Thibaut Jombart"
-date: "2017-02-24"
+date: "2017-02-28"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
@@ -14,7 +14,10 @@ vignette: >
 *vimes*: VIsualisation and Monitoring of EpidemicS 
 
 =================================================
-*vimes* provides tools for integrating various types of surveillance data for detecting disease outbreaks. This document provides an overview of the package's content.
+
+*vimes* provides tools for integrating various types of surveillance data for
+ detecting disease outbreaks. This document provides an overview of the
+ package's content.
 
 
 Installing *vimes*
@@ -23,7 +26,7 @@ To install the development version from github:
 
 ```r
 library(devtools)
-install_github("thibautjombart/vimes")
+install_github("reconhub/vimes")
 ```
 
 The stable version can be installed from CRAN using:
@@ -43,8 +46,11 @@ A short demo
 ------------------
 Here is a short demonstration of the package using a dummy dataset.
 
-We first simulate the data using 3 mixtures of 3 normal distributions, and compute Euclidean distances between the observations for each mixture.
-In practice, each mixture would be a different data type (e.g. location, time of onset of symptoms, genetic sequences of the pathogen):
+We first simulate the data using 3 mixtures of 3 normal distributions, and
+compute Euclidean distances between the observations for each mixture.  In
+practice, each mixture would be a different data type (e.g. location, time of
+onset of symptoms, genetic sequences of the pathogen):
+
 
 ```r
 set.seed(2)
@@ -54,11 +60,12 @@ dat3 <- rnorm(30, c(8,1,2))
 x <- lapply(list(dat1, dat2, dat3), dist)
 ```
 
-The function `vimes.data` processes the data and ensures matching of the individuals across different data sources:
+The function `vimes_data` processes the data and ensures matching of the
+individuals across different data sources:
 
 
 ```r
-x <- vimes.data(x)
+x <- vimes_data(x)
 plot(x)
 ```
 
@@ -67,12 +74,12 @@ plot(x)
 We can now run `vimes` on the data:
 
 ```r
-res <- vimes(x, cutoff=c(2,4,2))
+res <- vimes(x, cutoff = c(2,4,2))
 names(res)
 ```
 
 ```
-## [1] "graph"           "clusters"        "cutoff"          "separate.graphs"
+## [1] "graph"           "clusters"        "cutoff"          "separate_graphs"
 ```
 
 ```r
@@ -125,7 +132,7 @@ plot(res$graph, main="Main graph")
 
 ```r
 for(i in 1:3) {
-plot(res$separate.graphs[[i]]$graph, main=paste("Graph from data", i))
+plot(res$separate_graphs[[i]]$graph, main = paste("Graph from data", i))
 }
 ```
 
