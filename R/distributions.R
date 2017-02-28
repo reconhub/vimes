@@ -17,13 +17,34 @@
 #'
 #' @author Anne Cori (a.cori@@imperial.ac.uk) and Thibaut Jombart
 #' (thibautjombart@@gmail.com).
-#' 
+#'
+#' @export
+#'
+#' @rdname distributions
+#'
+#' @param pi The reporting probability, i.e. the proportion of cases of the
+#'   outbreak that have been reported.
+#'
+#' @param alpha The probability threshold to be used to determine the maximum
+#'   value of kappa; this value ('max_kappa') will be the smallest kappa so that
+#'   p(kappa > max_kappa) < alpha. Defaults to 0.001.
+#'
+
+dpaircase <- function(pi, alpha = 0.001) {
+
+}
+
+
+
+
+
+
 #' @export
 #'
 #' @rdname distributions
 #'
 
-dpaircase <- function() {
+dtemporal <- function(pi, alpha = 0.001) {
 
 }
 
@@ -33,8 +54,10 @@ dpaircase <- function() {
 
 
 #' @export
+#'
 #' @rdname distributions
-dtemporal <- function() {
+
+dspatial <- function(pi, alpha = 0.001) {
 
 }
 
@@ -44,8 +67,10 @@ dtemporal <- function() {
 
 
 #' @export
+#'
 #' @rdname distributions
-dspatial <- function() {
+
+dgenetic <- function(pi, alpha = 0.001) {
 
 }
 
@@ -55,13 +80,21 @@ dspatial <- function() {
 
 
 #' @export
+#'
 #' @rdname distributions
-dgenetic <- function() {
+#'
+#' @param x A \code{numeric} vector providing the probability mass function, or
+#'   empirical frequencies, of pairwise distances.
 
+dempiric <- function(x, pi, alpha = 0.001) {
+  pi <- check_one_proba(pi)
+  alpha <- check_one_proba(alpha)
+  x <- check_pmf(x)
+
+  max_kappa <- get_max_kappa(pi, alpha)
+  weights <- get_weights(pi, max_kappa)
+  distributions <- convolve_empirical(x, max_kappa, TRUE)
+
+  out <- distributions %*% weights
+  return(as.vector(out))
 }
-
-
-
-
-
-

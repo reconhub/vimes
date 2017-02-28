@@ -5,15 +5,29 @@
 \alias{dtemporal}
 \alias{dspatial}
 \alias{dgenetic}
+\alias{dempiric}
 \title{Expected distributions of distances}
 \usage{
-dpaircase()
+dpaircase(pi, alpha = 0.001)
 
-dtemporal()
+dtemporal(pi, alpha = 0.001)
 
-dspatial()
+dspatial(pi, alpha = 0.001)
 
-dgenetic()
+dgenetic(pi, alpha = 0.001)
+
+dempiric(x, pi, alpha = 0.001)
+}
+\arguments{
+\item{pi}{The reporting probability, i.e. the proportion of cases of the
+outbreak that have been reported.}
+
+\item{alpha}{The probability threshold to be used to determine the maximum
+value of kappa; this value ('max_kappa') will be the smallest kappa so that
+p(kappa > max_kappa) < alpha. Defaults to 0.001.}
+
+\item{x}{A \code{numeric} vector providing the probability mass function, or
+empirical frequencies, of pairwise distances.}
 }
 \description{
 These functions compute the expected distributions of distances between pairs
