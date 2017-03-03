@@ -96,7 +96,6 @@ get_weights <- function(pi, max_kappa = 20) {
 
 
 
-
 ## Convolution of Gammas; we use the following analytic result: 
 ## the sum of k independant Gamma distributed random variables with shape a and scale b
 ## is Gamma distributed with shape k*a and scale b. 
@@ -108,7 +107,7 @@ convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa) {
   ## could potentially be done using 
   ## f <- function(x) sapply(x, function(e) stats::dgamma(e, kappa*shape, rate))
   ## but need to work on column/row names to clarify what's x and what's the gamma parameters
-    kappa <- check_kappa(kappa, only_one = FALSE)
+    kappa <- check_kappa(kappa, only_one = FALSE) # allow kappa to be a vector
 
     f <- function(x) stats::dgamma(x, kappa*shape, rate) 
     return(f) 
@@ -119,20 +118,36 @@ convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa) {
 ##  sum(get_weights(pi, max_kappa)*convolve_gamma(shape, rate=rate, kappa=1:max_kappa)(x))
 ## }
 
+
+
+
+
+
+## Add some blurb here
+
 convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, kappa) {
-    kappa <- check_kappa(kappa, only_one = TRUE)
+    kappa <- check_kappa(kappa, only_one = FALSE)  # allow kappa to be a vector
 
     ## ...
+    ## prob <- 1-gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1) # using prob = 1-p intead of p so that our definition correponds to that of rnbinom
+    ## f <- function(x) stats::dnbinom(x,size=gamma_shape*kappa,prob=prob)
+    ## # check that f(x) is the same as: choose(gamma_shape*kappa+x-1, x)*prob^(gamma_shape*kappa)*(1-prob)^x
+    ## return(f)
 }
 
 
 
 
 
+
+## Add some blurb here
+
 convolve_spatial <- function(sd, kappa) {
-    kappa <- check_kappa(kappa, only_one = TRUE)
+    kappa <- check_kappa(kappa, only_one = FALSE) # allow kappa to be a vector
 
     ## ...
+    ## f <- function(x) VGAM::drayleigh(x,scale=sd*sqrt(kappa))
+    ## return(f)
 }
 
 
