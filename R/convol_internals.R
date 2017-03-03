@@ -105,9 +105,12 @@ get_weights <- function(pi, max_kappa = 20) {
 
 convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa) { 
   ## at the moment not vectorized in x, need to work on that
+  ## could potentially be done using 
+  ## f <- function(x) sapply(x, function(e) stats::dgamma(e, kappa*shape, rate))
+  ## but need to work on column/row names to clarify what's x and what's the gamma parameters
     kappa <- check_kappa(kappa, only_one = FALSE)
 
-    f <- function(x) stats::dgamma(x, kappa*shape, rate)
+    f <- function(x) stats::dgamma(x, kappa*shape, rate) 
     return(f) 
 }
 ## the convolution weighted by the geometric weights should eventually look like something like that:
@@ -115,9 +118,6 @@ convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa) {
 ## {
 ##  sum(get_weights(pi, max_kappa)*convolve_gamma(shape, rate=rate, kappa=1:max_kappa)(x))
 ## }
-
-
-
 
 convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, kappa) {
     kappa <- check_kappa(kappa, only_one = TRUE)
