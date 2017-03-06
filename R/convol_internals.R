@@ -183,15 +183,29 @@ convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/
 convolve_spatial <- function(sd, kappa, keep_all = FALSE) {
   kappa <- check_kappa(kappa, only_one = TRUE) 
   
-  
-  f <- function(x) VGAM::drayleigh(x,scale=sd*sqrt(kappa))
+  if(keep_all)
+  {
+    f <- function(x) t(sapply(x, function(e) VGAM::drayleigh(e, scale=sd*sqrt(kappa))))
+  }else
+  {
+    f <- function(x) VGAM::drayleigh(x,scale=sd*sqrt(kappa))
+  }
   return(f)
 }
 ## the convolution weighted by the geometric weights should eventually look like something like that:
-## weighted_convolve_spatial <- function(x, sd, pi, max_kappa = 20) 
-## {
-##  sum(get_weights(pi, max_kappa)*convolve_spatial(sd=sd, kappa=1:max_kappa)(x))
-## }
+# weighted_convolve_spatial <- function(x, sd, pi, max_kappa = 20, alpha = 0.001) 
+# {
+#   pi <- check_one_proba(pi)
+#   alpha <- check_one_proba(alpha)
+# 
+#   max_kappa <- get_max_kappa(pi, alpha)
+#   weights <- get_weights(pi, max_kappa)
+#   distributions <- convolve_spatial(sd=sd, kappa=max_kappa, keep_all=TRUE)(x)
+# 
+#   out <- distributions %*% weights
+#   return(as.vector(out))
+# }
+
 
 
 
