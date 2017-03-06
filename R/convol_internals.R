@@ -90,7 +90,7 @@ get_weights <- function(pi, max_kappa) {
 ## Note that kappa in the next 3 function, kappa is a single value
 ## TO DO improve so kappa can be a vector of values. 
 
-convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa) { 
+convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa, keep_all = FALSE) { 
   ## at the moment not vectorized in x, need to work on that
   ## could potentially be done using 
   ## f <- function(x) sapply(x, function(e) stats::dgamma(e, kappa*shape, rate))
@@ -117,7 +117,7 @@ convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa) {
 ##    is NegBin distributed with parameters kr, p. 
 
 
-convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, kappa) {
+convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, kappa, keep_all = FALSE) {
     kappa <- check_kappa(kappa, only_one = FALSE)  # allow kappa to be a vector
 
     prob <- 1-gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1) # using prob = 1-p intead of p so that our definition correponds to that of rnbinom
@@ -142,7 +142,7 @@ convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/
 ## where each distance projected on each axis (x and y) is Normally distributed with mean 0 and variance s^2
 ## follows a Rayleigh distribution with scale s*sqrt(k)
 
-convolve_spatial <- function(sd, kappa) {
+convolve_spatial <- function(sd, kappa, keep_all = FALSE) {
     kappa <- check_kappa(kappa, only_one = FALSE) # allow kappa to be a vector
 
     f <- function(x) VGAM::drayleigh(x,scale=sd*sqrt(kappa))
