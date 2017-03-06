@@ -4,23 +4,79 @@
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vimes)](https://cran.r-project.org/package=vimes)
 
 
-```{r compileVignette, results="hide",echo=FALSE,message=FALSE,fig.keep="none"}
-## recompile vignette
-setwd("vignettes")
-knitr::knit("vimes.Rmd")
-setwd("../")
+
+*vimes*: VIsualisation and Monitoring of EpidemicS 
+==================================================
+
+*vimes* provides tools for integrating various types of surveillance data for
+ detecting disease outbreaks. This document provides an overview of the
+ package's content.
+
+
+<br>
+
+Installation
+-------------
+
+To install the development version from github:
+
+```{r, install, eval=FALSE}
+
+library(devtools)
+install_github("reconhub/vimes")
+
 ```
 
-```{r include, results="asis", echo=FALSE, warning=FALSE}
-## read md of the vignette
-mdInput <- readLines("vignettes/vimes.md")
+The stable version can be installed from CRAN using:
 
-## remove vignette-specific headers
-toRemove <- 1:10
-mdInput <- mdInput[-toRemove]
+```{r, install2, eval=FALSE}
 
-## restore right path for figures
-mdInput <- gsub("figs/","vignettes/figs/",mdInput)
-cat(paste(mdInput,collapse="\n"))
+install.packages("vimes")
+
 ```
+
+Then, to load the package, use:
+```{r, load}
+
+library("vimes")
+
+```
+
+
+
+<br>
+
+Documentation
+-------------
+
+*outbreaker2* is fully documented on a [dedicated
+ website](http://www.repidemicsconsortium.org/outbreaker2/). 
+
+It also comes with the following vignettes:
+
+- **`demo`**: brief overview of the package's content.
+- **`distribution`**: details of how expected distributions of distances between cases are computed
+
+
+
+<br>
+
+Contributors
+------------
+- [Thibaut Jombart](https://github.com/thibautjombart)
+- [Anne Cori](https://github.com/annecori)
+
+
+See details of contributions on: <br>
+https://github.com/reconhub/vimes/graphs/contributors
+
+
+
+Contributions are welcome via **pull requests**.
+
+Please note that this project is released with a [Contributor Code of
+Conduct](CONDUCT.md). By participating in this project you agree to abide by its
+terms.
+
+**Maintainer:** Thibaut Jombart (thibautjombart@gmail.com)
 

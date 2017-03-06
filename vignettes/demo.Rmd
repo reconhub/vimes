@@ -1,0 +1,69 @@
+---
+title: "vimes: a short demonstration"
+author: "Thibaut Jombart"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{demonsration}
+  \usepackage[utf8]{inputenc}
+---
+
+
+
+```{r, echo = FALSE}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>", 
+  fig.width = 6, 
+  fig.height = 6, 
+  fig.path = "figs-demo/"
+)
+
+```
+
+This vignette provides a short demonstration of the package using a dummy
+dataset.
+
+We first simulate the data using 3 mixtures of 3 normal distributions, and
+compute Euclidean distances between the observations for each mixture.  In
+practice, each mixture would be a different data type (e.g. location, time of
+onset of symptoms, genetic sequences of the pathogen):
+
+```{r, data}
+set.seed(2)
+dat1 <- rnorm(30, c(0,1,6))
+dat2 <- rnorm(30, c(0,0,1))
+dat3 <- rnorm(30, c(8,1,2))
+x <- lapply(list(dat1, dat2, dat3), dist)
+```
+
+The function `vimes_data` processes the data and ensures matching of the
+individuals across different data sources:
+
+```{r, vimesdata}
+library(vimes)
+
+x <- vimes_data(x)
+plot(x)
+
+```
+
+We can now run `vimes` on the data:
+```{r, vimes}
+
+res <- vimes(x, cutoff = c(2,4,2))
+names(res)
+
+res$graph
+res$clusters
+```
+
+The main graph is:
+```{r, res}
+plot(res$graph, main="Main graph")
+for(i in 1:3) {
+plot(res$separate_graphs[[i]]$graph, main = paste("Graph from data", i))
+}
+```

@@ -9,7 +9,8 @@ Authors@R:
 	     "a.cori@imperial.ac.uk", role = "aut"))
 Depends: R (>= 3.0.0)
 Imports: utils, graphics, igraph, VGAM, stats
-Suggests: testthat, knitr, rmarkdown
+Suggests: testthat, knitr, rmarkdown, distcrete
+Remotes: reconhub/distcrete
 Description: Integration of various surveillance data for detecting disease outbreaks. 
 License: GPL (>=2)
 LazyData: true

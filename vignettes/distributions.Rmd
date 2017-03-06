@@ -1,0 +1,122 @@
+---
+title: "Expected distributions of pairwise distances."
+author: "Thibaut Jombart, Anne Cori"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{distributions}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r, echo = FALSE}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>", 
+  fig.width = 6, 
+  fig.height = 5, 
+  fig.path = "figs-dist/"
+)
+
+```
+
+
+*vimes* uses reference distributions of (spatial, temporal, genetic) distances
+ between pairs of cases on a transmission chain to define thresholds for the
+ graph pruning algorithm. In such case, we asssume these distributions are
+ known, typically from the literature. However, these distributions change when
+ there are unobserved cases. In this vignette, we illustrate how the
+ distribution of expected distances between cases is computed for a give
+ reporting probability `pi`, and given a known distribution *F*(*d*).
+
+
+
+Distributions of distances with missing cases
+---------------------------------------------
+
+Let us assume a simple probability mass function of, say, the *serial
+interval*. We simulate it using the package *distcrete*, from a discretised
+Gamma distribution with shape 10 and rate 1.5:
+
+```{r, serial}
+
+si <- distcrete::distcrete("gamma", 1L,
+                           shape = 10,
+			   rate = 1.2)$d(1:20)
+
+plot(si, type = "h", lwd = 10, lend=2,
+     xlab = "Days after onset",
+     main = "Serial interval distribution")
+
+```
+
+This distribution assumes a single generation of infection between cases. Its
+general form for a number *K* of generations between cases is given by $K$
+convolutions of *F*(*d*). In *vimes*, these are internally computed by
+`convolve_empirical`. As the function is not exported, one needs to use:
+
+```{r, convolve}
+
+si_10 <- vimes:::convolve_empirical(si, 10, TRUE)
+
+```
+
+to obtain *K*=10 convolutions of the distribution (`si`); the last argument is
+to retain all intermediate convolutions for *k*=1, ..., K. 
+
+```{r, convolve2}
+
+head(si_10)
+apply(si_10, 2, sum)
+
+matplot(si_10[1:120,], type = "l", lty = 1, lwd = 2, col = rainbow(10),
+	xlab = "Days after onset",
+	main = "Serial interval, k = 1, ..., 10 missing cases")
+mtext("from k = 1 (red) to k = 10 (purple)", 3)
+
+```
+
+
+
+
+
+
+Integrating over missing cases
+------------------------------
+
+In practice, we do not know the number of generations between two cases, so we
+cannot use any of the convolutions above directly. However, it is possible to
+integrate over all possible values of *K*. In practice, we will limit the
+convolutions to a maximum value of *K* so that *p*(*k* > *K*) < threshold,
+defaulting to 0.001. The resulting distribution is a linear combination of the
+convolutions, weighted by the likelihoods of the corresponding values of
+*k*. These weights are computed for a given reporting probability `pi` by, for
+instance:
+
+```{r, weights}
+
+w <- vimes:::get_weights(0.6, 10)
+plot(w, type = "h", xlab = "k", ylab = "weight",
+     lwd = 10, lend = 2, main = "Weights")
+
+```
+
+for a reporting probability of 0.6 and a maximum value of *k* of 10.  The final
+distribution combines the previous convolutions using these weights. This is
+achieved by the (exported) function `dempiric`:
+
+```{r, final}
+
+d_final <- dempiric(si, 0.6)
+head(d_final)
+sum(d_final)
+
+pal <- colorRampPalette(c("navy", "lightblue", "grey"))
+
+plot(d_final[1:80], type = "h", lwd = 3, lend = 2,
+     col = pal(80), xlab = "Days after onset",
+     main = "Distributions of temporal distances for pi = 60%")
+
+```
