@@ -129,22 +129,42 @@ convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa, keep_all = FA
 ## 2) the sum of k independant NegBin distributed random variables with parameters r, p
 ##    is NegBin distributed with parameters kr, p. 
 
+## The argument
+## 'keep_all' triggers different behaviours and outputs:
+##    - keep_all = FALSE: returns the 'kappa' convolution of the pmf
+##    - keep_all = TRUE: returns all convolutions of the pmf from 1 to kappa;
 
 convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, kappa, keep_all = FALSE) {
   kappa <- check_kappa(kappa, only_one = TRUE) 
   
   prob <- 1-gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1) # using prob = 1-p intead of p so that our definition correponds to that of rnbinom
-  f <- function(x) stats::dnbinom(x,size=gamma_shape*kappa,prob=prob)
+  
+  if(keep_all)
+  {
+    f <- function(x) t(sapply(x, function(e) stats::dnbinom(e, size=(1:kappa)*gamma_shape, prob=prob)))
+  }else
+  {
+    f <- function(x) stats::dnbinom(x,size=kappa*gamma_shape,prob=prob)
+  }
   return(f)
 }
-# TO DO: add a test to check that convolve_gamma_poisson(gamma_shape=gamma_shape, gamma_rate=gamma_rate, poisson_rate=poisson_rate, kappa=kappa)(x) is the same as: 
+# TO DO: could add a test to check that convolve_gamma_poisson(gamma_shape=gamma_shape, gamma_rate=gamma_rate, poisson_rate=poisson_rate, kappa=kappa)(x) is the same as: 
 # choose(gamma_shape*kappa+x-1, x)*(1-gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1))^(gamma_shape*kappa)*(gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1))^x
 
 ## the convolution weighted by the geometric weights should eventually look like something like that:
-## weighted_convolve_gamma_poisson <- function(x, gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, pi, max_kappa = 20) 
-## {
-##  sum(get_weights(pi, max_kappa)*convolve_gamma_poisson(gamma_shape, gamma_rate=gamma_rate, poisson_rate=poisson_rate, kappa=1:max_kappa)(x))
-## }
+# weighted_convolve_gamma_poisson <- function(x, gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, pi, alpha = 0.001) 
+# {
+#   pi <- check_one_proba(pi)
+#   alpha <- check_one_proba(alpha)
+# 
+#   max_kappa <- get_max_kappa(pi, alpha)
+#   weights <- get_weights(pi, max_kappa)
+#   distributions <- convolve_gamma_poisson(gamma_shape, gamma_rate=gamma_rate, poisson_rate=poisson_rate, kappa=max_kappa, keep_all=TRUE)(x)
+# 
+#   out <- distributions %*% weights
+#   return(as.vector(out))
+# }
+
 
 
 
@@ -154,6 +174,11 @@ convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/
 ## Convolution of k independant distances in Euclidian space, 
 ## where each distance projected on each axis (x and y) is Normally distributed with mean 0 and variance s^2
 ## follows a Rayleigh distribution with scale s*sqrt(k)
+
+## The argument
+## 'keep_all' triggers different behaviours and outputs:
+##    - keep_all = FALSE: returns the 'kappa' convolution of the pmf
+##    - keep_all = TRUE: returns all convolutions of the pmf from 1 to kappa;
 
 convolve_spatial <- function(sd, kappa, keep_all = FALSE) {
   kappa <- check_kappa(kappa, only_one = TRUE) 
