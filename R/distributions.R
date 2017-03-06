@@ -32,6 +32,31 @@
 #'   this value ('max_kappa') will be the smallest k so that
 #'   p(k > max_kappa) < alpha. Defaults to 0.001.
 #'   
+#' @examples
+#'  #### compare dempiric and dtemporal ####
+#'  
+#'  ## compute empirical distribution correponding to exponential(mean 50)
+#'  mean_exp <- 50
+#'  x <- 1:300
+#'  reporting_rate <- 0.5
+#'  p <- dgamma(x, shape=mean_exp, rate=1) 
+#'        # computes pdf of a gamma distr with shape mean_exp and scale=rate=1 
+#'        # (i.e. an exponential distr with mean mean_exp)
+#'
+#'  ## use this as an empirical distribution to feed into dempiric
+#'  empiric_exp_distr_with_underreporting <- dempiric(p, pi=reporting_rate)
+#'  temporal_distr_with_underreporting <- dtemporal(x, shape=mean_exp, rate=1, pi=reporting_rate)
+#'  
+#'  ## compare the two
+#'  correlation <- cor(empiric_exp_distr_with_underreporting[1:length(x)],temporal_distr_with_underreporting)
+#'  
+#'  ## graphical comparison
+#'  plot(x, empiric_exp_distr_with_underreporting[1:length(x)], xlab="Time", ylab="pdf", 
+#'        main="Pdf of time between a case and its closest ancestry in dataset
+#'              when SI is exponentially distributed with mean 50,
+#'              and reporting probability is 0.5", cex.main=1, pch=3)
+#'  lines(x, temporal_distr_with_underreporting, col="red")
+#'  legend("topright",c("using dempiric","using dtemporal"), pch=c(3, -1), lwd=c(-1, 1), col=c("black","red"), bty="n")
 
 dpaircase <- function(pi, alpha = 0.001) {
   
