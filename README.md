@@ -46,13 +46,13 @@ library("vimes")
 Documentation
 -------------
 
-*outbreaker2* is fully documented on a [dedicated
- website](http://www.repidemicsconsortium.org/outbreaker2/). 
+*vimes* is fully documented on a [dedicated
+ website](http://www.repidemicsconsortium.org/vimes/). 
 
 It also comes with the following vignettes:
 
-- **`demo`**: brief overview of the package's content.
-- **`distribution`**: details of how expected distributions of distances between cases are computed
+- [**`demo`**](http://www.repidemicsconsortium.org/vimes/articles/demo.html): brief overview of the package's content.
+- [**`distribution`**](http://www.repidemicsconsortium.org/vimes/articles/distributions.html): details of how expected distributions of distances between cases are computed
 
 
 
