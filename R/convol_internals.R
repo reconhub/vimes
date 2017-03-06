@@ -123,9 +123,11 @@ convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa) {
 
 
 
-## Convolution of Negative binomials (each defined as a Poisson-Gamma mixture); we use the following analytic result: 
-## the sum of k independant NegBin distributed random variables with parameters r, p
-## is NegBin distributed with parameters kr, p. 
+## Convolution of Poisson-Gamma mixtures; we use the following analytic results: 
+## 1) A Poisson(rate)-Gamma(shape, scale) mixture 
+##    is a Negative binomial(shape,scale*rate/(scale*rate+1)). 
+## 2) the sum of k independant NegBin distributed random variables with parameters r, p
+##    is NegBin distributed with parameters kr, p. 
 
 convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, kappa) {
     kappa <- check_kappa(kappa, only_one = FALSE)  # allow kappa to be a vector
@@ -147,17 +149,22 @@ convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/
 
 
 
-
-## Add some blurb here
+## Spatial comvolution; we use the following analytic results:
+## Convolution of k independant distances in Euclidian space, 
+## where each distance projected on each axis (x and y) is Normally distributed with mean 0 and variance s^2
+## follows a Rayleigh distribution with scale s*sqrt(k)
 
 convolve_spatial <- function(sd, kappa) {
     kappa <- check_kappa(kappa, only_one = FALSE) # allow kappa to be a vector
 
-    ## ...
-    ## f <- function(x) VGAM::drayleigh(x,scale=sd*sqrt(kappa))
-    ## return(f)
+    f <- function(x) VGAM::drayleigh(x,scale=sd*sqrt(kappa))
+    return(f)
 }
-
+## the convolution weighted by the geometric weights should eventually look like something like that:
+## weighted_convolve_spatial <- function(x, sd, pi, max_kappa = 20) 
+## {
+##  sum(get_weights(pi, max_kappa)*convolve_spatial(sd=sd, kappa=1:max_kappa)(x))
+## }
 
 
 
