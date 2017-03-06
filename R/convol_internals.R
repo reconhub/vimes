@@ -151,20 +151,6 @@ convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/
 # TO DO: could add a test to check that convolve_gamma_poisson(gamma_shape=gamma_shape, gamma_rate=gamma_rate, poisson_rate=poisson_rate, kappa=kappa)(x) is the same as: 
 # choose(gamma_shape*kappa+x-1, x)*(1-gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1))^(gamma_shape*kappa)*(gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1))^x
 
-## the convolution weighted by the geometric weights should eventually look like something like that:
-# weighted_convolve_gamma_poisson <- function(x, gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, pi, alpha = 0.001) 
-# {
-#   pi <- check_one_proba(pi)
-#   alpha <- check_one_proba(alpha)
-# 
-#   max_kappa <- get_max_kappa(pi, alpha)
-#   weights <- get_weights(pi, max_kappa)
-#   distributions <- convolve_gamma_poisson(gamma_shape, gamma_rate=gamma_rate, poisson_rate=poisson_rate, kappa=max_kappa, keep_all=TRUE)(x)
-# 
-#   out <- distributions %*% weights
-#   return(as.vector(out))
-# }
-
 
 
 

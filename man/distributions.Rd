@@ -14,7 +14,8 @@ dtemporal(pi, alpha = 0.001)
 
 dspatial(x, sd, pi, alpha = 0.001)
 
-dgenetic(pi, alpha = 0.001)
+dgenetic(x, gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate,
+  poisson_rate, pi, alpha = 0.001)
 
 dempiric(p, pi, alpha = 0.001)
 }
@@ -30,6 +31,12 @@ p(k > max_kappa) < alpha. Defaults to 0.001.}
 \item{x}{vector of quantiles.}
 
 \item{sd}{standard deviation of the Normal spatial kernel.}
+
+\item{gamma_shape, gamma_scale}{shape and scale of the gamma distribution used for the serial interval}
+
+\item{gamma_rate}{an alternative way to specify the scale of the gamma distribution used for the serial interval}
+
+\item{poisson_rate}{rate (i.e. mean) of the poisson distribution used for the per generation genetic mutation rate}
 
 \item{p}{A \code{numeric} vector providing the probability mass function, or
 empirical frequencies, of pairwise distances.}
