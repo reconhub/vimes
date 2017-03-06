@@ -1,18 +1,28 @@
 Package: vimes
 Version: 1.0.0
 Date: 2029-09-11
-Title: VIsualisation and Monitoring of EpidemicS 
-Authors@R: 
-	   c(TJ = person("Thibaut", "Jombart", , 
+Title: VIsualisation and Monitoring of EpidemicS
+Authors@R: c(TJ = person("Thibaut", "Jombart", , 
              "thibautjombart@gmail.com", role = c("aut", "cre")), 
 	     AC = person("Anne", "Cori", , 
 	     "a.cori@imperial.ac.uk", role = "aut"))
-Depends: R (>= 3.0.0)
-Imports: utils, graphics, igraph, VGAM, stats
-Suggests: testthat, knitr, rmarkdown, distcrete
+Depends:
+    R (>= 3.0.0)
+Imports:
+    utils,
+    graphics,
+    igraph,
+    VGAM,
+    stats
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown,
+    distcrete
 Remotes: reconhub/distcrete
-Description: Integration of various surveillance data for detecting disease outbreaks. 
+Description: Integration of various surveillance data for detecting disease
+    outbreaks.
 License: GPL (>=2)
 LazyData: true
-RoxygenNote: 6.0.0
+RoxygenNote: 5.0.1
 VignetteBuilder: knitr
