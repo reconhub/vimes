@@ -105,19 +105,7 @@ convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa, keep_all = FA
   }
   return(f) 
 }
-## the convolution weighted by the geometric weights should eventually look like something like that:
-# weighted_convolve_gamma <- function(x, shape, rate = 1, scale = 1/rate, pi, alpha = 0.001) 
-# {
-#   pi <- check_one_proba(pi)
-#   alpha <- check_one_proba(alpha)
-#   
-#   max_kappa <- get_max_kappa(pi, alpha)
-#   weights <- get_weights(pi, max_kappa)
-#   distributions <- convolve_gamma(shape, rate=rate, kappa=max_kappa, keep_all=TRUE)(x)
-#   
-#   out <- distributions %*% weights
-#   return(as.vector(out))
-# }
+
 
 
 

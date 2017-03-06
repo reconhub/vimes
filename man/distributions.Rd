@@ -10,7 +10,7 @@
 \usage{
 dpaircase(pi, alpha = 0.001)
 
-dtemporal(pi, alpha = 0.001)
+dtemporal(x, shape, rate = 1, scale = 1/rate, pi, alpha = 0.001)
 
 dspatial(x, sd, pi, alpha = 0.001)
 
@@ -29,6 +29,10 @@ this value ('max_kappa') will be the smallest k so that
 p(k > max_kappa) < alpha. Defaults to 0.001.}
 
 \item{x}{vector of quantiles.}
+
+\item{shape, scale}{shape and scale of the gamma distribution used for the serial interval}
+
+\item{rate}{an alternative way to specify the scale of the gamma distribution used for the serial interval}
 
 \item{sd}{standard deviation of the Normal spatial kernel.}
 
