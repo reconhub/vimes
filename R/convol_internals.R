@@ -100,7 +100,8 @@ get_weights <- function(pi, max_kappa = 20) {
 ## the sum of k independant Gamma distributed random variables with shape a and scale b
 ## is Gamma distributed with shape k*a and scale b. 
 
-## Note that kappa here is a single value.
+## Note that kappa in the next 3 function, kappa is a single value
+## TO DO improve so kappa can be a vector of values. 
 
 convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa) { 
   ## at the moment not vectorized in x, need to work on that
@@ -122,18 +123,25 @@ convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa) {
 
 
 
-
-## Add some blurb here
+## Convolution of Negative binomials (each defined as a Poisson-Gamma mixture); we use the following analytic result: 
+## the sum of k independant NegBin distributed random variables with parameters r, p
+## is NegBin distributed with parameters kr, p. 
 
 convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, kappa) {
     kappa <- check_kappa(kappa, only_one = FALSE)  # allow kappa to be a vector
 
-    ## ...
-    ## prob <- 1-gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1) # using prob = 1-p intead of p so that our definition correponds to that of rnbinom
-    ## f <- function(x) stats::dnbinom(x,size=gamma_shape*kappa,prob=prob)
-    ## # check that f(x) is the same as: choose(gamma_shape*kappa+x-1, x)*prob^(gamma_shape*kappa)*(1-prob)^x
-    ## return(f)
+    prob <- 1-gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1) # using prob = 1-p intead of p so that our definition correponds to that of rnbinom
+    f <- function(x) stats::dnbinom(x,size=gamma_shape*kappa,prob=prob)
+    return(f)
 }
+# TO DO: add a test to check that convolve_gamma_poisson(gamma_shape=gamma_shape, gamma_rate=gamma_rate, poisson_rate=poisson_rate, kappa=kappa)(x) is the same as: 
+# choose(gamma_shape*kappa+x-1, x)*(1-gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1))^(gamma_shape*kappa)*(gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1))^x
+
+## the convolution weighted by the geometric weights should eventually look like something like that:
+## weighted_convolve_gamma_poisson <- function(x, gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, pi, max_kappa = 20) 
+## {
+##  sum(get_weights(pi, max_kappa)*convolve_gamma_poisson(gamma_shape, gamma_rate=gamma_rate, poisson_rate=poisson_rate, kappa=1:max_kappa)(x))
+## }
 
 
 
