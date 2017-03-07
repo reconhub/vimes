@@ -34,6 +34,9 @@
 #'   
 #' @examples
 #'  #### compare dempiric and dtemporal ####
+#'  ## Note in this comparison we are not expecting to get exactly the same results 
+#'  ## since dempiric does the convolution between discretised gamma distributions
+#'  ## whilst dtemporal does the convolution between gamma distributions.
 #'  
 #'  ## compute empirical distribution correponding to exponential(mean 50)
 #'  mean_exp <- 50
