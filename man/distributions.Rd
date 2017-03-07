@@ -8,7 +8,9 @@
 \alias{dtemporal}
 \title{Expected distributions of distances}
 \usage{
-dpaircase(pi, alpha = 0.001)
+dpaircase(x, type = c("temporal", "genetic", "spatial"), gamma_shape,
+  gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, sd_spatial, pi,
+  alpha = 0.001)
 
 dtemporal(x, shape, rate = 1, scale = 1/rate, pi, alpha = 0.001)
 
@@ -20,6 +22,18 @@ dgenetic(x, gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate,
 dempiric(p, pi, alpha = 0.001)
 }
 \arguments{
+\item{x}{vector of quantiles.}
+
+\item{type}{type of distance to be considered (one of "temporal","genetic", or "spatial").}
+
+\item{gamma_shape, gamma_scale}{shape and scale of the gamma distribution used for the serial interval}
+
+\item{gamma_rate}{an alternative way to specify the scale of the gamma distribution used for the serial interval}
+
+\item{poisson_rate}{rate (i.e. mean) of the poisson distribution used for the per time unit genetic mutation rate}
+
+\item{sd_spatial}{standard deviation of the Normal spatial kernel.}
+
 \item{pi}{The reporting probability, i.e. the proportion of cases of the
 outbreak that have been reported.}
 
@@ -28,19 +42,11 @@ value of generations between two successive cases to consider;
 this value ('max_kappa') will be the smallest k so that
 p(k > max_kappa) < alpha. Defaults to 0.001.}
 
-\item{x}{vector of quantiles.}
-
 \item{shape, scale}{shape and scale of the gamma distribution used for the serial interval}
 
 \item{rate}{an alternative way to specify the scale of the gamma distribution used for the serial interval}
 
 \item{sd}{standard deviation of the Normal spatial kernel.}
-
-\item{gamma_shape, gamma_scale}{shape and scale of the gamma distribution used for the serial interval}
-
-\item{gamma_rate}{an alternative way to specify the scale of the gamma distribution used for the serial interval}
-
-\item{poisson_rate}{rate (i.e. mean) of the poisson distribution used for the per time unit genetic mutation rate}
 
 \item{p}{A \code{numeric} vector providing the probability mass function, or
 empirical frequencies, of pairwise distances.}
@@ -96,7 +102,8 @@ of gamma distributions.
      
  #### compare dempiric and dgenetic ####
  
- ## compute empirical distribution correponding to a Exponential(mean 50)-Poisson(mean 0.6) mixture
+ ## compute empirical distribution correponding to 
+ ## an Exponential(mean 50)-Poisson(mean 0.6) mixture
  mean_exp <- 50
  mutation_rate <- 0.6
  x <- 0:300
@@ -115,7 +122,8 @@ of gamma distributions.
      genetic_distr_with_underreporting)
  
  ## graphical comparison
- plot(x, empiric_exp_distr_with_underreporting[1:length(x)], xlab="Number of mutations", ylab="pmf", 
+ plot(x, empiric_exp_distr_with_underreporting[1:length(x)], 
+       xlab="Number of mutations", ylab="pmf", 
        main="Pmf of number of mutations between a case and its closest ancestry in dataset
              when SI is exponentially distributed with mean 50,
              mutation rate per time unit is 0.6, and reporting probability is 0.5"

@@ -24,6 +24,10 @@
 #'
 #' @param x vector of quantiles.
 #' 
+#' @param type type of distance to be considered (one of "temporal","genetic", or "spatial").
+#' 
+#' @param sd_spatial standard deviation of the Normal spatial kernel.
+#' 
 #' @param pi The reporting probability, i.e. the proportion of cases of the
 #'   outbreak that have been reported.
 #'
@@ -67,7 +71,8 @@
 #'      
 #'  #### compare dempiric and dgenetic ####
 #'  
-#'  ## compute empirical distribution correponding to a Exponential(mean 50)-Poisson(mean 0.6) mixture
+#'  ## compute empirical distribution correponding to 
+#'  ## an Exponential(mean 50)-Poisson(mean 0.6) mixture
 #'  mean_exp <- 50
 #'  mutation_rate <- 0.6
 #'  x <- 0:300
@@ -86,7 +91,8 @@
 #'      genetic_distr_with_underreporting)
 #'  
 #'  ## graphical comparison
-#'  plot(x, empiric_exp_distr_with_underreporting[1:length(x)], xlab="Number of mutations", ylab="pmf", 
+#'  plot(x, empiric_exp_distr_with_underreporting[1:length(x)], 
+#'        xlab="Number of mutations", ylab="pmf", 
 #'        main="Pmf of number of mutations between a case and its closest ancestry in dataset
 #'              when SI is exponentially distributed with mean 50,
 #'              mutation rate per time unit is 0.6, and reporting probability is 0.5"
@@ -95,8 +101,41 @@
 #'  legend("topright",c("using dempiric","using dgenetic"), 
 #'      pch=c(3, -1), lwd=c(-1, 1), col=c("black","red"), bty="n")
 
-dpaircase <- function(pi, alpha = 0.001) {
+dpaircase <- function(x, type=c("temporal","genetic","spatial"), 
+                      gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, 
+                      poisson_rate, 
+                      sd_spatial, 
+                      pi, alpha = 0.001) {
+  type <- match.arg(type)
   
+  if(type=="temporal")
+  {
+    if(any(is.null(c(gamma_shape, gamma_rate, gamma_scale))))
+    {
+      stop("type 'temporal' requires non null arguments for gamma_shape and either gamma_rate or gamma_scale. ")
+    }
+    out <- dtemporal(x, gamma_shape, gamma_rate, gamma_scale, pi, alpha)
+  }
+  
+  if(type=="genetic")
+  {
+    if(any(is.null(c(gamma_shape, gamma_rate, gamma_scale, poisson_rate))))
+    {
+      stop("type 'genetic' requires non null arguments for gamma_shape, gamma_rate (or gamma_scale), and poisson_rate. ")
+    }
+    out <- dgenetic(x, gamma_shape, gamma_rate, gamma_scale, poisson_rate, pi, alpha) 
+  }
+  
+  if(type=="spatial")
+  {
+    if(is.null(sd_spatial))
+    {
+      stop("type 'spatial' requires non null argument for sd_spatial. ")
+    }
+    out <- dspatial(x, sd_spatial, pi, alpha)
+  }
+  
+  return(out)
 }
 
 
