@@ -95,8 +95,6 @@
 #'  legend("topright",c("using dempiric","using dgenetic"), 
 #'      pch=c(3, -1), lwd=c(-1, 1), col=c("black","red"), bty="n")
 
-
-
 dpaircase <- function(pi, alpha = 0.001) {
   
 }

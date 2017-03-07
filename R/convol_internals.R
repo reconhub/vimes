@@ -159,7 +159,7 @@ convolve_spatial <- function(sd, kappa, keep_all = FALSE) {
   
   if(keep_all)
   {
-    f <- function(x) t(sapply(x, function(e) VGAM::drayleigh(e, scale=sd*sqrt(kappa))))
+    f <- function(x) t(sapply(x, function(e) VGAM::drayleigh(e, scale=sd*sqrt(1:kappa))))
   }else
   {
     f <- function(x) VGAM::drayleigh(x,scale=sd*sqrt(kappa))
