@@ -37,7 +37,7 @@
 #'  
 #'  ## compute empirical distribution correponding to exponential(mean 50)
 #'  mean_exp <- 50
-#'  x <- 1:300
+#'  x <- 0:300
 #'  reporting_rate <- 0.5
 #'  p <- dgamma(x, shape=mean_exp, rate=1) 
 #'        # computes pdf of a gamma distr with shape mean_exp and scale=rate=1 
@@ -60,6 +60,39 @@
 #'  lines(x, temporal_distr_with_underreporting, col="red")
 #'  legend("topright",c("using dempiric","using dtemporal"), 
 #'      pch=c(3, -1), lwd=c(-1, 1), col=c("black","red"), bty="n")
+#'      
+#'      
+#'  #### compare dempiric and dgenetic ####
+#'  
+#'  ## compute empirical distribution correponding to a Exponential(mean 50)-Poisson(mean 0.6) mixture
+#'  mean_exp <- 50
+#'  mutation_rate <- 0.6
+#'  x <- 0:300
+#'  reporting_rate <- 0.5
+#'  prob <- 1-mutation_rate/(mutation_rate+1)
+#'  p <- dnbinom(x, size=mean_exp,prob=prob) 
+#'        # computes pmf of a negative binomial distr with parameters size and prob
+#'
+#'  ## use this as an empirical distribution to feed into dempiric
+#'  empiric_exp_distr_with_underreporting <- dempiric(p, pi=reporting_rate)
+#'  genetic_distr_with_underreporting <- dgenetic(x, 
+#'      gamma_shape=mean_exp, gamma_rate=1, poisson_rate=mutation_rate, pi=reporting_rate)
+#'  
+#'  ## compare the two
+#'  correlation <- cor(empiric_exp_distr_with_underreporting[1:length(x)],
+#'      genetic_distr_with_underreporting)
+#'  
+#'  ## graphical comparison
+#'  plot(x, empiric_exp_distr_with_underreporting[1:length(x)], xlab="Number of mutations", ylab="pmf", 
+#'        main="Pmf of number of mutations between a case and its closest ancestry in dataset
+#'              when SI is exponentially distributed with mean 50,
+#'              mutation rate per time unit is 0.6, and reporting probability is 0.5"
+#'              , cex.main=1, pch=3)
+#'  lines(x, genetic_distr_with_underreporting, col="red")
+#'  legend("topright",c("using dempiric","using dgenetic"), 
+#'      pch=c(3, -1), lwd=c(-1, 1), col=c("black","red"), bty="n")
+
+
 
 dpaircase <- function(pi, alpha = 0.001) {
   
@@ -123,7 +156,7 @@ dspatial <- function(x, sd, pi, alpha = 0.001) {
 #' 
 #' @param gamma_shape,gamma_scale shape and scale of the gamma distribution used for the serial interval
 #' @param gamma_rate an alternative way to specify the scale of the gamma distribution used for the serial interval
-#' @param poisson_rate rate (i.e. mean) of the poisson distribution used for the per generation genetic mutation rate
+#' @param poisson_rate rate (i.e. mean) of the poisson distribution used for the per time unit genetic mutation rate
 
 dgenetic <- function(x, gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, pi, alpha = 0.001) {
   pi <- check_one_proba(pi)
@@ -131,7 +164,7 @@ dgenetic <- function(x, gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate,
   
   max_kappa <- get_max_kappa(pi, alpha)
   weights <- get_weights(pi, max_kappa)
-  distributions <- convolve_gamma_poisson(gamma_shape, gamma_rate=gamma_rate, poisson_rate=poisson_rate, kappa=max_kappa, keep_all=TRUE)(x)
+  distributions <- convolve_gamma_poisson(gamma_shape, gamma_rate=gamma_rate, gamma_scale=gamma_scale, poisson_rate=poisson_rate, kappa=max_kappa, keep_all=TRUE)(x)
   
   out <- distributions %*% weights
   return(as.vector(out))

@@ -74,10 +74,12 @@ of gamma distributions.
 
  ## use this as an empirical distribution to feed into dempiric
  empiric_exp_distr_with_underreporting <- dempiric(p, pi=reporting_rate)
- temporal_distr_with_underreporting <- dtemporal(x, shape=mean_exp, rate=1, pi=reporting_rate)
+ temporal_distr_with_underreporting <- dtemporal(x, 
+     shape=mean_exp, rate=1, pi=reporting_rate)
  
  ## compare the two
- correlation <- cor(empiric_exp_distr_with_underreporting[1:length(x)],temporal_distr_with_underreporting)
+ correlation <- cor(empiric_exp_distr_with_underreporting[1:length(x)],
+     temporal_distr_with_underreporting)
  
  ## graphical comparison
  plot(x, empiric_exp_distr_with_underreporting[1:length(x)], xlab="Time", ylab="pdf", 
@@ -85,7 +87,8 @@ of gamma distributions.
              when SI is exponentially distributed with mean 50,
              and reporting probability is 0.5", cex.main=1, pch=3)
  lines(x, temporal_distr_with_underreporting, col="red")
- legend("topright",c("using dempiric","using dtemporal"), pch=c(3, -1), lwd=c(-1, 1), col=c("black","red"), bty="n")
+ legend("topright",c("using dempiric","using dtemporal"), 
+     pch=c(3, -1), lwd=c(-1, 1), col=c("black","red"), bty="n")
 }
 \author{
 Anne Cori (a.cori@imperial.ac.uk) and Thibaut Jombart
