@@ -8,9 +8,9 @@
 \alias{dtemporal}
 \title{Expected distributions of distances}
 \usage{
-dpaircase(x, type = c("temporal", "genetic", "spatial"), gamma_shape,
-  gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, sd_spatial, pi,
-  alpha = 0.001)
+dpaircase(x, type = c("temporal", "genetic", "spatial", "empiric"),
+  gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate,
+  sd_spatial, p, pi, alpha = 0.001)
 
 dtemporal(x, shape, rate = 1, scale = 1/rate, pi, alpha = 0.001)
 
@@ -24,7 +24,7 @@ dempiric(p, pi, alpha = 0.001)
 \arguments{
 \item{x}{vector of quantiles.}
 
-\item{type}{type of distance to be considered (one of "temporal","genetic", or "spatial").}
+\item{type}{type of distance to be considered (one of "temporal","genetic", "spatial" or "empiric").}
 
 \item{gamma_shape, gamma_scale}{shape and scale of the gamma distribution used for the serial interval}
 
@@ -33,6 +33,9 @@ dempiric(p, pi, alpha = 0.001)
 \item{poisson_rate}{rate (i.e. mean) of the poisson distribution used for the per time unit genetic mutation rate}
 
 \item{sd_spatial}{standard deviation of the Normal spatial kernel.}
+
+\item{p}{A \code{numeric} vector providing the probability mass function, or
+empirical frequencies, of pairwise distances.}
 
 \item{pi}{The reporting probability, i.e. the proportion of cases of the
 outbreak that have been reported.}
@@ -47,9 +50,6 @@ p(k > max_kappa) < alpha. Defaults to 0.001.}
 \item{rate}{an alternative way to specify the scale of the gamma distribution used for the serial interval}
 
 \item{sd}{standard deviation of the Normal spatial kernel.}
-
-\item{p}{A \code{numeric} vector providing the probability mass function, or
-empirical frequencies, of pairwise distances.}
 }
 \description{
 These functions compute the expected distributions of distances between pairs
@@ -82,16 +82,17 @@ of gamma distributions.
        # (i.e. an exponential distr with mean mean_exp)
 
  ## use this as an empirical distribution to feed into dempiric
- empiric_exp_distr_with_underreporting <- dempiric(p, pi=reporting_rate)
- temporal_distr_with_underreporting <- dtemporal(x, 
-     shape=mean_exp, rate=1, pi=reporting_rate)
+ empiric_exp_distr_with_underreporting <- dpaircase(x, type="empiric", 
+     p=p, pi=reporting_rate) 
+ temporal_distr_with_underreporting <- dpaircase(x, type="temporal", 
+     gamma_shape=mean_exp, gamma_rate=1, pi=reporting_rate)
  
  ## compare the two
- correlation <- cor(empiric_exp_distr_with_underreporting[1:length(x)],
+ correlation <- cor(empiric_exp_distr_with_underreporting,
      temporal_distr_with_underreporting)
  
  ## graphical comparison
- plot(x, empiric_exp_distr_with_underreporting[1:length(x)], xlab="Time", ylab="pdf", 
+ plot(x, empiric_exp_distr_with_underreporting, xlab="Time", ylab="pdf", 
        main="Pdf of time between a case and its closest ancestry in dataset
              when SI is exponentially distributed with mean 50,
              and reporting probability is 0.5", cex.main=1, pch=3)
@@ -113,16 +114,17 @@ of gamma distributions.
        # computes pmf of a negative binomial distr with parameters size and prob
 
  ## use this as an empirical distribution to feed into dempiric
- empiric_exp_distr_with_underreporting <- dempiric(p, pi=reporting_rate)
- genetic_distr_with_underreporting <- dgenetic(x, 
+ empiric_exp_distr_with_underreporting <- dpaircase(x, type="empiric", 
+     p=p, pi=reporting_rate) 
+ genetic_distr_with_underreporting <- dpaircase(x, type="genetic",
      gamma_shape=mean_exp, gamma_rate=1, poisson_rate=mutation_rate, pi=reporting_rate)
  
  ## compare the two
- correlation <- cor(empiric_exp_distr_with_underreporting[1:length(x)],
+ correlation <- cor(empiric_exp_distr_with_underreporting,
      genetic_distr_with_underreporting)
  
  ## graphical comparison
- plot(x, empiric_exp_distr_with_underreporting[1:length(x)], 
+ plot(x, empiric_exp_distr_with_underreporting, 
        xlab="Number of mutations", ylab="pmf", 
        main="Pmf of number of mutations between a case and its closest ancestry in dataset
              when SI is exponentially distributed with mean 50,
