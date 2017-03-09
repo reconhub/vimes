@@ -21,3 +21,4 @@ This function displays histograms of pairwise distances and asks the user for a 
 \author{
 Thibaut Jombart \email{thibautjombart@gmail.com}
 }
+

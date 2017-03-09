@@ -58,11 +58,11 @@ dconvol <- function(x,
   }else if(type %in% "g")
   {
     prob <- 1-scale.t*mu/(scale.t*mu+1) # using prob = 1-p intead of p so that our definition correponds to that of rnbinom
-    p1 <- stats::dnbinom(x,size=shape.t*(k+1),prob=prob)
-    # check that p1 is the same as: choose(shape.t*(k+1)+x-1, x)*prob^(shape.t*(k+1))*(1-prob)^x
+    p1 <- stats::dnbinom(x,size=shape.t*k,prob=prob)
+    # check that p1 is the same as: choose(shape.t*k+x-1, x)*prob^(shape.t*k)*(1-prob)^x
   }else if(type %in% "s")
   {
-    p1 <- VGAM::drayleigh(x,scale=sigma.s*sqrt(k+1))
+    p1 <- VGAM::drayleigh(x,scale=sigma.s*sqrt(k))
   }
 
   return(sum(p1*p2))

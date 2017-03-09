@@ -25,23 +25,23 @@ check_kappa <- function(kappa, only_one = FALSE) {
   if (!is.numeric(kappa)) {
     stop("kappa must be numeric.")
   }
-
+  
   if (any(!is.finite(kappa))) {
     stop("Non-finite values in kappa.")
   }
-
+  
   if(any(kappa < 1)) {
     stop("kappa must be strictly positive.")
   }
-
+  
   kappa <- as.integer(round(kappa))
-
+  
   if (only_one) {
     if (length(kappa) != 1L) {
       stop("Only one value of kappa expected.")
     }
   }
-
+  
   return(kappa)
 }
 
@@ -71,7 +71,7 @@ get_max_kappa <- function(pi, alpha = 0.001) {
 
 get_weights <- function(pi, max_kappa) {
   x_val <- seq_len(max_kappa)
-
+  
   out <- stats::dgeom(x_val - 1, pi)
   out <- out / sum(out)
   return(out)
@@ -82,14 +82,28 @@ get_weights <- function(pi, max_kappa) {
 
 
 
-## Convolution of Gammas; we use the following analytic result: ... TBC by Anne
 
-## Note that kappa here is a single value.
+## Convolution of Gammas; we use the following analytic result: 
+## the sum of k independant Gamma distributed random variables with shape a and scale b
+## is Gamma distributed with shape k*a and scale b. 
 
-convolve_gamma <- function(shape, rate, kappa) {
-  kappa <- check_kappa(kappa, only_one = TRUE)
+## The argument
+## 'keep_all' triggers different behaviours and outputs:
+##    - keep_all = FALSE: returns the 'kappa' convolution of the pmf
+##    - keep_all = TRUE: returns all convolutions of the pmf from 1 to kappa;
 
-  ## ...
+convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa, keep_all = FALSE) { 
+  kappa <- check_kappa(kappa, only_one = TRUE) 
+  
+  if(keep_all)
+  {
+    f <- function(x) t(sapply(x, function(e) stats::dgamma(e, shape=(1:kappa)*shape, rate=rate)))
+  }else
+  {
+    f <- function(x) stats::dgamma(x, kappa*shape, rate) 
+    
+  }
+  return(f) 
 }
 
 
@@ -97,20 +111,60 @@ convolve_gamma <- function(shape, rate, kappa) {
 
 
 
-convolve_gamma_poisson <- function(gamma_shape, gamma_rate, poisson_rate, kappa) {
-  kappa <- check_kappa(kappa, only_one = TRUE)
+## Convolution of Poisson-Gamma mixtures; we use the following analytic results: 
+## 1) A Poisson(rate)-Gamma(shape, scale) mixture 
+##    is a Negative binomial(shape,scale*rate/(scale*rate+1)). 
+## 2) the sum of k independant NegBin distributed random variables with parameters r, p
+##    is NegBin distributed with parameters kr, p. 
 
-  ## ...
+## The argument
+## 'keep_all' triggers different behaviours and outputs:
+##    - keep_all = FALSE: returns the 'kappa' convolution of the pmf
+##    - keep_all = TRUE: returns all convolutions of the pmf from 1 to kappa;
+
+convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, kappa, keep_all = FALSE) {
+  kappa <- check_kappa(kappa, only_one = TRUE) 
+  
+  prob <- 1-gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1) # using prob = 1-p intead of p so that our definition correponds to that of rnbinom
+  
+  if(keep_all)
+  {
+    f <- function(x) t(sapply(x, function(e) stats::dnbinom(e, size=(1:kappa)*gamma_shape, prob=prob)))
+  }else
+  {
+    f <- function(x) stats::dnbinom(x,size=kappa*gamma_shape,prob=prob)
+  }
+  return(f)
 }
+# TO DO: could add a test to check that convolve_gamma_poisson(gamma_shape=gamma_shape, gamma_rate=gamma_rate, poisson_rate=poisson_rate, kappa=kappa)(x) is the same as: 
+# choose(gamma_shape*kappa+x-1, x)*(1-gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1))^(gamma_shape*kappa)*(gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1))^x
 
 
 
 
 
-convolve_spatial <- function(sd, kappa) {
-  kappa <- check_kappa(kappa, only_one = TRUE)
 
-  ## ...
+## Spatial comvolution; we use the following analytic results:
+## Convolution of k independant distances in Euclidian space, 
+## where each distance projected on each axis (x and y) is Normally distributed with mean 0 and variance s^2
+## follows a Rayleigh distribution with scale s*sqrt(k)
+
+## The argument
+## 'keep_all' triggers different behaviours and outputs:
+##    - keep_all = FALSE: returns the 'kappa' convolution of the pmf
+##    - keep_all = TRUE: returns all convolutions of the pmf from 1 to kappa;
+
+convolve_spatial <- function(sd, kappa, keep_all = FALSE) {
+  kappa <- check_kappa(kappa, only_one = TRUE) 
+  
+  if(keep_all)
+  {
+    f <- function(x) t(sapply(x, function(e) VGAM::drayleigh(e, scale=sd*sqrt(1:kappa))))
+  }else
+  {
+    f <- function(x) VGAM::drayleigh(x,scale=sd*sqrt(kappa))
+  }
+  return(f)
 }
 
 
@@ -129,7 +183,7 @@ convolve_spatial <- function(sd, kappa) {
 
 convolve_empirical <- function(x, kappa, keep_all = FALSE) {
   kappa <- check_kappa(kappa, only_one = TRUE)
-
+  
   if (kappa == 1) {
     if (keep_all) {
       x <- matrix(x)
@@ -137,31 +191,31 @@ convolve_empirical <- function(x, kappa, keep_all = FALSE) {
     }
     return(x)
   }
-
-
+  
+  
   ## Computations should be checked by Anne
-
+  
   if (keep_all) {
     out <- list()
     out[[1]] <- x
-
+    
     for (k in 2:kappa) {
       out[[k]] <- stats::convolve(out[[k-1]],
                                   rev(x),
                                   type="open")
     }
-
-
+    
+    
     ## Here we shape the output as a data.frame where each column is a different
     ## value of kappa.
-
+    
     L <- length(out[[kappa]])
     out <- lapply(out, fill_with, 0, L)
     out <- as.matrix(data.frame(out))
     colnames(out) <- seq_len(ncol(out))
   } else {
     out <- x
-
+    
     for (k in 2:kappa) {
       out <- stats::convolve(out,
                              rev(x),
