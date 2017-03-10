@@ -4,8 +4,8 @@
 \alias{plot.vimes_data}
 \title{Plot input data for vimes}
 \usage{
-plot.vimes_data(x, y = NULL, col = vimes_pal1(length(x)), n = length(x),
-  which = 1:length(x), ...)
+\method{plot}{vimes_data}(x, y = NULL, col = vimes_pal1(length(x)),
+  n = length(x), which = 1:length(x), ...)
 }
 \arguments{
 \item{x}{a \code{vimes_data} object, as returned by \code{vimes_data}}
@@ -38,4 +38,3 @@ plot(out)
 \author{
 Thibaut Jombart \email{thibautjombart@gmail.com}
 }
-

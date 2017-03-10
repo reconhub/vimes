@@ -62,9 +62,6 @@ distribution of distances}
  plot(res$graph)
 
 }
-\author{
-Thibaut Jombart \email{thibautjombart@gmail.com}
-}
 \seealso{
 \describe{
 
@@ -74,4 +71,6 @@ Thibaut Jombart \email{thibautjombart@gmail.com}
 
 }
 }
-
+\author{
+Thibaut Jombart \email{thibautjombart@gmail.com}
+}
