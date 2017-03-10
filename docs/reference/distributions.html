@@ -78,28 +78,51 @@ of cases given a case reporting probability &#39;pi&#39;. Analytical results are
 for some special cases, including:</p>
     
 
-    <pre><span class='fu'>dpaircase</span>(<span class='no'>pi</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.001</span>)
+    <pre><span class='fu'>dpaircase</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"temporal"</span>, <span class='st'>"genetic"</span>, <span class='st'>"spatial"</span>, <span class='st'>"empiric"</span>),
+  <span class='no'>gamma_shape</span>, <span class='kw'>gamma_rate</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>gamma_scale</span> <span class='kw'>=</span> <span class='fl'>1</span>/<span class='no'>gamma_rate</span>, <span class='no'>poisson_rate</span>,
+  <span class='no'>sd_spatial</span>, <span class='no'>p</span>, <span class='no'>pi</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.001</span>)
 
-<span class='fu'>dtemporal</span>(<span class='no'>pi</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.001</span>)
+<span class='fu'>dtemporal</span>(<span class='no'>x</span>, <span class='no'>shape</span>, <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>1</span>/<span class='no'>rate</span>, <span class='no'>pi</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.001</span>)
 
-<span class='fu'>dspatial</span>(<span class='no'>pi</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.001</span>)
+<span class='fu'>dspatial</span>(<span class='no'>x</span>, <span class='no'>sd</span>, <span class='no'>pi</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.001</span>)
 
-<span class='fu'>dgenetic</span>(<span class='no'>pi</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.001</span>)
+<span class='fu'>dgenetic</span>(<span class='no'>x</span>, <span class='no'>gamma_shape</span>, <span class='kw'>gamma_rate</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>poisson_rate</span>, <span class='no'>pi</span>,
+  <span class='kw'>gamma_scale</span> <span class='kw'>=</span> <span class='fl'>1</span>/<span class='no'>gamma_rate</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.001</span>)
 
-<span class='fu'>dempiric</span>(<span class='no'>x</span>, <span class='no'>pi</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.001</span>)</pre>
+<span class='fu'>dempiric</span>(<span class='no'>p</span>, <span class='no'>pi</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.001</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
+      <dt>x</dt>
+      <dd>vector of quantiles.</dd>
+      <dt>type</dt>
+      <dd>type of distance to be considered (one of &quot;temporal&quot;,&quot;genetic&quot;,
+&quot;spatial&quot; or &quot;empiric&quot;).</dd>
+      <dt>gamma_shape, gamma_scale</dt>
+      <dd>shape and scale of the gamma distribution used for the serial interval</dd>
+      <dt>gamma_rate</dt>
+      <dd>an alternative way to specify the scale of the gamma distribution used for the serial interval</dd>
+      <dt>poisson_rate</dt>
+      <dd>rate (i.e. mean) of the poisson distribution used for the per time unit genetic mutation rate</dd>
+      <dt>sd_spatial</dt>
+      <dd>standard deviation of the Normal spatial kernel.</dd>
+      <dt>p</dt>
+      <dd>A <code>numeric</code> vector providing the probability mass function, or
+empirical frequencies, of pairwise distances.</dd>
       <dt>pi</dt>
       <dd>The reporting probability, i.e. the proportion of cases of the
 outbreak that have been reported.</dd>
       <dt>alpha</dt>
       <dd>The probability threshold to be used to determine the maximum
-value of kappa; this value (&#39;max_kappa&#39;) will be the smallest kappa so that
-p(kappa &gt; max_kappa) &lt; alpha. Defaults to 0.001.</dd>
-      <dt>x</dt>
-      <dd>A <code>numeric</code> vector providing the probability mass function, or
-empirical frequencies, of pairwise distances.</dd>
+value of generations between two successive cases to consider;
+this value (&#39;max_kappa&#39;) will be the smallest k so that
+p(k &gt; max_kappa) &lt; alpha. Defaults to 0.001.</dd>
+      <dt>shape, scale</dt>
+      <dd>shape and scale of the gamma distribution used for the serial interval</dd>
+      <dt>rate</dt>
+      <dd>an alternative way to specify the scale of the gamma distribution used for the serial interval</dd>
+      <dt>sd</dt>
+      <dd>standard deviation of the Normal spatial kernel.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -114,6 +137,63 @@ of gamma distributions.</p>
 </ul></p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'>## COMPARE DEMPIRIC AND DTEMPORAL</span>
+<span class='co'>## Note in this comparison we are not expecting to get exactly the same</span>
+<span class='co'>## results since dempiric does the convolution between discretised gamma</span>
+<span class='co'>## distributions whilst dtemporal does the convolution between gamma</span>
+<span class='co'>## distributions.</span>
+<span class='co'>## compute empirical distribution correponding to exponential(mean 50)</span>
+<span class='no'>mean_exp</span> <span class='kw'>&lt;-</span> <span class='fl'>50</span>
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fl'>0</span>:<span class='fl'>300</span>
+<span class='no'>reporting_rate</span> <span class='kw'>&lt;-</span> <span class='fl'>0.5</span>
+<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>dgamma</span>(<span class='no'>x</span>, <span class='kw'>shape</span> <span class='kw'>=</span> <span class='no'>mean_exp</span>, <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='co'>## computes pdf of a gamma distr with shape mean_exp and scale = rate = 1</span>
+<span class='co'>## (i.e. an exponential distr with mean mean_exp)</span>
+<span class='co'>## use this as an empirical distribution to feed into dempiric</span>
+<span class='no'>empiric_exp_distr_r50</span> <span class='kw'>&lt;-</span> <span class='fu'>dpaircase</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"empiric"</span>,
+                                   <span class='kw'>p</span> <span class='kw'>=</span> <span class='no'>p</span>,
+                                   <span class='kw'>pi</span> <span class='kw'>=</span> <span class='no'>reporting_rate</span>)
+<span class='no'>temporal_distr_r50</span> <span class='kw'>&lt;-</span> <span class='fu'>dpaircase</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"temporal"</span>,
+                                <span class='kw'>gamma_shape</span> <span class='kw'>=</span> <span class='no'>mean_exp</span>,
+                                <span class='kw'>gamma_rate</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+                                <span class='kw'>pi</span> <span class='kw'>=</span> <span class='no'>reporting_rate</span>)
+<span class='co'>## compare the two</span>
+<span class='no'>correlation</span> <span class='kw'>&lt;-</span> <span class='fu'>cor</span>(<span class='no'>empiric_exp_distr_r50</span>,
+                   <span class='no'>temporal_distr_r50</span>)
+<span class='co'>## graphical comparison</span>
+<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='no'>empiric_exp_distr_r50</span>, <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"pdf"</span>,
+     <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Time between linked cases"</span>,
+     <span class='kw'>cex.main</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>pch</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='input'><span class='fu'>mtext</span>(<span class='st'>"SI ~ exp(mean=50), pi = 0.5"</span>, <span class='kw'>side</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='input'><span class='fu'>lines</span>(<span class='no'>x</span>, <span class='no'>temporal_distr_r50</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>)</div><div class='input'><span class='fu'>legend</span>(<span class='st'>"topright"</span>, <span class='fu'>c</span>(<span class='st'>"dempiric"</span>,<span class='st'>"dtemporal"</span>),
+       <span class='kw'>pch</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, -<span class='fl'>1</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fu'>c</span>(-<span class='fl'>1</span>, <span class='fl'>1</span>),
+       <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"black"</span>,<span class='st'>"red"</span>), <span class='kw'>bty</span> <span class='kw'>=</span> <span class='st'>"n"</span>)</div><img src='dpaircase-5.png' alt='' width='540' height='400' /><div class='input'><span class='co'>## COMPARE DEMPIRIC AND DGENETIC</span>
+<span class='co'>## compute empirical distribution correponding to</span>
+<span class='co'>## an Exponential(mean 50)-Poisson(mean 0.6) mixture</span>
+<span class='no'>mean_exp</span> <span class='kw'>&lt;-</span> <span class='fl'>50</span>
+<span class='no'>mutation_rate</span> <span class='kw'>&lt;-</span> <span class='fl'>0.6</span>
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fl'>0</span>:<span class='fl'>300</span>
+<span class='no'>reporting_rate</span> <span class='kw'>&lt;-</span> <span class='fl'>0.5</span>
+<span class='no'>prob</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>-<span class='no'>mutation_rate</span>/(<span class='no'>mutation_rate</span>+<span class='fl'>1</span>)
+<span class='co'>## pmf of a negative binomial distr with parameters size and prob</span>
+<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>dnbinom</span>(<span class='no'>x</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='no'>mean_exp</span>,<span class='kw'>prob</span> <span class='kw'>=</span> <span class='no'>prob</span>)
+<span class='co'>## use this as an empirical distribution to feed into dempiric</span>
+<span class='no'>empiric_exp_distr_r50</span> <span class='kw'>&lt;-</span> <span class='fu'>dpaircase</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"empiric"</span>,
+                                   <span class='kw'>p</span> <span class='kw'>=</span> <span class='no'>p</span>, <span class='kw'>pi</span> <span class='kw'>=</span> <span class='no'>reporting_rate</span>)
+<span class='no'>genetic_distr_r50</span> <span class='kw'>&lt;-</span> <span class='fu'>dpaircase</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"genetic"</span>,
+                               <span class='kw'>gamma_shape</span> <span class='kw'>=</span> <span class='no'>mean_exp</span>,
+                               <span class='kw'>gamma_rate</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+                               <span class='kw'>poisson_rate</span> <span class='kw'>=</span> <span class='no'>mutation_rate</span>,
+                               <span class='kw'>pi</span> <span class='kw'>=</span> <span class='no'>reporting_rate</span>)
+<span class='co'>## compare the two</span>
+<span class='no'>correlation</span> <span class='kw'>&lt;-</span> <span class='fu'>cor</span>(<span class='no'>empiric_exp_distr_r50</span>,
+                   <span class='no'>genetic_distr_r50</span>)
+<span class='co'>## graphical comparison</span>
+<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='no'>empiric_exp_distr_r50</span>,
+     <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Number of mutations"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"pmf"</span>,
+     <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Mutations between linked cases"</span>,
+     <span class='kw'>cex.main</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>pch</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='input'><span class='fu'>mtext</span>(<span class='st'>"SI ~ exp(mean=50), pi = 0.6"</span>, <span class='kw'>side</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='input'><span class='fu'>lines</span>(<span class='no'>x</span>, <span class='no'>genetic_distr_r50</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>)</div><div class='input'><span class='fu'>legend</span>(<span class='st'>"topright"</span>, <span class='fu'>c</span>(<span class='st'>"dempiric"</span>, <span class='st'>"dgenetic"</span>),
+       <span class='kw'>pch</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>, -<span class='fl'>1</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fu'>c</span>(-<span class='fl'>1</span>, <span class='fl'>1</span>),
+       <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"black"</span>,<span class='st'>"red"</span>), <span class='kw'>bty</span> <span class='kw'>=</span> <span class='st'>"n"</span>)</div><img src='dpaircase-10.png' alt='' width='540' height='400' /></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -121,7 +201,9 @@ of gamma distributions.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     
