@@ -239,8 +239,9 @@ dspatial <- function(x, sd, pi, alpha = 0.001) {
 #' @param poisson_rate rate (i.e. mean) of the poisson distribution used for the per time unit genetic mutation rate
 
 dgenetic <- function(x, gamma_shape, gamma_rate = 1,
-                     poisson_rate, pi,
                      gamma_scale = 1 / gamma_rate,
+                     poisson_rate, 
+                     pi,
                      alpha = 0.001) {
   pi <- check_one_proba(pi)
   alpha <- check_one_proba(alpha)
