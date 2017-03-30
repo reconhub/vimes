@@ -150,7 +150,7 @@ convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1,
       }
     }
   } else {
-    f <- function(x) stats::dnbinom(x,size=kappa*gamma_shape,prob=prob)
+    f <- function(x) stats::dnbinom(x, size = kappa * gamma_shape, prob =prob)
   }
   return(f)
 }
@@ -176,8 +176,9 @@ convolve_spatial <- function(sd, kappa, keep_all = FALSE) {
   kappa <- check_kappa(kappa, only_one = TRUE)
 
   if (keep_all) {
-    f <- function(x) sapply(x, function(e)
-      VGAM::drayleigh(e, scale=sd*sqrt(1:kappa)))
+    f <- function(x) {
+      out <- sapply(x, function(e)
+        VGAM::drayleigh(e, scale=sd*sqrt(1:kappa)))
 
       if (is.matrix(out)) {
         return(t(out))
@@ -185,7 +186,7 @@ convolve_spatial <- function(sd, kappa, keep_all = FALSE) {
         return(matrix(out))
       }
 
-
+    }
   } else {
     f <- function(x) VGAM::drayleigh(x,scale=sd*sqrt(kappa))
   }
