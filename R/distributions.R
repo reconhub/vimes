@@ -135,7 +135,9 @@ dpaircase <- function(x, type = c("temporal","genetic","spatial", "empiric"),
                    "gamma_shape and either gamma_rate or gamma_scale.")
       stop(msg)
     }
-    out <- dtemporal(x, gamma_shape, gamma_rate, gamma_scale, pi, alpha)
+    out <- dtemporal(x, shape = gamma_shape,
+                     scale = gamma_scale,
+                     pi = pi, alpha = alpha)
   }
 
 
@@ -146,9 +148,10 @@ dpaircase <- function(x, type = c("temporal","genetic","spatial", "empiric"),
                    "and poisson_rate.")
       stop(msg)
     }
-    out <- dgenetic(x, gamma_shape, gamma_rate,
-                    gamma_scale, poisson_rate,
-                    pi, alpha)
+    out <- dgenetic(x, gamma_shape = gamma_shape,
+                    gamma_scale = gamma_scale,
+                    poisson_rate = poisson_rate,
+                    pi = pi, alpha = alpha)
   }
 
 
@@ -156,7 +159,8 @@ dpaircase <- function(x, type = c("temporal","genetic","spatial", "empiric"),
     if (is.null(sd_spatial)) {
       stop("type 'spatial' requires non null argument for sd_spatial.")
     }
-    out <- dspatial(x, sd_spatial, pi, alpha)
+    out <- dspatial(x, sd = sd_spatial,
+                    pi = pi, alpha = alpha)
   }
 
 
@@ -164,7 +168,7 @@ dpaircase <- function(x, type = c("temporal","genetic","spatial", "empiric"),
     if (is.null(p)) {
       stop("type 'empiric' requires non null argument for p.")
     }
-    out <- dempiric(p, pi, alpha)
+    out <- dempiric(p, pi = pi, alpha = alpha)
     if (length(x) > length(out)) {
       out <-c(out, rep(0, length(x) - length(out)))
     } else {
@@ -193,7 +197,7 @@ dtemporal <- function(x, shape, rate = 1, scale = 1/rate, pi, alpha = 0.001) {
 
   max_kappa <- get_max_kappa(pi, alpha)
   weights <- get_weights(pi, max_kappa)
-  distributions <- convolve_gamma(shape, rate = rate,
+  distributions <- convolve_gamma(shape, scale = scale,
                                   kappa = max_kappa, keep_all = TRUE)(x)
 
   out <- distributions %*% weights
@@ -240,7 +244,7 @@ dspatial <- function(x, sd, pi, alpha = 0.001) {
 
 dgenetic <- function(x, gamma_shape, gamma_rate = 1,
                      gamma_scale = 1 / gamma_rate,
-                     poisson_rate, 
+                     poisson_rate,
                      pi,
                      alpha = 0.001) {
   pi <- check_one_proba(pi)
@@ -249,7 +253,6 @@ dgenetic <- function(x, gamma_shape, gamma_rate = 1,
   max_kappa <- get_max_kappa(pi, alpha)
   weights <- get_weights(pi, max_kappa)
   distributions <- convolve_gamma_poisson(gamma_shape,
-                                          gamma_rate = gamma_rate,
                                           gamma_scale = gamma_scale,
                                           poisson_rate = poisson_rate,
                                           kappa = max_kappa,

@@ -99,7 +99,7 @@ convolve_gamma <- function(shape, rate = 1, scale = 1 / rate,
   if (keep_all) {
     f <- function(x) {
       out <- sapply(x, function(e)
-        stats::dgamma(e, shape=(1:kappa)*shape, scale = scale)
+        stats::dgamma(e, shape = (1:kappa) * shape, scale = scale)
         )
 
       if (is.matrix(out)) {
@@ -109,7 +109,7 @@ convolve_gamma <- function(shape, rate = 1, scale = 1 / rate,
       }
     }
   }  else {
-    f <- function(x) stats::dgamma(x, kappa * shape, scale = scale)
+    f <- function(x) stats::dgamma(x, shape = kappa * shape, scale = scale)
   }
   return(f)
 }
