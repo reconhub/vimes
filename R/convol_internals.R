@@ -129,7 +129,12 @@ dnbinom_non_integer_size <- function(x, size, prob, log=FALSE)
   # The negative binomial distribution with size = n and prob = p has density
   # p(x) = Gamma(x+n)/(Gamma(n) x!) p^n (1-p)^x
   
-  out <- gamma(x+size)/(gamma(size)*gamma(x+1)) * prob^size * (1-prob)^x
+  if(any(x != round(x))){ # if x is not an integer
+    warning(paste("non-integer x = ",x))
+    out <- 0
+  } else{
+    out <- gamma(x+size)/(gamma(size)*gamma(x+1)) * prob^size * (1-prob)^x
+  }
   
   return(out) 
 }
