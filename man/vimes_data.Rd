@@ -29,4 +29,3 @@ out
 \author{
 Thibaut Jombart \email{thibautjombart@gmail.com}
 }
-

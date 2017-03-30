@@ -112,6 +112,32 @@ check_pmf <- function(x) {
 
 
 
+## Check that p is non null, numeric and with values betwen 0 and 1
+
+check_proba <- function(x) {
+  if (is.null(x)) {
+    stop("x is NULL")
+  }
+
+  if (!is.numeric(x)) {
+    stop("x must be numeric")
+  }
+
+  if (any(!is.finite(x))) {
+    stop("non-finite values in x")
+  }
+
+  if (any(x < 0 || x > 1)) {
+    stop("all values of x must between 0 and 1")
+  }
+
+  return(x)
+}
+
+
+
+
+
 
 ## This function checks that its argument is a single probability / proportion.
 
