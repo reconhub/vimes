@@ -133,7 +133,8 @@ dnbinom_non_integer_size <- function(x, size, prob, log=FALSE)
     warning(paste("non-integer x = ",x))
     out <- 0
   } else{
-    out <- gamma(x+size)/(gamma(size)*gamma(x+1)) * prob^size * (1-prob)^x
+    out <- choose(x+size-1, x) * prob^size * (1-prob)^x
+    
   }
 
   return(out)
