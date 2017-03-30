@@ -92,13 +92,14 @@ get_weights <- function(pi, max_kappa) {
 ##    - keep_all = FALSE: returns the 'kappa' convolution of the pmf
 ##    - keep_all = TRUE: returns all convolutions of the pmf from 1 to kappa;
 
-convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa, keep_all = FALSE) {
+convolve_gamma <- function(shape, rate = 1, scale = 1 / rate,
+                           kappa, keep_all = FALSE) {
   kappa <- check_kappa(kappa, only_one = TRUE)
 
   if (keep_all) {
     f <- function(x) {
       out <- sapply(x, function(e)
-        stats::dgamma(e, shape=(1:kappa)*shape, rate=rate)
+        stats::dgamma(e, shape=(1:kappa)*shape, scale = scale)
         )
 
       if (is.matrix(out)) {
@@ -108,7 +109,7 @@ convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa, keep_all = FA
       }
     }
   }  else {
-    f <- function(x) stats::dgamma(x, kappa*shape, rate)
+    f <- function(x) stats::dgamma(x, kappa * shape, scale = scale)
   }
   return(f)
 }
