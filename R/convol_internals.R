@@ -119,8 +119,8 @@ convolve_gamma <- function(shape, rate = 1, scale = 1 / rate,
 
 
 
-## This is the pdf of a negative binomial distribution; 
-## it is extending dnbinom for non integer size arguments, 
+## This is the pdf of a negative binomial distribution;
+## it is extending dnbinom for non integer size arguments,
 ## which are not supported in dnbinom
 ## but appear naturally when doing a Poisson Gamma mixture
 
@@ -128,17 +128,17 @@ dnbinom_non_integer_size <- function(x, size, prob, log=FALSE)
 {
   # The negative binomial distribution with size = n and prob = p has density
   # p(x) = Gamma(x+n)/(Gamma(n) x!) p^n (1-p)^x
-  
+
   if(any(x != round(x))){ # if x is not an integer
     warning(paste("non-integer x = ",x))
     out <- 0
   } else{
     out <- gamma(x+size)/(gamma(size)*gamma(x+1)) * prob^size * (1-prob)^x
   }
-  
-  return(out) 
+
+  return(out)
 }
-### check these two are the same: 
+### check these two are the same:
 # dnbinom_non_integer_size(x=2, size=10, prob=0.3)
 # stats::dnbinom(x=2, size=10, prob=0.3)
 
@@ -178,7 +178,8 @@ convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1,
       }
     }
   } else {
-    f <- function(x) stats::dnbinom(x, size = kappa * gamma_shape, prob =prob)
+    f <- function(x)
+      dnbinom_non_integer_size(x, size = kappa * gamma_shape, prob =prob)
   }
   return(f)
 }
