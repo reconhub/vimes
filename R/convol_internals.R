@@ -97,9 +97,9 @@ convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa, keep_all = FA
 
   if (keep_all) {
     f <- function(x) {
-      out <- sapply(x, function(e) {
+      out <- sapply(x, function(e)
         stats::dgamma(e, shape=(1:kappa)*shape, rate=rate)
-      })
+        )
 
       if (is.matrix(out)) {
         return(t(out))
@@ -129,16 +129,27 @@ convolve_gamma <- function(shape, rate = 1, scale = 1/rate, kappa, keep_all = FA
 ##    - keep_all = FALSE: returns the 'kappa' convolution of the pmf
 ##    - keep_all = TRUE: returns all convolutions of the pmf from 1 to kappa;
 
-convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, kappa, keep_all = FALSE) {
+convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1,
+                                   gamma_scale = 1 / gamma_rate,
+                                   poisson_rate, kappa, keep_all = FALSE) {
   kappa <- check_kappa(kappa, only_one = TRUE)
 
-  prob <- 1-gamma_scale*poisson_rate/(gamma_scale*poisson_rate+1) # using prob = 1-p intead of p so that our definition correponds to that of rnbinom
+  ## using prob = 1-p intead of p so that our definition correponds to that of rnbinom
+  prob <- 1 - (gamma_scale * (poisson_rate / (gamma_scale*poisson_rate + 1)))
 
-  if(keep_all)
-  {
-    f <- function(x) t(sapply(x, function(e) stats::dnbinom(e, size=(1:kappa)*gamma_shape, prob=prob)))
-  }else
-  {
+  if (keep_all) {
+    f <- function(x) {
+      out <- sapply(x, function(e)
+        stats::dnbinom(e, size=(1:kappa)*gamma_shape, prob=prob)
+        )
+
+      if (is.matrix(out)) {
+        return(t(out))
+      } else {
+        return(matrix(out))
+      }
+    }
+  } else {
     f <- function(x) stats::dnbinom(x,size=kappa*gamma_shape,prob=prob)
   }
   return(f)
@@ -164,16 +175,22 @@ convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1, gamma_scale = 1/
 convolve_spatial <- function(sd, kappa, keep_all = FALSE) {
   kappa <- check_kappa(kappa, only_one = TRUE)
 
-  if(keep_all)
-  {
-    f <- function(x) t(sapply(x, function(e) VGAM::drayleigh(e, scale=sd*sqrt(1:kappa))))
-  }else
-  {
+  if (keep_all) {
+    f <- function(x) sapply(x, function(e)
+      VGAM::drayleigh(e, scale=sd*sqrt(1:kappa)))
+
+      if (is.matrix(out)) {
+        return(t(out))
+      } else {
+        return(matrix(out))
+      }
+
+
+  } else {
     f <- function(x) VGAM::drayleigh(x,scale=sd*sqrt(kappa))
   }
   return(f)
 }
-
 
 
 
