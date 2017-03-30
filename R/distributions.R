@@ -168,15 +168,20 @@ dpaircase <- function(x, type = c("temporal","genetic","spatial", "empiric"),
     if (is.null(p)) {
       stop("type 'empiric' requires non null argument for p.")
     }
-    out <- dempiric(p, pi = pi, alpha = alpha)
-    if (length(x) > length(out)) {
-      out <-c(out, rep(0, length(x) - length(out)))
-    } else {
-      out <- out[1+x]
+
+    out_val <- dempiric(p, pi = pi, alpha = alpha)
+    names(out_val) <- as.character(seq_along(out_val) - 1)
+
+    out <- rep(0, length(x))
+    names(out) <- as.character(x)
+    to_replace <- names(out)[names(out) %in% names(out_val)]
+
+    if (length(to_replace) > 0) {
+      out[to_replace] <- out_val[to_replace]
     }
   }
 
-  return(out)
+  return(unname(out))
 }
 
 
