@@ -48,14 +48,14 @@
 #' ## better precision
 #' get_quantiles_pdf(f = dexp, c(.4,.5,.95), precision = 0.001)
 #'
-get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000) {
+get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000, ...) {
   p <- check_proba(p)
 
   ## we approximate the empirical cdf by stepsize precision, over first n_steps
   ## steps
 
   x <- seq(from = 0, by = precision, length = n_steps)
-  csm <- cumsum(f(x)) * precision
+  csm <- cumsum(f(x, ...)) * precision
   iter <- 0
 
 
@@ -66,7 +66,7 @@ get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000) {
     iter <- iter + 1
     new_x <- seq(from = max(x)+precision, by = precision, length = n_steps)
     x <- c(x, new_x)
-    new_cms <- cumsum(f(new_x))*precision + max(csm)
+    new_cms <- cumsum(f(new_x, ...))*precision + max(csm)
     csm <- c(csm, new_cms)
   }
 
@@ -90,7 +90,7 @@ get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000) {
 
 #' @rdname get_quantiles
 #' @export
-get_quantiles_pmf <- function(f, p, n_steps = 1000) {
-  get_quantiles_pdf(f, p, precision = 1, n_steps = n_steps)
+get_quantiles_pmf <- function(f, p, n_steps = 1000, ...) {
+  get_quantiles_pdf(f, p, precision = 1, n_steps = n_steps, ...)
 
 }
