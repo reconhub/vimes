@@ -119,39 +119,13 @@ convolve_gamma <- function(shape, rate = 1, scale = 1 / rate,
 
 
 
-## This is the pdf of a negative binomial distribution;
-## it is extending dnbinom for non integer size arguments,
-## which are not supported in dnbinom
-## but appear naturally when doing a Poisson Gamma mixture
-
-dnbinom_non_integer_size <- function(x, size, prob, log=FALSE)
-{
-  # The negative binomial distribution with size = n and prob = p has density
-  # p(x) = Gamma(x+n)/(Gamma(n) x!) p^n (1-p)^x
-
-  if(any(x != round(x))){ # if x is not an integer
-    warning(paste("non-integer x = ",x))
-    out <- 0
-  } else{
-    out <- choose(x+size-1, x) * prob^size * (1-prob)^x
-    
-  }
-
-  return(out)
-}
-### check these two are the same:
-# dnbinom_non_integer_size(x=2, size=10, prob=0.3)
-# stats::dnbinom(x=2, size=10, prob=0.3)
-
-
-
-
-
 ## Convolution of Poisson-Gamma mixtures; we use the following analytic results:
-## 1) A Poisson(rate)-Gamma(shape, scale) mixture
-##    is a Negative binomial(shape,scale*rate/(scale*rate+1)).
-## 2) the sum of k independant NegBin distributed random variables with parameters r, p
-##    is NegBin distributed with parameters kr, p.
+
+## 1) A Poisson(rate)-Gamma(shape, scale) mixture is a Negative
+##    binomial(shape,scale*rate/(scale*rate+1)).
+
+## 2) the sum of k independant NegBin distributed random variables with
+##    parameters r, p is NegBin distributed with parameters kr, p.
 
 ## The argument
 ## 'keep_all' triggers different behaviours and outputs:
@@ -169,7 +143,7 @@ convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1,
   if (keep_all) {
     f <- function(x) {
       out <- sapply(x, function(e)
-        dnbinom_non_integer_size(e, size=(1:kappa)*gamma_shape, prob=prob)
+        stats::dnbinom(e, size=(1:kappa)*gamma_shape, prob=prob)
         )
 
       if (is.matrix(out)) {
@@ -180,7 +154,7 @@ convolve_gamma_poisson <- function(gamma_shape, gamma_rate = 1,
     }
   } else {
     f <- function(x)
-      dnbinom_non_integer_size(x, size = kappa * gamma_shape, prob =prob)
+      stats::dnbinom(x, size = kappa * gamma_shape, prob =prob)
   }
   return(f)
 }

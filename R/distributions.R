@@ -125,10 +125,10 @@ dpaircase <- function(x, type = c("temporal","genetic","spatial", "empiric"),
                       sd_spatial,
                       p,
                       pi, alpha = 0.001) {
-  
+
   type <- match.arg(type)
-  
-  
+
+
   if (type=="temporal") {
     if (any(is.null(c(gamma_shape, gamma_rate, gamma_scale)))) {
       msg <- paste("type 'temporal' requires non null arguments for",
@@ -139,22 +139,28 @@ dpaircase <- function(x, type = c("temporal","genetic","spatial", "empiric"),
                      scale = gamma_scale,
                      pi = pi, alpha = alpha)
   }
-  
-  
+
+
   if (type=="genetic") {
-    if (any(is.null(c(gamma_shape, gamma_rate, gamma_scale, poisson_rate)))) {
+    args <- c(gamma_shape, gamma_rate, gamma_scale, poisson_rate)
+    if (any(is.null(args))) {
       msg <- paste("type 'genetic' requires non null arguments for",
                    "gamma_shape, gamma_rate (or gamma_scale),",
                    "and poisson_rate.")
       stop(msg)
     }
+    if (any(x != round(x))) {
+      msg <- "The number of mutations must be integer."
+      stop(msg)
+    }
+    x <- as.integer(x)
     out <- dgenetic(x, gamma_shape = gamma_shape,
                     gamma_scale = gamma_scale,
                     poisson_rate = poisson_rate,
                     pi = pi, alpha = alpha)
   }
-  
-  
+
+
   if (type=="spatial") {
     if (is.null(sd_spatial)) {
       stop("type 'spatial' requires non null argument for sd_spatial.")
@@ -162,25 +168,25 @@ dpaircase <- function(x, type = c("temporal","genetic","spatial", "empiric"),
     out <- dspatial(x, sd = sd_spatial,
                     pi = pi, alpha = alpha)
   }
-  
-  
+
+
   if (type=="empiric") {
     if (is.null(p)) {
       stop("type 'empiric' requires non null argument for p.")
     }
-    
+
     out_val <- dempiric(p, pi = pi, alpha = alpha)
     names(out_val) <- as.character(seq_along(out_val) - 1)
-    
+
     out <- rep(0, length(x))
     names(out) <- as.character(x)
     to_replace <- names(out)[names(out) %in% names(out_val)]
-    
+
     if (length(to_replace) > 0) {
       out[to_replace] <- out_val[to_replace]
     }
   }
-  
+
   return(unname(out))
 }
 
@@ -199,12 +205,12 @@ dpaircase <- function(x, type = c("temporal","genetic","spatial", "empiric"),
 dtemporal <- function(x, shape, rate = 1, scale = 1/rate, pi, alpha = 0.001) {
   pi <- check_one_proba(pi)
   alpha <- check_one_proba(alpha)
-  
+
   max_kappa <- get_max_kappa(pi, alpha)
   weights <- get_weights(pi, max_kappa)
   distributions <- convolve_gamma(shape, scale = scale,
                                   kappa = max_kappa, keep_all = TRUE)(x)
-  
+
   out <- distributions %*% weights
   return(as.vector(out))
 }
@@ -223,13 +229,13 @@ dtemporal <- function(x, shape, rate = 1, scale = 1/rate, pi, alpha = 0.001) {
 dspatial <- function(x, sd, pi, alpha = 0.001) {
   pi <- check_one_proba(pi)
   alpha <- check_one_proba(alpha)
-  
+
   max_kappa <- get_max_kappa(pi, alpha)
   weights <- get_weights(pi, max_kappa)
   distributions <- convolve_spatial(sd = sd,
                                     kappa = max_kappa,
                                     keep_all = TRUE)(x)
-  
+
   out <- distributions %*% weights
   return(as.vector(out))
 }
@@ -254,7 +260,7 @@ dgenetic <- function(x, gamma_shape, gamma_rate = 1,
                      alpha = 0.001) {
   pi <- check_one_proba(pi)
   alpha <- check_one_proba(alpha)
-  
+
   max_kappa <- get_max_kappa(pi, alpha)
   weights <- get_weights(pi, max_kappa)
   distributions <- convolve_gamma_poisson(gamma_shape,
@@ -262,7 +268,7 @@ dgenetic <- function(x, gamma_shape, gamma_rate = 1,
                                           poisson_rate = poisson_rate,
                                           kappa = max_kappa,
                                           keep_all = TRUE)(x)
-  
+
   out <- distributions %*% weights
   return(as.vector(out))
 }
@@ -283,11 +289,11 @@ dempiric <- function(p, pi, alpha = 0.001) {
   pi <- check_one_proba(pi)
   alpha <- check_one_proba(alpha)
   p <- check_pmf(p)
-  
+
   max_kappa <- get_max_kappa(pi, alpha)
   weights <- get_weights(pi, max_kappa)
   distributions <- convolve_empirical(p, max_kappa, TRUE)
-  
+
   out <- distributions %*% weights
   return(as.vector(out))
 }
