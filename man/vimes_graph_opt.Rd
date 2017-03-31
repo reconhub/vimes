@@ -41,4 +41,3 @@ vimes_graph_opt()
 \author{
 Thibaut Jombart \email{thibautjombart@gmail.com}
 }
-

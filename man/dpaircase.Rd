@@ -109,4 +109,3 @@ legend("topright", c("dempiric", "dgenetic"),
 Anne Cori (a.cori@imperial.ac.uk) and Thibaut Jombart
 (thibautjombart@gmail.com).
 }
-
