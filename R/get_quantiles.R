@@ -17,14 +17,20 @@
 
 ## Main function to compute the quantiles
 
-get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000, ...) {
+get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000, maxit = 1000, ...) {
   p <- check_proba(p)
   
-  out <- rep(Inf, length(p))
+  ## by default filling in results with NAs
+  out <- rep(NA_real_, length(p))
   
+  ## when p = 1 quantile is Inf
+  out[p == 1] <- Inf
+  
+  ## looking for values which are not 1 
   p_no_1 <- p[p < 1]
   
-  if(length(p_no_1)>0)
+  ## if any computing the quantiles for these
+  if(length(p_no_1)>0) 
   {
     
     ## we approximate the empirical cdf by stepsize precision, over first n_steps
@@ -38,7 +44,7 @@ get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000, ...) {
     ## if we didn't go far enough to catch the quantile p (or at least one of
     ## them) we reiterate the process as long as needed, by n_steps at a time
     
-    while (max(p_no_1) > max(csm)) {
+    while ( (max(p_no_1) > max(csm)) && (iter < maxit) ) {
       iter <- iter + 1
       new_x <- seq(from = max(x)+precision, by = precision, length = n_steps)
       x <- c(x, new_x)
@@ -46,6 +52,10 @@ get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000, ...) {
       csm <- c(csm, new_cms)
     }
     
+    if(iter == maxit)
+    {
+      warning("maxit reached")
+    }
     
     ## now we have the approximate cdf up to far enough, we find where the
     ## quantile(s) p lie in the recorded vector of cdf quantile defined as the
@@ -53,12 +63,15 @@ get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000, ...) {
     
     idx_q <- vapply(p_no_1, function(e){
       tmp <- which(csm > e)
-      if(any(tmp)) { return(min(which(csm > e))) } else { return (0) }
-    }
-    , 0L)
-    out_no_1 <- x[idx_q]
+      if(any(tmp)) { return(min(which(csm > e))) } else { return (0L) }
+    }, 0L)
+    
+    fail <- idx_q == 0
+    out_no_1 <- rep(NA, length(idx_q))
+    out_no_1[!fail] <- x[idx_q[!fail]]
     ## check <- csm[idx_q] ## compared to p_no_1
     
+    ## filling in results for quantiles <1 in the main result
     out[p < 1] <- out_no_1
     
   }
@@ -74,8 +87,8 @@ get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000, ...) {
 
 ## Specific function for discrete distributions
 
-get_quantiles_pmf <- function(f, p, n_steps = 1000, ...) {
-  get_quantiles_pdf(f, p, precision = 1, n_steps = n_steps, ...)
+get_quantiles_pmf <- function(f, p, n_steps = 1000, maxit = 1000, ...) {
+  get_quantiles_pdf(f, p, precision = 1, n_steps = n_steps, maxit = maxit, ...)
   
 }
 
@@ -114,6 +127,9 @@ get_quantiles_pmf <- function(f, p, n_steps = 1000, ...) {
 #'   distribution. Defaults to 1000. Note that if \code{n_steps} intervals are
 #'   not enough to attain the largest value in \code{p}, batches of
 #'   \code{n_steps} are iteratively added.
+#'   
+#' @param maxit The maximum number of batches of \code{n_steps} considered. 
+#'   Defaults to 1000. Avoids infinite looping when \code{p} is close to 1.
 #'
 #' @param ... Further arguments passed to the function \code{f}
 #'
@@ -142,7 +158,7 @@ get_quantiles_pmf <- function(f, p, n_steps = 1000, ...) {
 #'
 
 get_quantiles <- function(f, p, continuous = NULL, precision = 0.01,
-                          n_steps = 1000, ...) {
+                          n_steps = 1000, maxit = 1000, ...) {
   if (inherits(f, "fpaircase")) {
     continuous <- attr(f, "continuous")
   }
@@ -153,9 +169,9 @@ get_quantiles <- function(f, p, continuous = NULL, precision = 0.01,
   }
   
   if (continuous) {
-    get_quantiles_pdf(f, p, precision, n_steps, ...)
+    get_quantiles_pdf(f, p, precision, n_steps, maxit, ...)
   } else {
-    get_quantiles_pmf(f, p, n_steps, ...)
+    get_quantiles_pmf(f, p, n_steps, maxit, ...)
   }
   
 }
