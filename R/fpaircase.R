@@ -15,7 +15,7 @@
 #'
 #' @examples
 #'
-#' #' ## spatial distribution
+#' ## spatial distribution
 #' f <- fpaircase("spatial", sd_spatial=10)
 #' plot(f)
 #' plot(f, xlim = c(0, 100))
@@ -67,7 +67,7 @@ fpaircase <- function(type = c("temporal","genetic","spatial", "empiric"),
 #' @rdname fpaircase
 #'
 #' @param ... further arguments passed to methods (print, plot, etc.)
-#'
+
 print.fpaircase <- function(x, ...) {
   cat("/// distribution of distances")
 
@@ -97,7 +97,7 @@ print.fpaircase <- function(x, ...) {
 #'   the plot.
 #'
 #' @param xlim A vector of 2 numbers indicating the limits of the x-axis.
-#'
+
 plot.fpaircase <- function(x, y = NULL, pi = 1, xlim = c(0, 10), ...) {
   continuous <- attr(x, "continuous")
 

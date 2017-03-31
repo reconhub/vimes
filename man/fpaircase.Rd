@@ -58,7 +58,7 @@ of distances between cases for which distributions can be computed.
 }
 \examples{
 
-#' ## spatial distribution
+## spatial distribution
 f <- fpaircase("spatial", sd_spatial=10)
 plot(f)
 plot(f, xlim = c(0, 100))
