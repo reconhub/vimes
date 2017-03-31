@@ -1,6 +1,7 @@
+
 #' @export
 #'
-#' @rdname distributions
+#' @rdname dpaircase
 #'
 #' @param sd standard deviation of the Normal spatial kernel.
 

@@ -12,13 +12,26 @@ fpaircase(type = c("temporal", "genetic", "spatial", "empiric"), gamma_shape,
 
 \method{print}{fpaircase}(x, ...)
 
-\method{plot}{fpaircase}(x, y = NULL, xlim = c(0, 10), ...)
+\method{plot}{fpaircase}(x, y = NULL, pi = 1, xlim = c(0, 10), ...)
 }
 \arguments{
 \item{type}{type of distance to be considered (one of "temporal","genetic",
 "spatial" or "empiric").}
 
+\item{gamma_shape}{shape of the gamma distribution used for the serial interval}
+
+\item{gamma_rate}{an alternative way to specify the scale of the gamma
+distribution used for the serial interval}
+
+\item{gamma_scale}{scale of the gamma distribution used for the serial interval}
+
+\item{poisson_rate}{rate (i.e. mean) of the poisson distribution used for the
+per time unit genetic mutation rate}
+
 \item{sd_spatial}{standard deviation of the Normal spatial kernel.}
+
+\item{p}{A \code{numeric} vector providing the probability mass function, or
+empirical frequencies, of pairwise distances.}
 
 \item{alpha}{The probability threshold to be used to determine the maximum
 value of generations between two successive cases to consider;
@@ -28,12 +41,36 @@ p(k > max_kappa) < alpha. Defaults to 0.001.}
 \item{x}{vector of quantiles.}
 
 \item{...}{further arguments passed to methods (print, plot, etc.)}
+
+\item{y}{An optional vector of probabilities used for adding quantiles to
+the plot.}
+
+\item{pi}{The reporting probability, i.e. the proportion of cases of the
+outbreak that have been reported.}
+
+\item{xlim}{A vector of 2 numbers indicating the limits of the x-axis.}
 }
 \description{
 The function \code{fpaircase} returns functions which compute the expected
 distributions of distances between pairs of cases given a case reporting
 probability 'pi'. See \code{\link{dpaircase}} for details on different types
 of distances between cases for which distributions can be computed.
+}
+\examples{
+
+#' ## spatial distribution
+f <- fpaircase("spatial", sd_spatial=10)
+plot(f)
+plot(f, xlim = c(0, 100))
+plot(f, xlim = c(0, 100), pi = 0.4)
+
+## genetic distribution
+f <- fpaircase("genetic", gamma_shape = 1, gamma_scale = 2,
+               poisson_rate = 0.5)
+
+plot(f)
+plot(f, xlim = c(0, 20), pi = 0.4)
+
 }
 \author{
 Thibaut Jombart \email{thibautjombart@gmail.com}.

@@ -1,7 +1,7 @@
 
 #' @export
 #'
-#' @rdname distributions
+#' @rdname dpaircase
 #'
 #' @param p A \code{numeric} vector providing the probability mass function, or
 #'   empirical frequencies, of pairwise distances.

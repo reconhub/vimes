@@ -1,9 +1,15 @@
+
 #' @export
 #'
-#' @rdname distributions
+#' @rdname dpaircase
 #'
-#' @param shape,scale shape and scale of the gamma distribution used for the serial interval
-#' @param rate an alternative way to specify the scale of the gamma distribution used for the serial interval
+#' @param shape shape of the gamma distribution used for the serial interval
+#'
+#' @param scale scale of the gamma distribution used for the serial interval
+#'
+#' @param rate an alternative way to specify the scale of the gamma distribution
+#'   used for the serial interval
+#'
 
 dtemporal <- function(x, shape, rate = 1, scale = 1/rate, pi, alpha = 0.001) {
   pi <- check_one_proba(pi)

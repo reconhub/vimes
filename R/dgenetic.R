@@ -1,11 +1,17 @@
 
 #' @export
 #'
-#' @rdname distributions
+#' @rdname dpaircase
 #'
-#' @param gamma_shape,gamma_scale shape and scale of the gamma distribution used for the serial interval
-#' @param gamma_rate an alternative way to specify the scale of the gamma distribution used for the serial interval
-#' @param poisson_rate rate (i.e. mean) of the poisson distribution used for the per time unit genetic mutation rate
+#' @param gamma_shape shape of the gamma distribution used for the serial interval
+#'
+#' @param gamma_scale scale of the gamma distribution used for the serial interval
+#'
+#' @param gamma_rate an alternative way to specify the scale of the gamma
+#'   distribution used for the serial interval
+#'
+#' @param poisson_rate rate (i.e. mean) of the poisson distribution used for the
+#'   per time unit genetic mutation rate
 
 dgenetic <- function(x, gamma_shape, gamma_rate = 1,
                      gamma_scale = 1 / gamma_rate,
