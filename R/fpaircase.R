@@ -78,10 +78,31 @@ print.fpaircase <- function(x, ...) {
 #'
 plot.fpaircase <- function(x, y = NULL, xlim = c(0, 10), ...) {
   continuous <- attr(x, "continuous")
+
+  titles <- c("Delays",
+              "Dispersal distance",
+              "Genetic signature",
+              "Empirical")
+  titles <- paste(titles, "distribution")
+
+  xlabs <- c("Time between cases",
+             "Geographic distance",
+             "Number mutations",
+             "Distance between cases")
+
+  names(titles) <- c("temporal", "spatial", "genetic", "empirical")
+  names(xlabs) <- names(titles)
+
+  type <- attr(x, "type")
+
   if (continuous) {
-     plot.function(x, xlim = xlim, ...)
+    plot.function(x, xlim = xlim,
+                  main = titles[type],
+                  xlab = xlabs[type], ...)
   } else {
     x_val <- as.integer(seq(from = min(xlim), to = max(xlim), by = 1L))
-    plot(x_val, x(x_val), type = "h", lend = 1, lwd = 10, ...)
+    plot(x_val, x(x_val), type = "h", lend = 1, lwd = 10,
+         main = titles[type],
+         xlab = xlabs[type], ...)
   }
 }
