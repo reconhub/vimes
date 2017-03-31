@@ -76,7 +76,7 @@ print.fpaircase <- function(x, ...) {
 #'
 #' @rdname fpaircase
 #'
-plot.fpaircase <- function(x, y = NULL, xlim = c(0, 10), ...) {
+plot.fpaircase <- function(x, y = NULL, pi = 1, xlim = c(0, 10), ...) {
   continuous <- attr(x, "continuous")
 
   titles <- c("Delays",
@@ -95,14 +95,19 @@ plot.fpaircase <- function(x, y = NULL, xlim = c(0, 10), ...) {
 
   type <- attr(x, "type")
 
+
+  f_x <- function(a) x(a, pi = pi)
+
   if (continuous) {
-    plot.function(x, xlim = xlim,
+    plot.function(f_x, xlim = xlim,
                   main = titles[type],
-                  xlab = xlabs[type], ...)
+                  xlab = xlabs[type],
+                  ylab = "Density", ...)
   } else {
     x_val <- as.integer(seq(from = min(xlim), to = max(xlim), by = 1L))
-    plot(x_val, x(x_val), type = "h", lend = 1, lwd = 10,
+    plot(x_val, f_x(x_val), type = "h", lend = 1, lwd = 10,
          main = titles[type],
-         xlab = xlabs[type], ...)
+         xlab = xlabs[type],
+         ylab = "Probability", ...)
   }
 }
