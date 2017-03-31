@@ -12,7 +12,8 @@ fpaircase(type = c("temporal", "genetic", "spatial", "empiric"), gamma_shape,
 
 \method{print}{fpaircase}(x, ...)
 
-\method{plot}{fpaircase}(x, y = NULL, pi = 1, xlim = c(0, 10), ...)
+\method{plot}{fpaircase}(x, y = NULL, pi = 1, xlim = c(0, 10),
+  lines_args = list(), ...)
 }
 \arguments{
 \item{type}{type of distance to be considered (one of "temporal","genetic",
@@ -49,6 +50,9 @@ the plot.}
 outbreak that have been reported.}
 
 \item{xlim}{A vector of 2 numbers indicating the limits of the x-axis.}
+
+\item{lines_args}{A list of named arguments to be passed to
+\code{\link{abline}} for plotting quantiles.}
 }
 \description{
 The function \code{fpaircase} returns functions which compute the expected
@@ -59,12 +63,21 @@ of distances between cases for which distributions can be computed.
 \examples{
 
 ## spatial distribution
+
 f <- fpaircase("spatial", sd_spatial=10)
 plot(f)
 plot(f, xlim = c(0, 100))
 plot(f, xlim = c(0, 100), pi = 0.4)
 
+
+## adding quantiles, 50\% sampling and customisation
+
+plot(f, seq(0.5, .99, le=10), pi = 0.5, xlim = c(0,50),
+     lines_args = list(lty = 2, col = rev(heat.colors(10))))
+
+
 ## genetic distribution
+
 f <- fpaircase("genetic", gamma_shape = 1, gamma_scale = 2,
                poisson_rate = 0.5)
 
