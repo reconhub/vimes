@@ -38,11 +38,12 @@ than the cutoff distance will be disconnected on the graph. Note
 that this differs from the original \code{gengraph} implementation
 in the package \code{adegenet}.
 }
+\author{
+Thibaut Jombart \email{thibautjombart@gmail.com}
+}
 \seealso{
 the function \code{gengraph} in the package \code{adegenet}, which
 was an initial implementation of the same idea in a genetics
 context.
 }
-\author{
-Thibaut Jombart \email{thibautjombart@gmail.com}
-}
+
