@@ -5,7 +5,7 @@
 \title{Get quantiles for a given probability distribution}
 \usage{
 get_quantiles(f, p, continuous = NULL, precision = 0.01, n_steps = 1000,
-  ...)
+  maxit = 1000, ...)
 }
 \arguments{
 \item{f}{A function returning the probability density function (for
@@ -26,6 +26,9 @@ distribution. Defaults to 0.01.}
 distribution. Defaults to 1000. Note that if \code{n_steps} intervals are
 not enough to attain the largest value in \code{p}, batches of
 \code{n_steps} are iteratively added.}
+
+\item{maxit}{The maximum number of batches of \code{n_steps} considered.
+Defaults to 1000. Avoids infinite looping when \code{p} is close to 1.}
 
 \item{...}{Further arguments passed to the function \code{f}}
 }
