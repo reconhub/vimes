@@ -21,6 +21,8 @@ fpaircase <- function(type = c("temporal","genetic","spatial", "empiric"),
                       p,
                       alpha = 0.001) {
 
+  type <- match.arg(type)
+
   out <- function(x, pi = 1) {
     dpaircase(x, pi = pi, type = type,
               gamma_shape = gamma_shape,
@@ -63,4 +65,23 @@ print.fpaircase <- function(x, ...) {
 
   cat("\n  original call:", deparse(attr(x, "call")))
   cat("\n")
+}
+
+
+
+
+
+
+#' @export
+#'
+#' @rdname fpaircase
+#'
+plot.fpaircase <- function(x, y = NULL, xlim = c(0, 10), ...) {
+  continuous <- attr(x, "continuous")
+  if (continuous) {
+     plot.function(x, xlim = xlim, ...)
+  } else {
+    x_val <- as.integer(seq(from = min(xlim), to = max(xlim), by = 1L))
+    plot(x_val, x(x_val), type = "h", lend = 1, lwd = 10, ...)
+  }
 }
