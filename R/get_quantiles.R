@@ -19,18 +19,18 @@
 
 get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000, ...) {
   p <- check_proba(p)
-
+  
   ## we approximate the empirical cdf by stepsize precision, over first n_steps
   ## steps
-
+  
   x <- seq(from = 0, by = precision, length = n_steps)
   csm <- cumsum(f(x, ...)) * precision
   iter <- 0
-
-
+  
+  
   ## if we didn't go far enough to catch the quantile p (or at least one of
   ## them) we reiterate the process as long as needed, by n_steps at a time
-
+  
   while (max(p) > max(csm)) {
     iter <- iter + 1
     new_x <- seq(from = max(x)+precision, by = precision, length = n_steps)
@@ -38,18 +38,22 @@ get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000, ...) {
     new_cms <- cumsum(f(new_x, ...))*precision + max(csm)
     csm <- c(csm, new_cms)
   }
-
-
+  
+  
   ## now we have the approximate cdf up to far enough, we find where the
   ## quantile(s) p lie in the recorded vector of cdf quantile defined as the
   ## smallest recorded cdf which is > p
-
-  idx_q <- vapply(p, function(e) min(which(csm > e)), 0L)
+  
+  idx_q <- vapply(p, function(e){
+    tmp <- which(csm > e)
+    if(any(tmp)) { return(min(which(csm > e))) } else { return (0) }
+    }
+    , 0L)
   out <- x[idx_q]
   ## check <- csm[idx_q] ## compared to p
-
+  
   return(out)
-
+  
 }
 
 
@@ -61,7 +65,7 @@ get_quantiles_pdf <- function(f, p, precision = 0.01, n_steps = 1000, ...) {
 
 get_quantiles_pmf <- function(f, p, n_steps = 1000, ...) {
   get_quantiles_pdf(f, p, precision = 1, n_steps = n_steps, ...)
-
+  
 }
 
 
@@ -131,18 +135,18 @@ get_quantiles <- function(f, p, continuous = NULL, precision = 0.01,
   if (inherits(f, "fpaircase")) {
     continuous <- attr(f, "continuous")
   }
-
+  
   if (is.null(continuous)) {
     msg <- "continuous is NULL: TRUE or FALSE is needed to determine quantiles"
     stop(msg)
   }
-
+  
   if (continuous) {
     get_quantiles_pdf(f, p, precision, n_steps, ...)
   } else {
     get_quantiles_pmf(f, p, n_steps, ...)
   }
-
+  
 }
 
 
