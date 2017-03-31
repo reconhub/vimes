@@ -1,6 +1,7 @@
 
 #' Expected distributions of distances (functions)
 #'
+#'
 #' The function \code{fpaircase} returns functions which compute the expected
 #' distributions of distances between pairs of cases given a case reporting
 #' probability 'pi'. See \code{\link{dpaircase}} for details on different types
@@ -16,12 +17,21 @@
 #' @examples
 #'
 #' ## spatial distribution
+#'
 #' f <- fpaircase("spatial", sd_spatial=10)
 #' plot(f)
 #' plot(f, xlim = c(0, 100))
 #' plot(f, xlim = c(0, 100), pi = 0.4)
 #'
+#'
+#' ## adding quantiles, 50% sampling and customisation
+#'
+#' plot(f, seq(0.5, .99, le=10), pi = 0.5, xlim = c(0,50),
+#'      lines_args = list(lty = 2, col = rev(heat.colors(10))))
+#'
+#'
 #' ## genetic distribution
+#'
 #' f <- fpaircase("genetic", gamma_shape = 1, gamma_scale = 2,
 #'                poisson_rate = 0.5)
 #'
@@ -91,14 +101,21 @@ print.fpaircase <- function(x, ...) {
 #'
 #' @rdname fpaircase
 #'
-#' @importFrom graphics plot plot.function
+#' @importFrom graphics plot plot.function abline
 #'
 #' @param y An optional vector of probabilities used for adding quantiles to
 #'   the plot.
 #'
 #' @param xlim A vector of 2 numbers indicating the limits of the x-axis.
+#'
+#' @param lines_args A list of named arguments to be passed to
+#'   \code{\link{abline}} for plotting quantiles.
+#'
 
-plot.fpaircase <- function(x, y = NULL, pi = 1, xlim = c(0, 10), ...) {
+plot.fpaircase <- function(x, y = NULL, pi = 1,
+                           xlim = c(0, 10),
+                           lines_args = list(),
+                           ...) {
   continuous <- attr(x, "continuous")
 
   titles <- c("Delays",
@@ -109,7 +126,7 @@ plot.fpaircase <- function(x, y = NULL, pi = 1, xlim = c(0, 10), ...) {
 
   xlabs <- c("Time between cases",
              "Geographic distance",
-             "Number mutations",
+             "Number of mutations",
              "Distance between cases")
 
   names(titles) <- c("temporal", "spatial", "genetic", "empirical")
@@ -132,4 +149,18 @@ plot.fpaircase <- function(x, y = NULL, pi = 1, xlim = c(0, 10), ...) {
          xlab = xlabs[type],
          ylab = "Probability", ...)
   }
+
+
+  ## handle y if provided - used to add quantiles to the plot as vertical bars
+  if (!is.null(y)) {
+    quant <- get_quantiles(x, y)
+    if (!continuous) {
+      quant <- quant + 0.5
+    }
+
+    lines_args$v <- quant
+    do.call(abline, lines_args)
+  }
+
+  invisible()
 }
