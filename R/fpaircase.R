@@ -153,7 +153,7 @@ plot.fpaircase <- function(x, y = NULL, pi = 1,
 
   ## handle y if provided - used to add quantiles to the plot as vertical bars
   if (!is.null(y)) {
-    quant <- get_quantiles(x, y)
+    quant <- get_quantiles(f_x, y, continuous = continuous)
     if (!continuous) {
       quant <- quant + 0.5
     }

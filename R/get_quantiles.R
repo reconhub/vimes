@@ -1,5 +1,5 @@
 
-## The function get_quanticles is a wrapper around 2 non exported functions
+## The function get_quantiles is a wrapper around 2 non exported functions
 ## which approximate quantiles for a given probability density / mass
 ## function. The main function is get_quantiles_pdf, on which the 'pmf'
 ## equivalent relies. It creates a 1D regular grid iteratively, which it uses to
