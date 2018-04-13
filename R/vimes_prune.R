@@ -62,8 +62,8 @@ vimes_prune <- function(x, cutoff = NULL,
     ## clusters, create new graphical attributes for the graph (mostly
     ## coloring clusters).
     
-    x[x>cutoff] <- 0
-    g <- igraph::graph.adjacency(as.matrix(x), mode = "undirected",
+    new_x <- 1 - (as.matrix(x)> cutoff)
+    g <- igraph::graph.adjacency(new_x, mode = "undirected",
                                  weighted = TRUE, diag = FALSE)
 
     ## find clusters ##
