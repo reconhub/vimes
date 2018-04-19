@@ -1,0 +1,19 @@
+#' A simulated dataset of rabies transmission among dogs
+#'
+#' The dataset was obtained using the \code{quicksim} package as described in XXXXXXXXX [CITE PAPER]. 
+#'
+#' @format A list containing the following elements:
+#' \describe{
+#'   \item{n}{the number of observed cases of dog rabies}
+#'   \item{id}{a vector containing the ids of cases}
+#'   \item{ances}{a vector containing the ids of the infector of each case. 
+#'   If the case was imported, this is NA. 
+#'   Note the case can be infected by an infividual not observed (because of underreporting), 
+#'   in which case ances will not be in the list of ids.}
+#'   \item{cases}{a list containing details on eqch observed case, namely:
+#'   - date: the date (in number of days from start of the outbreak) of symptoms onset for this case, 
+#'   - location: the x and y spatial coordinates for this case,
+#'   - dna: a vector of point mutations (compared to a reference) for the pathogen in this case.}
+#' }
+#' @source LINK TO PAPER
+"sim_rabies"

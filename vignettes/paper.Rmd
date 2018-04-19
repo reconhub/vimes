@@ -1,0 +1,95 @@
+---
+title: "vimes: an illustration on a simulated dog rabies dataset"
+author: "Anne Cori & Thibaut Jombart"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{demonsration}
+  \usepackage[utf8]{inputenc}
+---
+
+
+
+```{r, echo = FALSE}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>", 
+  fig.width = 6, 
+  fig.height = 6, 
+  fig.path = "figs-demo/"
+)
+
+```
+
+This vignette provides a demonstration of the vimes package and more specifically how it can be used to perform analyses such as those presented in XXXXXXXX [CITE THE PAPER]. Here we use a simulated dataset of rabies transmitted among dogs, chosen among all the baseline simulations described in XXXXXXXX [CITE THE PAPER] as the only simulated dataset with 151 observed dogs infected with rabies, i.e. exactly the same number as in the real dataset analysed in this paper. 
+
+## Loading and examining the data
+
+The simulated dataset is available as  `sim_rabies` in the vimes package:
+
+```{r}
+library(vimes)
+data(sim_rabies)
+sim_rabies$n
+
+```
+
+We can plot the epidemic curve using the `incidence` package:
+```{r}
+### if incidence is not already installed, run these few lines:
+# install.packages("devtools")
+# library(devtools)
+# install_github("reconhub/incidence")
+
+### load incidence package and use it to plot epidemic curve over different time scales:
+library(incidence) 
+# weekly
+plot(incidence(sim_rabies$onset,7))
+# monthly
+plot(incidence(sim_rabies$onset,365/12))
+# bimonthly
+plot(incidence(sim_rabies$onset,365/6))
+```
+
+And we can plot the locations of the cases:
+```{r}
+locations <- t(sapply(1:sim_rabies$n, function(i) sim_rabies$cases[[i]]$location))
+plot(locations, xlab = "", ylab="")
+```
+
+XXXXXXXXX THIBAUT CAN WE PLEASE ADD A PHYLOGENETIC TREE FOR THIS?
+
+
+## Computing pairwise distances between cases in time, space, and genetics. 
+
+
+Distances between dates are computed as numbers of days:
+```{r}
+head(sim_rabies$onset, 5)
+D_dates <- dist(sim_rabies$onset)
+```
+
+Distances between locations are computed using the great circle distance:
+```{r}
+library(fields)
+head(locations)
+D_geo <- rdist(locations)
+```
+
+Distances between sequences are computed as simple Hamming distances using function `dist_dna` in the `quicksim` package:
+```{r}
+#install_github("thibautjombart/quicksim")
+library(quicksim)
+dna <- lapply(1:sim_rabies$n, function(i) sim_rabies$cases[[i]]$dna)
+# dna lists the mutation points compared to a reference genome for the pathogen sequence in each case
+head(dna)
+D_dna <- dist_dna(dna)
+``` 
+
+We format and match the distance data using \emph{vimes}: XXX WHAT IS THE MATCHING USING HERE AS NOT USING IDs I THINK ?!
+```{r} 
+D_all <- vimes_data(dates = D_dates, geo = D_geo, dna = D_dna)
+``` 
+
