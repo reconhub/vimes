@@ -159,13 +159,13 @@ First, we assume a certain level of reporting. Here we assume only $20\%$ of cas
 pi <- 0.2
 ```
 
-Then, we define the quantile we want to use to define the cutoff distances. Here, we consider three different quantiles to assess sensitivity of our results to this choice. 
+Then, we define the quantile we want to use to define the cutoff distances. Here, we consider many different quantiles to assess sensitivity of our results to this choice. 
 ```{r} 
 # quantiles
-q <- c(.90, .95, .95^(1/3))
+q <- c(.50, .75, .90, .95, .95^(1/3), .99, .999, .9995, .9999)
 # colours used to plot these
-cols <- c("orange", "orangered", "darkred")
-cutoff_choice <- q[2] # our main results are with the cutoff corresponding to the 95% quantile
+cols <- rainbow(length(q))
+cutoff_choice <- q[4] # our main results are with the cutoff corresponding to the 95% quantile
 ```
 
 We now plot the distributions of expected distances (temporal, spatial and genetic respectively) between a case and their closest observed ancestor, assuming that only $20\%$ of cases are reported. We also show the cutoffs corresponding to the quantiles defined above. 
@@ -242,7 +242,7 @@ plot_overlay(dist = as.vector(D_all$dna),
 
 ## Running vimes to identify clusters of cases linked by transmission
 
-We run vimes to identify clusters of cases linked by transmission, for various cutoff choices, and various reporting rates. 
+We run vimes to identify clusters of cases linked by transmission, for various cutoff choices, and various reporting rates. We plot the results by colouring cases identified as belonging to the same outbreak cluster, i.e. cases identified as being linked by local transmission. Cases shown in grey are identified as singletons who are not linked by transmission to any other observed case. 
 ```{r} 
 ### function used to get results for a certain cutoff and reporting rate
 get_res <- function(D_all, q, pi, f_temporal, f_spatial, f_genetic, type=c("all", "temporal","spatial", "genetic")) {
@@ -282,10 +282,13 @@ get_res <- function(D_all, q, pi, f_temporal, f_spatial, f_genetic, type=c("all"
 ### We assume, as in Bourhy et al., a reporting rate of 20% in our main analyses, and reporting rates of 10 and 50% respectively in two extreme scenarios considered in sensitivity analyses. 
 
 combi <- expand.grid(p = q,
-                     pi = c(0.5, 0.2, 0.1))
+                     pi = pi)
 combi
 
-res <- vector(9L, mode = "list")
+quantile_pretty <- signif(combi$p*100, 4)
+quantile_pretty <- paste0(quantile_pretty, "%")
+
+res <- vector(7L, mode = "list")
 
 for (i in 1:nrow(combi)) {
   res[[i]] <- get_res(D_all, combi[i, 1], combi[i, 2], f_temporal, f_spatial, f_genetic)
@@ -297,9 +300,85 @@ par(mfrow = c(3, 3), mar=c(1,1,3,1))
 for(i in 1:length(res)) {
   plot(res[[i]]$graph, vertex.label="",
        main = paste(
-         "cutoff:", round(100 * combi[i, 1]), "%",
-         "reporting:", 100 * combi[i, 2],"%"))
+         "cutoff:", quantile_pretty[i]))
 }
 
 ```
+
+## Compare vimes results to 'truth'
+
+Since we are using simulated data, we can actually compare the results obtained using `vimes` to the truth, i.e. check whether cases identified as belonging to the same outbreak cluster were indeed part of the same transmission chain in the simulation
+
+```{r} 
+i <- which(combi$p %in% 0.95) # taking this is our main result
+# cluster membership as identified by vimes
+est_clust_membership <- as.vector(res[[i]]$clusters$membership)
+# cluster membership as simulated
+sim_clust_membership <- sim_rabies$clust_renumbered
+
+est_clust_membership
+sim_clust_membership
+```
+
+For a formal comparison, we can measure the proportion of pairs of individuals belonging to the same outbreak cluster which were indeed clustered together by the method (True Positive Rate), as well as the proportion of pairs of individuals which did not belong to the same outbreak cluster and were adequately placed in different groups by the method (True Negative Rate).
+```{r} 
+# function to compute the true positive and true negative rates
+get_TPR_TNR <- function(est_clust_membership, sim_clust_membership)
+{
+
+### look at pairs of individuals and whether they are in the same cluster or not in simulation and estimation
+  sim_same_clust <- as.matrix(dist(sim_clust_membership, method="manhattan"))==0
+  est_same_clust <- as.matrix(dist(est_clust_membership, method="manhattan"))==0
+  
+  sim_same_clust[lower.tri(sim_same_clust, diag = TRUE)] <- NA
+  est_same_clust[lower.tri(est_same_clust, diag = TRUE)] <- NA
+  
+  sim_same_clust_vect <- na.omit(as.vector(sim_same_clust))
+  est_same_clust_vect <- na.omit(as.vector(est_same_clust))
+
+### see https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12968 for the following param definitions
+  ## The true positive rate (TPR) 
+  # defined as the proportion of individuals belonging to the same population which were indeed clustered together by the method.
+  TPR <- sum(est_same_clust_vect[which(sim_same_clust_vect)]) / sum(sim_same_clust_vect)
+  
+  ## The true negative rate (TNR) 
+  # defined as the proportion of individuals which did not belong to the same population and were adequately placed in different groups by the method
+  TNR <- sum(!est_same_clust_vect[which(!sim_same_clust_vect)]) / sum(!sim_same_clust_vect)
+  
+  return(c(TPR = TPR, TNR = TNR))
+}
+
+# use this function to compute the TPR and TNR for all the cutoffs we considered
+all_TPR_TNR <- as.data.frame(t(sapply(1:length(res), function(i) get_TPR_TNR( as.vector(res[[i]]$clusters$membership), sim_clust_membership) )))
+
+all_TPR_TNR
+
+all_TPR_TNR$quantile <- combi$p
+all_TPR_TNR$SumTPRTNR <- all_TPR_TNR$TPR + all_TPR_TNR$TNR
+
+# plot results as a ROC curve
+plot(1 - all_TPR_TNR$TNR, all_TPR_TNR$TPR, xlab = "1 - TNR", ylab = "TPR", xlim = c(0, 1), ylim = c(0, 1), col = cols, pch = 19, cex = 1.5)
+legend("bottomright", legend = quantile_pretty, title = "Quantile used for cutoff", col = cols, pch = 19, pt.cex = 1.5, bty = "n", cex = 0.75)
+```
+
+## Estimate the underlying reproduction number and number of imported cases
+
+XXXXXX TO DO
+
+## Other things to add
+
+- Maybe show more specifically how wrong we are when using quantile 0.95 rather than optimum 0.99%? (could be shown by producing Figure similar to Figure 2 for both sets of results; see next point)
+
+- Show the clusters on graphs in time, space and genetics as in paper (Figure 2)
+
+- Show results obtained with one data stream only to illustrate value of combining data streams (Figure 4 in paper)
+
+- Show real time analyses (Figure S8 in paper)
+
+- Maybe - show results obtained with misspecified reporting rates?
+
+
+
+
+
 
