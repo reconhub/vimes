@@ -109,7 +109,7 @@ achieved by the (exported) function `dempiric`:
 
 ```{r, final}
 
-d_final <- dempiric(si, 0.6)
+d_final <- vimes::dempiric(si, 0.6)
 head(d_final)
 sum(d_final)
 
