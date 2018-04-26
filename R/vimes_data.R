@@ -1,6 +1,9 @@
 #' Process input data for vimes
 #'
-#' This function takes a series of 'dist' objects (or objects which can be converted to 'dist', and ensures that entries match in all objects, adding NAs where necessary. The total number of cases and labels are returned as attributes.
+#' This function takes a series of 'dist' objects (or objects which can be
+#' converted to 'dist', and ensures that entries match in all objects, adding
+#' NAs where necessary. The total number of cases and labels are returned as
+#' attributes.
 #'
 #' @author Thibaut Jombart \email{thibautjombart@@gmail.com}
 #'
@@ -8,7 +11,8 @@
 #'
 #' @export
 #'
-#' @return a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)
+#' @return a list of dist objects with matching entries, with attributes:
+#'     'labels' (labels of the cases) and 'N' (number of cases)
 #'
 #' @examples
 #' x1 <- c(0,1,3)
@@ -21,14 +25,16 @@
 #' out
 #'
 vimes_data <- function(...){
-    ## Data passed through ... are meant to be pairwise distances
-    ## between labelled cases; we process these inputs by i) turning
-    ## them into matrices ii) ensuring matching of labels iii)
-    ## converting data into 'dist' objects. Final labels are stored as
-    ## attributes of the returned list of 'dist' objects.
+    ## Data passed through ... are meant to be pairwise distances between
+    ## labelled cases; we process these inputs by i) turning them into matrices
+    ## ii) ensuring matching of labels iii) converting data into 'dist'
+    ## objects. Final labels are stored as attributes of the returned list of
+    ## 'dist' objects.
     
+
     ## PROCESS TYPES OF INPUT  ##
     ## extract data from list ##
+    
     data <- list(...)
     data_names <- names(data)
     if (length(data) == 0L) {

@@ -3,6 +3,7 @@ title: "vimes: an illustration on a simulated dog rabies dataset"
 author: "Anne Cori & Thibaut Jombart"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+bibliography: bibliography.bib
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{demonsration}
@@ -15,17 +16,22 @@ vignette: >
 
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>", 
-  fig.width = 6, 
-  fig.height = 6, 
-  fig.path = "figs-demo/"
+  fig.width = 7, 
+  fig.height = 5,
+  out.width = "80%", 
+  fig.path = "rabies/"
 )
 
 ```
 
-This vignette provides a demonstration of the vimes package and more specifically how it can be used to perform analyses such as those presented in XXXXXXXX [CITE THE PAPER]. Here we use a simulated dataset of rabies transmitted among dogs, chosen among all the baseline simulations described in XXXXXXXX [CITE THE PAPER] as the only simulated dataset with 151 observed dogs infected with rabies, i.e. exactly the same number as in the real dataset analysed in this paper. 
+This vignette provides a demonstration of the vimes package and more
+specifically how it can be used to perform analyses such as those presented in
+@vimes-paper. Here we use a simulated dataset of rabies transmitted among dogs,
+chosen among all the baseline simulations described in @vimes-paper
+as the only simulated dataset with 151 observed dogs infected with rabies,
+i.e. exactly the same number as in the real dataset analysed in this paper.
 
-## Loading and examining the data
+# Loading and examining the data
 
 The simulated dataset is available as  `sim_rabies` in the vimes package:
 
@@ -37,32 +43,43 @@ sim_rabies$n
 ```
 
 We can plot the epidemic curve using the `incidence` package:
-```{r}
-### if incidence is not already installed, run these few lines:
-# install.packages("devtools")
-# library(devtools)
-# install_github("reconhub/incidence")
+```{r incidence}
 
-### load incidence package and use it to plot epidemic curve over different time scales:
 library(incidence) 
-# weekly
+## weekly
 plot(incidence(sim_rabies$onset,7))
-# monthly
+
+## monthly
 plot(incidence(sim_rabies$onset,365/12))
-# bimonthly
+
+## bimonthly
 plot(incidence(sim_rabies$onset,365/6))
 ```
 
 And we can plot the locations of the cases:
-```{r}
+```{r locations}
 locations <- t(sapply(1:sim_rabies$n, function(i) sim_rabies$cases[[i]]$location))
-plot(locations, xlab = "", ylab="")
+plot(locations, xlab = "", ylab = "")
 ```
 
-XXXXXXXXX THIBAUT CAN WE PLEASE ADD A PHYLOGENETIC TREE FOR THIS?
+DNA sequences have an unsual format in this simulation, as only mutated sites
+from an hypothetical reference sequence are stored:
+```{r dna}
+## gather DNA info from cases
+dna <- lapply(1:sim_rabies$n, function(i) sim_rabies$cases[[i]]$dna)
+
+## have a look
+class(dna)
+length(dna)
+head(dna)
+```
+
+In the next section, we see how to compute genetic distances and
+reconstruct a phylogenetic tree from this data.
 
 
-## Computing pairwise distances between cases in time, space, and genetics 
+
+# Computing pairwise distances between cases in time, space, and genetics 
 
 
 Distances between dates are computed as numbers of days:
@@ -78,59 +95,86 @@ head(locations)
 D_geo <- rdist(locations)
 ```
 
-Distances between sequences are computed as simple Hamming distances using function `dist_dna` in the `quicksim` package:
-```{r}
-#install_github("thibautjombart/quicksim")
+Distances between sequences are computed as simple Hamming distances using
+function `dist_dna` in the
+[`quicksim`](https://github.com/thibautjombart/quicksim) package. As this
+package is in developement, you will first need to install it using (requires
+devtools):
+
+```{r install-quicksim, eval = FALSE}
+devtools::install_github("thibautjombart/quicksim")
+```
+
+Hamming distances (i.e. number of nucleotide differences between sequences) can
+be computed using:
+
+```{r D_dna}
 library(quicksim)
-dna <- lapply(1:sim_rabies$n, function(i) sim_rabies$cases[[i]]$dna)
-# dna lists the mutation points compared to a reference genome for the pathogen sequence in each case
-head(dna)
 D_dna <- dist_dna(dna)
 ``` 
+We derive a phylogenetic tree from these distances using the `ape` package:
 
-We format, match and plot the distance data using \emph{vimes}: XXX WHAT IS THE MATCHING USING HERE AS NOT USING IDs I THINK ?!
+```{r tree, fig.height = 10}
+library(ape)
+tree <- ladderize(root(nj(D_dna), 1))
+plot(tree)
+axisPhylo()
+mtext(side = 1, text = "Number of mutations", line = 2.5)
+``` 
+
+
+We format, match and plot the distance data using \emph{vimes}:
+
 ```{r} 
 D_all <- vimes_data(dates = D_dates, geo = D_geo, dna = D_dna)
 plot(D_all, nclass = 60)
 ``` 
 
 
-## Defining cutoff distances above which cases are considered not linked by transmission 
+# Defining cutoff distances above which cases are considered not linked by transmission 
 
-### Distributions of expected distances between cases for rabies
+## Distributions of expected distances between cases for rabies
 
-We retrieved preexisting information about the serial interval, spatial kernel, and mutation rate for rabies, 
-and used this information to define the distribution of expected distances between cases in the temporal, spatial, and genetic spaces. 
+We retrieved preexisting information about the serial interval, spatial kernel,
+and mutation rate for rabies, and used this information to define the
+distribution of expected distances between cases in the temporal, spatial, and
+genetic spaces.
 
-The serial interval and spatial kernel distributions are taken from Hampson et al. \url{http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1000053}
+The serial interval and spatial kernel distributions are taken from
+@Hampson2009-wk:
+
 ```{r} 
-# serial interval distribution parameters
+## serial interval distribution parameters
 gamma_mean <- 23.55
 gamma_std <- 20.85
-# convert into shape and scale 
+                                        
+## convert into shape and scale 
 gamma_shape <- gamma_mean^2 / (gamma_std^2)
 gamma_scale <- gamma_std^2 / gamma_mean
-```
 
-XXXXXXXX NEED TO EXPLAIN MORE WHAT WE DO JUST BELOW AND MAYBE REMOVE RAYLEIGH_SD AS NOT USED?
-```{r} 
-# spatial kernel parameters
+## spatial kernel parameters
 rayleigh_mean <- 0.88
-# find Rayleigh parameters to match this mean
-rayleigh_scale <- rayleigh_mean / sqrt(acos(-1)/2)  # using acos(-1) instead of pi as we later use pi for reporting rate
-rayleigh_sd <- sqrt( rayleigh_scale^2*(4-acos(-1))/2 )  # using acos(-1) instead of pi as we later use pi for reporting rate
+
+## find Rayleigh parameters to match this mean
+rayleigh_scale <- rayleigh_mean / sqrt(acos(-1)/2)
+
 ```
 
-The mutation rate is derived from Bourhy et al. \url{http://journals.plos.org/plospathogens/article?id=10.1371/journal.ppat.1005525}
+The mutation rate is derived from @Bourhy2016-am:
+
 ```{r} 
-# mutation rate
+## mutation rate
 mu_year_per_site <- 5.9e-4
 n_sites <- 11820
-# mutation rate per day and sequence
+
+## mutation rate per day and sequence
 mu_day_whole <- (mu_year_per_site * n_sites / 365) 
 ```
 
-We use the `fpaircase` function to compute the distributions of expected distances (temporal, spatial and genetic respectively) between a case and their infector based on the above parameters. 
+We use the `fpaircase` function to compute the distributions of expected
+distances (temporal, spatial and genetic respectively) between a case and their
+infector based on the above parameters.
+
 ```{r} 
 ## distance functions for each of the 3 types
 f_temporal <- fpaircase(type = "temporal", gamma_shape = gamma_shape,
@@ -142,36 +186,48 @@ f_genetic <- fpaircase(type = "genetic", poisson_rate = mu_day_whole,
                        gamma_shape = gamma_shape, 
                        gamma_scale = gamma_scale)
 
-# Plotting these
+## Plotting these
 par(mfrow=c(3,1))
 plot(f_temporal, xlim = c(0,365))
 plot(f_spatial, xlim = c(0,5))
 plot(f_genetic, xlim = c(0,5))
 ```
 
-### Cutoff distances defined as the quantiles of the distributions of expected pairwise distances
+## Cutoff distances defined as the quantiles of the distributions of expected pairwise distances
 
-We will be using the above distributions of expected distances between a case and their infector to define cutoff distances above which pairs of cases are considered not linked by transmission. 
+We will be using the above distributions of expected distances between a case
+and their infector to define cutoff distances above which pairs of cases are
+considered not linked by transmission.
 
 First, we assume a certain level of reporting. Here we assume only $20\%$ of cases are observed. 
 ```{r} 
-# reporting rate
+## reporting rate
 pi <- 0.2
 ```
 
-Then, we define the quantile we want to use to define the cutoff distances. Here, we consider many different quantiles to assess sensitivity of our results to this choice. 
+Then, we define the quantile we want to use to define the cutoff
+distances. Here, we consider many different quantiles to assess sensitivity of
+our results to this choice.
 ```{r} 
-# quantiles
+## quantiles
 q <- c(.50, .75, .90, .95, .95^(1/3), .99, .999, .9995, .9999)
-# colours used to plot these
+
+## colours used to plot these
 cols <- rainbow(length(q))
-cutoff_choice <- q[4] # our main results are with the cutoff corresponding to the 95% quantile
+
+## our main results are with the cutoff corresponding to the 95% quantile
+cutoff_choice <- q[4] 
 ```
 
-We now plot the distributions of expected distances (temporal, spatial and genetic respectively) between a case and their closest observed ancestor, assuming that only $20\%$ of cases are reported. We also show the cutoffs corresponding to the quantiles defined above. 
+We now plot the distributions of expected distances (temporal, spatial and
+genetic respectively) between a case and their closest observed ancestor,
+assuming that only $20\%$ of cases are reported. We also show the cutoffs
+corresponding to the quantiles defined above.
+
 ```{r} 
-## distance functions for each of the 3 types, accounting for reporting probability pi
-## with quantiles q overlayed on the graphs
+## distance functions for each of the 3 types, accounting for reporting
+## probability pi with quantiles q overlayed on the graphs
+
 par(mfrow=c(3,1))
 plot(f_temporal, q, xlim = c(0,365*3), pi = pi,
      lines_arg = list(col=cols, lwd=2))
@@ -181,38 +237,45 @@ plot(f_genetic, q, xlim = c(0,25), pi = pi,
      lines_arg = list(col=cols, lwd=2))
 ```
 
-We can overlay the graph above on top of the histogram of observed distances to see where these cutoffs fall with respect to our observations. 
+We can overlay the graph above on top of the histogram of observed distances to
+see where these cutoffs fall with respect to our observations.
+
 ```{r} 
 
 ### function used to generate a plot with distribution of observed and expected distances
+
 plot_overlay <- function(dist, f, q, pi, xlab, breaks, resol = 1,
-                         q_color = cols, hist_bordercolor = "grey", hist_color = "lightgrey")
-{ # dist contains the observed distances
-  # f is the distribution of expected distances between a case and their infector
-  # q is the quantile or vector of quantiles of interest
-  # pi is the reporting rate
-  # xlab is the x axis label
-  # breaks is the breaks used for plotting the histogram of dist
-  # resol is the resolution used for plotting f
-  # q_color is the colour or vector of colours used to show the cutofs associated with the quantile(s) q
-  # hist_bordercolor is the colour used for the border of the histogram of dist
-  # hist_color is the colour used for the filling of the histogram of dist
-  qtl <- get_quantiles(f, q, pi = pi)
-  hist(dist, col = hist_color, border = hist_bordercolor, 
-       main="", xlab=xlab, 
-       breaks=breaks)
-  par(new = T)
-  x <- seq(min(breaks), max(breaks), resol)
-  y <- f(x, pi = pi)
-  plot(x, y, type="l", axes=FALSE, main = "", xlab="", ylab="")
-  # add vertical lines corresponding to quantiles
-  abline(v = qtl, col = q_color, lwd = 2)
+                         q_color = cols, hist_bordercolor = "grey",
+                         hist_color = "lightgrey"){
+    
+    ## dist contains the observed distances
+    ## f is the distribution of expected distances between a case and their infector
+    ## q is the quantile or vector of quantiles of interest
+    ## pi is the reporting rate
+    ## xlab is the x axis label
+    ## breaks is the breaks used for plotting the histogram of dist
+    ## resol is the resolution used for plotting f
+    ## q_color is the colour or vector of colours used to show the cutofs associated with the quantile(s) q
+    ## hist_bordercolor is the colour used for the border of the histogram of dist
+    ## hist_color is the colour used for the filling of the histogram of dist
+    
+    qtl <- get_quantiles(f, q, pi = pi)
+    hist(dist, col = hist_color, border = hist_bordercolor, 
+         main = "", xlab = xlab, 
+         breaks = breaks)
+    par(new = TRUE)
+    x <- seq(min(breaks), max(breaks), resol)
+    y <- f(x, pi = pi)
+    plot(x, y, type = "l", axes = FALSE, main = "", xlab = "", ylab = "")
+
+    ## add vertical lines corresponding to quantiles
+    abline(v = qtl, col = q_color, lwd = 2)
 }
 
 ### use the function above to create our plot: 
 par(mfrow=c(3, 1), mar=c(5, 5, 0.5, 5))
 
-# temporal
+## temporal
 plot_overlay(dist = as.vector(D_all$dates), 
              f = f_temporal, 
              q = q, 
@@ -221,7 +284,7 @@ plot_overlay(dist = as.vector(D_all$dates),
              breaks = seq(0,2500, 50),
              resol = 1)
 
-# spatial
+## spatial
 plot_overlay(dist = as.vector(D_all$geo), 
              f = f_spatial, 
              q = q, 
@@ -230,7 +293,7 @@ plot_overlay(dist = as.vector(D_all$geo),
              breaks = seq(0,20,0.2),
              resol = 0.1)
 
-# genetic
+## genetic
 plot_overlay(dist = as.vector(D_all$dna), 
              f = f_genetic, 
              q = q, 
@@ -240,12 +303,20 @@ plot_overlay(dist = as.vector(D_all$dna),
              resol = 1)
 ```
 
-## Running vimes to identify clusters of cases linked by transmission
+# Running vimes to identify clusters of cases linked by transmission
 
-We run vimes to identify clusters of cases linked by transmission, for various cutoff choices, and various reporting rates. We plot the results by colouring cases identified as belonging to the same outbreak cluster, i.e. cases identified as being linked by local transmission. Cases shown in grey are identified as singletons who are not linked by transmission to any other observed case. 
-```{r} 
+We run vimes to identify clusters of cases linked by transmission, for various
+cutoff choices, and various reporting rates. We plot the results by colouring
+cases identified as belonging to the same outbreak cluster, i.e. cases
+identified as being linked by local transmission. Cases shown in grey are
+identified as singletons who are not linked by transmission to any other
+observed case.
+
+```{r results, cache = TRUE} 
 ### function used to get results for a certain cutoff and reporting rate
-get_res <- function(D_all, q, pi, f_temporal, f_spatial, f_genetic, type=c("all", "temporal","spatial", "genetic")) {
+
+get_res <- function(D_all, q, pi, f_temporal, f_spatial, f_genetic,
+                    type = c("all", "temporal","spatial", "genetic")) {
   
   type <- match.arg(type)
   
@@ -254,32 +325,29 @@ get_res <- function(D_all, q, pi, f_temporal, f_spatial, f_genetic, type=c("all"
             spatial = get_quantiles(f_spatial, q, pi = pi),
             genetic = get_quantiles(f_genetic, q, pi = pi))
   
-  if(type == "all")
-  {
+  if (type == "all") {
     ## use vimes
     out <- vimes(D_all, cutoff = cuts,
-          graph.opt = vimes.graph.opt(col.pal=funky))
-  }
-  else if(type == "temporal")
-  {
+                 graph.opt = vimes.graph.opt(col.pal = funky))
+  } else if (type == "temporal") {
     out <- vimes(vimes_data(dates = D_all$dates), cutoff = cuts["temporal"],
-                 graph.opt = vimes.graph.opt(col.pal=funky))
-  }else if(type == "spatial")
-  {
+                 graph.opt = vimes.graph.opt(col.pal = funky))
+  } else if (type == "spatial") {
     out <- vimes(vimes_data(geo = D_all$geo), cutoff = cuts["spatial"],
-                 graph.opt = vimes.graph.opt(col.pal=funky))
-  }else if(type == "genetic")
-  {
+                 graph.opt = vimes.graph.opt(col.pal = funky))
+  } else if (type == "genetic") {
     out <- vimes(vimes_data(dna = D_all$dna), cutoff = cuts["genetic"],
-                 graph.opt = vimes.graph.opt(col.pal=funky))
+                 graph.opt = vimes.graph.opt(col.pal = funky))
   }
     
   return(out)
   
 }
 
-### use the function above to generate results for several combinations of p and pi
-### We assume, as in Bourhy et al., a reporting rate of 20% in our main analyses, and reporting rates of 10 and 50% respectively in two extreme scenarios considered in sensitivity analyses. 
+### use the function above to generate results for several combinations of p and
+### pi We assume, as in Bourhy et al., a reporting rate of 20% in our main
+### analyses, and reporting rates of 10 and 50% respectively in two extreme
+### scenarios considered in sensitivity analyses.
 
 combi <- expand.grid(p = q,
                      pi = pi)
@@ -291,107 +359,142 @@ quantile_pretty <- paste0(quantile_pretty, "%")
 res <- vector(9L, mode = "list")
 
 for (i in 1:nrow(combi)) {
-  res[[i]] <- get_res(D_all, combi[i, 1], combi[i, 2], f_temporal, f_spatial, f_genetic)
+    res[[i]] <- get_res(D_all, combi[i, 1],
+                        combi[i, 2], f_temporal,
+                        f_spatial, f_genetic)
 }
 
 ### visualise the output
 par(mfrow = c(3, 3), mar=c(1,1,3,1))
 
-for(i in 1:length(res)) {
-  plot(res[[i]]$graph, vertex.label="",
-       main = paste(
-         "cutoff:", quantile_pretty[i]))
+for (i in 1:length(res)) {
+  plot(res[[i]]$graph, vertex.label = "",
+       main = paste("cutoff:", quantile_pretty[i]))
 }
 
 ```
 
-## Compare vimes results to 'truth'
+# Compare vimes results to 'truth'
 
-Since we are using simulated data, we can actually compare the results obtained using `vimes` to the truth, i.e. check whether cases identified as belonging to the same outbreak cluster were indeed part of the same transmission chain in the simulation
+Since we are using simulated data, we can actually compare the results obtained
+using `vimes` to the truth, i.e. check whether cases identified as belonging to
+the same outbreak cluster were indeed part of the same transmission chain in the
+simulation
 
 ```{r} 
 i <- which(combi$p %in% 0.95) # taking this is our main result
-# cluster membership as identified by vimes
+
+## cluster membership as identified by vimes
 est_clust_membership <- as.vector(res[[i]]$clusters$membership)
-# cluster membership as simulated
+
+## cluster membership as simulated
 sim_clust_membership <- sim_rabies$clust_renumbered
 
 est_clust_membership
 sim_clust_membership
 ```
 
-For a formal comparison, we can measure the proportion of pairs of individuals belonging to the same outbreak cluster which were indeed clustered together by the method (True Positive Rate), as well as the proportion of pairs of individuals which did not belong to the same outbreak cluster and were adequately placed in different groups by the method (True Negative Rate).
+For a formal comparison, we can measure the proportion of pairs of individuals
+belonging to the same outbreak cluster which were indeed clustered together by
+the method (True Positive Rate), as well as the proportion of pairs of
+individuals which did not belong to the same outbreak cluster and were
+adequately placed in different groups by the method (True Negative Rate).
+
 ```{r} 
 # function to compute the true positive and true negative rates
-get_TPR_TNR <- function(est_clust_membership, sim_clust_membership)
-{
+get_TPR_TNR <- function(est_clust_membership, sim_clust_membership) {
 
-### look at pairs of individuals and whether they are in the same cluster or not in simulation and estimation
-  sim_same_clust <- as.matrix(dist(sim_clust_membership, method="manhattan"))==0
-  est_same_clust <- as.matrix(dist(est_clust_membership, method="manhattan"))==0
-  
-  sim_same_clust[lower.tri(sim_same_clust, diag = TRUE)] <- NA
-  est_same_clust[lower.tri(est_same_clust, diag = TRUE)] <- NA
-  
-  sim_same_clust_vect <- na.omit(as.vector(sim_same_clust))
-  est_same_clust_vect <- na.omit(as.vector(est_same_clust))
+### look at pairs of individuals and whether they are in the same cluster or not
+### in simulation and estimation
+    
+    sim_same_clust <- as.matrix(dist(sim_clust_membership, method="manhattan")) == 0
+    est_same_clust <- as.matrix(dist(est_clust_membership, method="manhattan")) == 0
+    
+    sim_same_clust[lower.tri(sim_same_clust, diag = TRUE)] <- NA
+    est_same_clust[lower.tri(est_same_clust, diag = TRUE)] <- NA
+    
+    sim_same_clust_vect <- na.omit(as.vector(sim_same_clust))
+    est_same_clust_vect <- na.omit(as.vector(est_same_clust))
 
-### see https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12968 for the following param definitions
-  ## The true positive rate (TPR) 
-  # defined as the proportion of individuals belonging to the same population which were indeed clustered together by the method.
-  TPR <- sum(est_same_clust_vect[which(sim_same_clust_vect)]) / sum(sim_same_clust_vect)
-  
-  ## The true negative rate (TNR) 
-  # defined as the proportion of individuals which did not belong to the same population and were adequately placed in different groups by the method
-  TNR <- sum(!est_same_clust_vect[which(!sim_same_clust_vect)]) / sum(!sim_same_clust_vect)
-  
-  return(c(TPR = TPR, TNR = TNR))
+    ## see
+    ## https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12968
+    ## for the following param definitions
+    
+    ## The true positive rate (TPR) defined as the proportion of individuals
+    ## belonging to the same population which were indeed clustered together by
+    ## the method.
+    
+    TPR <- sum(est_same_clust_vect[which(sim_same_clust_vect)]) / sum(sim_same_clust_vect)
+    
+    ## The true negative rate (TNR) defined as the proportion of individuals
+    ## which did not belong to the same population and were adequately placed in
+    ## different groups by the method
+    TNR <- sum(!est_same_clust_vect[which(!sim_same_clust_vect)]) / sum(!sim_same_clust_vect)
+    
+    return(c(TPR = TPR, TNR = TNR))
 }
 
-# use this function to compute the TPR and TNR for all the cutoffs we considered
-all_TPR_TNR <- as.data.frame(t(sapply(1:length(res), function(i) get_TPR_TNR( as.vector(res[[i]]$clusters$membership), sim_clust_membership) )))
+## use this function to compute the TPR and TNR for all the cutoffs we
+## considered
+all_TPR_TNR <- as.data.frame(t(sapply(1:length(res),
+                                      function(i) get_TPR_TNR(as.vector(res[[i]]$clusters$membership),
+                                                              sim_clust_membership))))
 
 all_TPR_TNR
 
 all_TPR_TNR$quantile <- combi$p
 all_TPR_TNR$SumTPRTNR <- all_TPR_TNR$TPR + all_TPR_TNR$TNR
 
-# plot results as a ROC curve
-plot(1 - all_TPR_TNR$TNR, all_TPR_TNR$TPR, xlab = "1 - TNR", ylab = "TPR", xlim = c(0, 1), ylim = c(0, 1), col = cols, pch = 19, cex = 1.5)
-legend("bottomright", legend = quantile_pretty, title = "Quantile used for cutoff", col = cols, pch = 19, pt.cex = 1.5, bty = "n", cex = 0.75)
+## plot results as a ROC curve
+plot(1 - all_TPR_TNR$TNR, all_TPR_TNR$TPR, xlab = "1 - TNR", ylab = "TPR",
+     xlim = c(0, 1), ylim = c(0, 1), col = cols, pch = 19, cex = 1.5)
+
+legend("bottomright", legend = quantile_pretty,
+       title = "Quantile used for cutoff",
+       col = cols, pch = 19, pt.cex = 1.5,
+       bty = "n", cex = 0.75)
 ```
 
-## Estimate the underlying reproduction number and number of imported cases
 
-```{r} 
+
+# Estimate the underlying reproduction number and number of imported cases
+
+This part requires the package `branchr`, which needs to be installed using
+`devtools` by typing:
+
+```{r eval = FALSE} 
 library(devtools)
 install_github("reconhub/branchr")
+```
+
+```{r} 
 library(branchr)
 
 compute_R  <- function(cl_size, rho) {
-  profile <- profile_likelihood(y_obs = cl_size, 
-                                rho = rho, 0.01, 20)
-  R_estimate <- theta_max_likelihood(profile$theta,
-                                     profile$Likelihood, 
-                                     0.95)
-  R <- c(central = R_estimate$theta_max_likelihood, 
-         low = R_estimate$lower_theta, 
-         up = R_estimate$upper_theta)
-  
-  import <- import(y_obs = cl_size, 
-                   rho = rho, 
-                   profile, 1e3, 1e3, 0.95)
-  unobs <- c(central = import$theta_max_likelihood,
-             low = import$lower_theta,
-             up = import$upper_theta)
-  
-  return(list(R, unobs))
+    profile <- profile_likelihood(y_obs = cl_size, 
+                                  rho = rho, 0.01, 20)
+    R_estimate <- theta_max_likelihood(profile$theta,
+                                       profile$Likelihood, 
+                                       0.95)
+    R <- c(central = R_estimate$theta_max_likelihood, 
+           low = R_estimate$lower_theta, 
+           up = R_estimate$upper_theta)
+    
+    import <- import(y_obs = cl_size, 
+                     rho = rho, 
+                     profile, 1e3, 1e3, 0.95)
+    unobs <- c(central = import$theta_max_likelihood,
+               low = import$lower_theta,
+               up = import$upper_theta)
+    
+    return(list(R, unobs))
 }
 
 clust_size <- lapply(res, function(i) i$clusters$size)
 rho <- combi[, 2]
 
-R_estimate_and_imports <- lapply(1:length(clust_size), function(i) compute_R(clust_size[[i]], rho[i]))
+R_estimate_and_imports <- lapply(1:length(clust_size),
+                                 function(i) compute_R(clust_size[[i]], rho[i]))
 
 R_estimates <- sapply(1:length(R_estimate_and_imports), 
                       function(i) R_estimate_and_imports[[i]][[1]])
@@ -401,20 +504,21 @@ N_unobs_estimates <- sapply(1:length(R_estimate_and_imports),
 
 N_tot_estimates <- N_unobs_estimates + 
   matrix(rep(lengths(clust_size), 3), 
-         nrow=3, byrow = TRUE)
+         nrow = 3, byrow = TRUE)
 
 n_days <- diff(range(sim_rabies$onset))
 
 rate_import_tot_days <- N_tot_estimates / as.numeric(n_days)
 rate_import_tot_year <- rate_import_tot_days*365
 
+
 ### plotting results ###
 
-par(mfrow=c(2, 1))
+par(mfrow = c(2, 1))
 
 ## R estimates
 plot(R_estimates["central",], ylim = c(0, max(c(1.2, max(R_estimates)))),
-     pch = 19, xlab = "Cutoff used for pruning", ylab = "Estimated R", axes=FALSE)
+     pch = 19, xlab = "Cutoff used for pruning", ylab = "Estimated R", axes = FALSE)
 axis(side = 1, at = 1:length(R_estimate_and_imports),
      labels = quantile_pretty, cex = 0.75)
 axis(side = 2)
@@ -422,7 +526,7 @@ for (i in 1:length(R_estimate_and_imports)) {
   segments(i, R_estimates["low",i],i, R_estimates["up",i])
 }
 
-# adding the reproduction number used to generate the simulation
+## adding the reproduction number used to generate the simulation
 abline(h = 0.92, col = "red", lty = 2)
 
 ## importation rate estimates
@@ -441,7 +545,7 @@ abline(h = 7, col = "red", lty = 2)
 
 ```
 
-## Visualising the clusters identified with vimes with different cutoffs
+# Visualising the clusters identified with vimes with different cutoffs
 
 In time:
 ```{r} 
@@ -455,7 +559,8 @@ plot_incidence_res <- function(x){
   col <- levels(grp)
   names(col) <- col
   plot(incidence(sim_rabies$onset, 365/6, groups = grp),
-       color = as.character(col), ylab = "Bimonthly incidence") + guides(fill = FALSE)
+       color = as.character(col), ylab = "Bimonthly incidence") +
+      guides(fill = FALSE)
 }
 
 ts_plts <- lapply(res, plot_incidence_res)
@@ -477,7 +582,7 @@ map_res <- function(x) {
   
   ggplot(data = dat,
                aes(x = x, y = y, color = grp),
-               alpha=.8, size=3) +  
+               alpha = .8, size = 3) +  
     geom_point() +
     scale_color_manual(values = col) +
     guides(color = FALSE) +
@@ -490,25 +595,43 @@ grid.arrange(grobs = map_plts, nrow = 3)
 
 ```
 
-In genetic space:
-XXXX TO DO
+In the genetic space:
+```{r tree-with-cluters}
+## check that tip labels are ordered as vimes data
+identical(attr(D_all, "labels"), tree$tip.label)
 
-## Visualising the clusters identified with vimes with the 95% cutoff.
+make_tree_res <- function(x) {
+    grp <- factor(V(x$graph)$color)
+    col <- levels(grp)
+    plot(tree, show.tip.label = FALSE)
+    tiplabels(text = NULL, pch = 20, col = col)
+}
+
+par(mfrow = c(3, 3), mar = c(1, 1, 0.5, 0))
+invisible(lapply(res, make_tree_res))
+
+
+```
+
+
+# Visualising the clusters identified with vimes with the 95% cutoff.
 
 In time and space (for the 95% cutoff):
 ```{r} 
 
-ts_plots_main <- ts_plts[[which(combi$p %in% 0.95 & combi$pi %in% 0.2)]]
-map_plts_main <- map_plts[[which(combi$p %in% 0.95 & combi$pi %in% 0.2)]]
+main_res <- which(combi$p %in% 0.95 & combi$pi %in% 0.2)
 
+ts_plts[[main_res]]
 
-grid.arrange(grobs = list(ts_plots_main, map_plts_main), ncol = 2)
+map_plts[[main_res]]
+
+make_tree_res(res[[main_res]])
+
 ```
 
-In genetic space (for the 95% cutoff):
-XXXX TO DO
 
-## Illustrating the added value of combining several data streams
+
+# Illustrating the added value of combining several data streams
 
 XXXXXX write some BLABLA
 
@@ -588,3 +711,4 @@ get_TPR_TNR(res_all_data_streams$clusters$membership, sim_clust_membership)
 
 
 
+# References
