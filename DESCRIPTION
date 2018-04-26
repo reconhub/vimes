@@ -18,7 +18,15 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    distcrete
+    distcrete,
+    branchr,
+    devtools,
+    fields,
+    ggmap,
+    ggplot2,
+    gridExtra,
+    incidence,
+    quicksim
 Remotes: reconhub/distcrete
 Description: Integration of various surveillance data for detecting disease
     outbreaks.
