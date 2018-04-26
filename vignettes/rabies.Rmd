@@ -125,7 +125,7 @@ mtext(side = 1, text = "Number of mutations", line = 2.5)
 
 We format, match and plot the distance data using \emph{vimes}:
 
-```{r} 
+```{r distances, fig.height = 7} 
 D_all <- vimes_data(dates = D_dates, geo = D_geo, dna = D_dna)
 plot(D_all, nclass = 60)
 ``` 
@@ -175,7 +175,7 @@ We use the `fpaircase` function to compute the distributions of expected
 distances (temporal, spatial and genetic respectively) between a case and their
 infector based on the above parameters.
 
-```{r} 
+```{r plot_f, fig.height = 7} 
 ## distance functions for each of the 3 types
 f_temporal <- fpaircase(type = "temporal", gamma_shape = gamma_shape,
                         gamma_scale = gamma_scale)
@@ -224,7 +224,7 @@ genetic respectively) between a case and their closest observed ancestor,
 assuming that only $20\%$ of cases are reported. We also show the cutoffs
 corresponding to the quantiles defined above.
 
-```{r} 
+```{r f-with-quantiles, fig.height = 7} 
 ## distance functions for each of the 3 types, accounting for reporting
 ## probability pi with quantiles q overlayed on the graphs
 
@@ -240,7 +240,7 @@ plot(f_genetic, q, xlim = c(0,25), pi = pi,
 We can overlay the graph above on top of the histogram of observed distances to
 see where these cutoffs fall with respect to our observations.
 
-```{r} 
+```{r hist-with-quantiles, fig.height = 7} 
 
 ### function used to generate a plot with distribution of observed and expected distances
 
@@ -312,7 +312,7 @@ identified as being linked by local transmission. Cases shown in grey are
 identified as singletons who are not linked by transmission to any other
 observed case.
 
-```{r results, cache = TRUE} 
+```{r results, cache = TRUE, fig.width = 9, fig.height = 9, out.width = "100%"}
 ### function used to get results for a certain cutoff and reporting rate
 
 get_res <- function(D_all, q, pi, f_temporal, f_spatial, f_genetic,
@@ -390,8 +390,8 @@ est_clust_membership <- as.vector(res[[i]]$clusters$membership)
 ## cluster membership as simulated
 sim_clust_membership <- sim_rabies$clust_renumbered
 
-est_clust_membership
-sim_clust_membership
+## contingency table to compare estimated cluster (row) vs actual one (columns)
+table(est_clust_membership, sim_clust_membership)
 ```
 
 For a formal comparison, we can measure the proportion of pairs of individuals
@@ -548,7 +548,7 @@ abline(h = 7, col = "red", lty = 2)
 # Visualising the clusters identified with vimes with different cutoffs
 
 In time:
-```{r} 
+```{r grid-time, fig.width = 9, fig.height = 9, out.width = "100%"} 
 library(igraph)
 library(ggplot2)
 library(gridExtra)
@@ -571,7 +571,7 @@ grid.arrange(grobs = ts_plts, nrow = 3)
 ``` 
 
 In space:
-```{r} 
+```{r grid-space, fig.width = 9, fig.height = 9, out.width = "100%"} 
 map_res <- function(x) {
   grp <- factor(V(x$graph)$color)
   col <- levels(grp)
@@ -596,7 +596,7 @@ grid.arrange(grobs = map_plts, nrow = 3)
 ```
 
 In the genetic space:
-```{r tree-with-cluters}
+```{r grid-trees, fig.width = 9, fig.height = 9, out.width = "100%"}
 ## check that tip labels are ordered as vimes data
 identical(attr(D_all, "labels"), tree$tip.label)
 
@@ -633,31 +633,40 @@ make_tree_res(res[[main_res]])
 
 # Illustrating the added value of combining several data streams
 
-XXXXXX write some BLABLA
+We can illutrate the added value of combining the different types of data by
+comparing the final clusters to the graphs that would be obtained by each type
+of data separately.
 
-- Show results obtained with one data stream only to illustrate value of combining data streams (Figure 4 in paper)
-
-```{r} 
+```{r combining-streams, fig.width = 8, fig.height = 8, out.width = "80%"} 
 
 res_all_data_streams <- res[[4]]
 
-res_temporal_data_only <- get_res(D_all, combi[4, 1], combi[4, 2], f_temporal, f_spatial, f_genetic, type="temporal")
-res_spatial_data_only <- get_res(D_all, combi[4, 1], combi[4, 2], f_temporal, f_spatial, f_genetic, type="spatial")
-res_genetic_data_only <- get_res(D_all, combi[4, 1], combi[4, 2], f_temporal, f_spatial, f_genetic, type="genetic")
+res_temporal_data_only <- get_res(D_all, combi[4, 1], combi[4, 2], f_temporal,
+                                  f_spatial, f_genetic, type = "temporal")
 
-# function to get the correct amount of transparency: more transparency as more edges to be drawn:
-transp_vertex <- function(gr)
-{
+res_spatial_data_only <- get_res(D_all, combi[4, 1], combi[4, 2], f_temporal,
+                                 f_spatial, f_genetic, type="spatial")
+
+res_genetic_data_only <- get_res(D_all, combi[4, 1], combi[4, 2], f_temporal,
+                                 f_spatial, f_genetic, type = "genetic")
+
+
+## function to get the correct amount of transparency: more transparency as more
+## edges to be drawn:
+
+transp_vertex <- function(gr) {
   (1 - ecount(gr) / (gorder(gr)^2/2) )^1.75
 }
 
-par(mfrow=c(2, 2), mar=c(.2, .2, 4, .2))
+par(mfrow = c(2, 2), mar = c(.2, .2, 4, .2))
 
 # temporal only
 
-color <- c("lightgrey", "red", "orange", "forestgreen", "pink", "blue", "brown", "black", "purple","darkgrey","yellow","green", "cyan","deepskyblue")
+color <- c("lightgrey", "red", "orange", "forestgreen", "pink", "blue", "brown",
+           "black", "purple","darkgrey","yellow","green", "cyan","deepskyblue")
+
 gr <- res_all_data_streams$separate_graphs$dates$graph
-#plot(gr, main="A", vertex.label="", edge.color = alpha("darkgrey", transp_vertex(gr)))
+
 mbrshp <- res_temporal_data_only$clusters$membership
 tab <- table(mbrshp)
 singletons_names <- tab %in% 1
@@ -666,12 +675,14 @@ names <- unique(mbrshp[!singletons])
 mbrshp[!singletons] <- 1 + match(mbrshp[!singletons], names)
 mbrshp[singletons] <- 1
 col <- color[mbrshp]
-plot(gr, main="Temporal data only", vertex.label="", edge.color = alpha("darkgrey", transp_vertex(gr)), vertex.frame.color = col)
 
-# spatial only
+plot(gr, main = "Temporal data only", vertex.label = "",
+     edge.color = alpha("darkgrey", transp_vertex(gr)),
+     vertex.frame.color = col)
+
+## spatial only
 
 gr <- res_all_data_streams$separate_graphs$geo$graph
-#plot(gr, main="B", vertex.label="", edge.color = alpha("darkgrey", transp_vertex(gr)))
 mbrshp <- res_spatial_data_only$clusters$membership
 tab <- table(mbrshp)
 singletons_names <- tab %in% 1
@@ -680,12 +691,13 @@ names <- unique(mbrshp[!singletons])
 mbrshp[!singletons] <- 1 + match(mbrshp[!singletons], names)
 mbrshp[singletons] <- 1
 col <- color[mbrshp]
-plot(gr, main="Spatial data only", vertex.label="", edge.color = alpha("darkgrey", transp_vertex(gr)), vertex.frame.color = col)
+plot(gr, main = "Spatial data only", vertex.label = "",
+     edge.color = alpha("darkgrey", transp_vertex(gr)),
+     vertex.frame.color = col)
 
-# genetic only
+## genetic only
 
 gr <- res_all_data_streams$separate_graphs$dna$graph 
-# plot(gr, main="C", vertex.label="", edge.color = alpha("darkgrey", transp_vertex(gr)))
 mbrshp <- res_genetic_data_only$clusters$membership
 tab <- table(mbrshp)
 singletons_names <- tab %in% 1
@@ -694,15 +706,23 @@ names <- unique(mbrshp[!singletons])
 mbrshp[!singletons] <- 1 + match(mbrshp[!singletons], names)
 mbrshp[singletons] <- 1
 col <- color[mbrshp]
-plot(gr, main="Genetic data only", vertex.label="", edge.color = alpha("darkgrey", transp_vertex(gr)), vertex.frame.color = col)
+plot(gr, main = "Genetic data only", vertex.label = "",
+     edge.color = alpha("darkgrey", transp_vertex(gr)),
+     vertex.frame.color = col)
 
-# all together 
+## all together 
 gr <- res_all_data_streams$graph
-plot(gr, main="All data streams together", vertex.label="", edge.color = alpha("darkgrey", transp_vertex(gr)), vertex.frame.color = V(gr)$color)
+plot(gr, main = "All data streams together", vertex.label = "",
+     edge.color = alpha("darkgrey", transp_vertex(gr)),
+     vertex.frame.color = V(gr)$color)
 
 ```
 
-Although the genetic data alone performed very well at reconstructing the outbreak clusters, adding the temporal and spatial information allowed to improve the reconstruction, with sensitivity remaining the same at 98.0% but specificitiy increasing from 94.4% to 100%:
+Although the genetic data alone performed very well at reconstructing the
+outbreak clusters, adding the temporal and spatial information allowed to
+improve the reconstruction, with sensitivity remaining the same at 98.0% but
+specificitiy increasing from 94.4% to 100%:
+
 ```{r} 
 get_TPR_TNR(res_genetic_data_only$clusters$membership, sim_clust_membership)
 get_TPR_TNR(res_all_data_streams$clusters$membership, sim_clust_membership)
