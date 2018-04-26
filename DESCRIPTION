@@ -26,7 +26,8 @@ Suggests:
     ggplot2,
     gridExtra,
     incidence,
-    quicksim
+    quicksim,
+    ape
 Remotes: reconhub/distcrete
 Description: Integration of various surveillance data for detecting disease
     outbreaks.
