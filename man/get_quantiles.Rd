@@ -4,8 +4,8 @@
 \alias{get_quantiles}
 \title{Get quantiles for a given probability distribution}
 \usage{
-get_quantiles(f, p, continuous = NULL, precision = 0.01, n_steps = 1000,
-  maxit = 1000, ...)
+get_quantiles(f, p, continuous = NULL, precision = 0.01,
+  n_steps = 1000, maxit = 1000, ...)
 }
 \arguments{
 \item{f}{A function returning the probability density function (for

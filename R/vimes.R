@@ -8,6 +8,7 @@
 #'
 #'
 #' @author Thibaut Jombart \email{thibautjombart@@gmail.com}
+#' @export
 #'
 #' @export
 #' 
@@ -65,21 +66,6 @@
 #'  res
 #'  plot(res$graph)
 #'
-
-## This is the main function of the package. It implements the
-## following workflow:
-##
-## 1) For each distance matrice provided, find cutoff values past which cases
-## are disconnected.
-##
-## 2) For each distance matrice provided, create pruned graphs
-##
-## 3) Build a consensus graph by intersection of all the pruned graphs
-##
-## Note that output graphs normally contain their own grapĥical options and
-## customisations.
-## 
-
 vimes <- function(x, method = c("basic"),
                   cutoff = NULL,
                   log_dens = NULL,

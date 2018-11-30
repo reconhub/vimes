@@ -10,10 +10,14 @@ vimes_data(...)
 \item{...}{a series (alternatively, a list) of matrices or dist objects serving as input.}
 }
 \value{
-a list of dist objects with matching entries, with attributes: 'labels' (labels of the cases) and 'N' (number of cases)
+a list of dist objects with matching entries, with attributes:
+    'labels' (labels of the cases) and 'N' (number of cases)
 }
 \description{
-This function takes a series of 'dist' objects (or objects which can be converted to 'dist', and ensures that entries match in all objects, adding NAs where necessary. The total number of cases and labels are returned as attributes.
+This function takes a series of 'dist' objects (or objects which can be
+converted to 'dist', and ensures that entries match in all objects, adding
+NAs where necessary. The total number of cases and labels are returned as
+attributes.
 }
 \examples{
 x1 <- c(0,1,3)
