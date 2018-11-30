@@ -6,9 +6,9 @@
 \alias{plot.fpaircase}
 \title{Expected distributions of distances (functions)}
 \usage{
-fpaircase(type = c("temporal", "genetic", "spatial", "empiric"), gamma_shape,
-  gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate, sd_spatial, p,
-  alpha = 0.001)
+fpaircase(type = c("temporal", "genetic", "spatial", "empiric"),
+  gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate,
+  poisson_rate, sd_spatial, p, alpha = 0.001)
 
 \method{print}{fpaircase}(x, ...)
 

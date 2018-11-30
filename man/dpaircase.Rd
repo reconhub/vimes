@@ -15,8 +15,8 @@ dgenetic(x, gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate,
   poisson_rate, pi, alpha = 0.001)
 
 dpaircase(x, type = c("temporal", "genetic", "spatial", "empiric"),
-  gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate, poisson_rate,
-  sd_spatial, p, pi, alpha = 0.001)
+  gamma_shape, gamma_rate = 1, gamma_scale = 1/gamma_rate,
+  poisson_rate, sd_spatial, p, pi, alpha = 0.001)
 
 dspatial(x, sd, pi, alpha = 0.001)
 

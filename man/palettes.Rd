@@ -4,7 +4,6 @@
 \alias{vimes_pal1}
 \alias{palettes}
 \alias{vimes_pal2}
-\alias{vimes_pal2}
 \title{Color palettes used in vimes}
 \usage{
 vimes_pal1(n)

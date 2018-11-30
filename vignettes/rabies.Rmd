@@ -96,20 +96,48 @@ D_geo <- rdist(locations)
 ```
 
 Distances between sequences are computed as simple Hamming distances using
-function `dist_dna` in the
-[`quicksim`](https://github.com/thibautjombart/quicksim) package. As this
-package is in developement, you will first need to install it using (requires
-devtools):
+function `dist_dna` written by Thibaut Jombart:
 
-```{r install-quicksim, eval = FALSE}
-devtools::install_github("thibautjombart/quicksim")
+```{r define-dist_dna}
+#' Compute pairwise genetic distances
+#'
+#' This function Compute pairwise genetic distances from vectors of mutations as
+#' generated in the simulations. The computed distance is the Hamming distance,
+#' i.e. the number of nucleotide differences between sequences.
+#'
+#' @export
+#'
+#' @param x A list of integer vectors, each of which represents the genome of
+#'   a pathogen as positions of mutations.
+#'
+#' @author Thibaut Jombart \email{thibautjombart@@gmail.com}
+#'
+#' @examples
+#' dist_dna(list(integer(0), integer(0), 1, 1))
+#' dist_dna(list(integer(0), integer(0), 1, 1, 1:2, 1:3, 1:4, 11:20))
+#'
+
+dist_dna <- function(x) {
+    N <- length(x)
+    all_pairs <- utils::combn(seq_len(N), 2L, simplify = FALSE)
+    n_pairs <- ncol(all_pairs)
+    out <- stats::dist(seq_len(N))
+    out[] <- NA_integer_
+    for (i in seq_along(all_pairs)) {
+      p1 <- x[[all_pairs[[i]][1]]]
+      p2 <- x[[all_pairs[[i]][2]]]
+      common_mutations <- intersect(p1, p2)
+      out[i] <- length(setdiff(c(p1, p2), common_mutations))
+    }
+
+    return(out)
+}
 ```
 
 Hamming distances (i.e. number of nucleotide differences between sequences) can
 be computed using:
 
 ```{r D_dna}
-library(quicksim)
 D_dna <- dist_dna(dna)
 ``` 
 We derive a phylogenetic tree from these distances using the `ape` package:

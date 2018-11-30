@@ -26,12 +26,13 @@ Suggests:
     ggplot2,
     gridExtra,
     incidence,
-    quicksim,
     ape
-Remotes: reconhub/distcrete
+Remotes: 
+  reconhub/distcrete,
+  reconhub/branchr
 Description: Integration of various surveillance data for detecting disease
     outbreaks.
 License: GPL (>=2)
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
